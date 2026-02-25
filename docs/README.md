@@ -152,7 +152,7 @@ npm test
 
 Com o backend em execução, você pode acessar a documentação interativa da API REST através do Swagger UI:
 
-👉 **[Acessar Swagger UI](http://localhost:8080/swagger-ui.html)**
+👉 **[Acessar Swagger UI](http://localhost:8082/swagger-ui/index.html)**
 
 ### Endpoints Principais
 
