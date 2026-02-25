@@ -35,7 +35,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - **Banco de Dados:** H2 Database (em memória para facilitar a execução local) / Scripts SQL padrão.
 - **Módulo EJB (`ejb-module`):** Java EE, EJB 3.2, JPA (Hibernate). Responsável pelas regras de negócio críticas e transações complexas.
 - **Backend (`backend-module`):** Java 17, Spring Boot 3, Spring Data JPA, Spring Web, OpenAPI/Swagger. Arquitetura Hexagonal / Clean Architecture adaptada.
-- **Frontend (`frontend`):** Angular 17, TypeScript, HTML5, CSS3, RxJS.
+- **Frontend (`frontend`):** Angular 21, TypeScript, HTML5, CSS3, RxJS.
 - **Testes:** JUnit 5, Mockito, Jest (Frontend).
 
 ## 📂 Estrutura do Projeto
