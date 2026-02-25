@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-17-orange.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)
-![Angular](https://img.shields.io/badge/Angular-17-red.svg)
+![Angular](https://img.shields.io/badge/Angular-21-red.svg)
 ![EJB](https://img.shields.io/badge/EJB-3.2-blue.svg)
 
 Este repositório contém a solução para o Desafio Fullstack Integrado, que engloba o desenvolvimento de uma aplicação completa em camadas (Banco de Dados, EJB, Backend Spring Boot e Frontend Angular).
