@@ -1,4 +1,4 @@
-# ���️ Desafio Fullstack Integrado - BIP
+# 📋 Desafio Fullstack Integrado - BIP
 
 ![Java](https://img.shields.io/badge/Java-17-orange.svg)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)
@@ -7,7 +7,7 @@
 
 Este repositório contém a solução para o Desafio Fullstack Integrado, que engloba o desenvolvimento de uma aplicação completa em camadas (Banco de Dados, EJB, Backend Spring Boot e Frontend Angular).
 
-## ��� Índice
+## 📑 Índice
 
 - [Objetivo do Desafio](#-objetivo-do-desafio)
 - [Arquitetura e Tecnologias](#-arquitetura-e-tecnologias)
@@ -24,11 +24,11 @@ Este repositório contém a solução para o Desafio Fullstack Integrado, que en
 
 ---
 
-## ��� Objetivo do Desafio
+## 🎯 Objetivo do Desafio
 
 Criar uma solução completa em camadas, corrigindo um bug crítico de concorrência e regras de negócio em um serviço EJB legado, e entregando uma aplicação funcional com backend moderno e frontend responsivo.
 
-## ���️ Arquitetura e Tecnologias
+## 🏗️ Arquitetura e Tecnologias
 
 O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
@@ -38,7 +38,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - **Frontend (`frontend`):** Angular 17, TypeScript, HTML5, CSS3, RxJS.
 - **Testes:** JUnit 5, Mockito, Jest (Frontend).
 
-## ��� Estrutura do Projeto
+## 📂 Estrutura do Projeto
 
 O repositório está organizado nos seguintes módulos:
 
@@ -77,7 +77,7 @@ O serviço `BeneficioEjbService` possuía falhas graves na operação de transfe
 
 ---
 
-## ��� Como Executar
+## 🚀 Como Executar
 
 ### Pré-requisitos
 Certifique-se de ter as seguintes ferramentas instaladas em sua máquina:
@@ -127,7 +127,7 @@ O frontend estará disponível em: `http://localhost:4200`
 
 ---
 
-## ��� Como Rodar os Testes
+## 🧪 Como Rodar os Testes
 
 O projeto conta com uma suíte de testes automatizados para garantir a qualidade e o funcionamento correto das regras de negócio.
 
@@ -148,11 +148,11 @@ npm test
 
 ---
 
-## ��� Documentação da API (Swagger)
+## 📖 Documentação da API (Swagger)
 
 Com o backend em execução, você pode acessar a documentação interativa da API REST através do Swagger UI:
 
-��� **[Acessar Swagger UI](http://localhost:8080/swagger-ui.html)**
+👉 **[Acessar Swagger UI](http://localhost:8080/swagger-ui.html)**
 
 ### Endpoints Principais
 
