@@ -1,0 +1,9 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+# EJB
+ejb-module/target/
+# backend
+backend-module/target/
+

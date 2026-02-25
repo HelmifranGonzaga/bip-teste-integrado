@@ -1,0 +1,31 @@
+.topbar {
+  background-color: var(--p-primary-500);
+  padding: 1rem 2rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.topbar-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.topbar-subtitle {
+  margin-left: 1rem;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-bottom: 2rem;
+  color: var(--p-surface-950);
+}

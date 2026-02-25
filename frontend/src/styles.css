@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', var(--font-family, Arial, sans-serif);
+  background: #f4f4f5;
+  color: #003641; /* Sicoob Dark Blue */
+}
+
+/* PrimeFlex utility classes (minimal subset used in app.component.html) */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1 1 0%; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-4 { margin-top: 1rem; }
+.w-full { width: 100%; }
+.block { display: block; }
+.text-center { text-align: center; }
+.p-4 { padding: 1rem; }
+.text-green-500 { color: #00ae9d; } /* Sicoob Green */
+.text-red-500 { color: #ef4444; }
+
+/* Sicoob specific styles */
+h1, h2 {
+  color: #003641;
+  font-weight: 700;
+}
+
+.p-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 54, 65, 0.08);
+  border: none;
+}
+
+.p-card-header {
+  color: #00ae9d;
+  font-weight: 600;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.p-button {
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.p-button-info {
+  background: #003641;
+  border-color: #003641;
+}
+
+.p-button-info:hover {
+  background: #00252d !important;
+  border-color: #00252d !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc;
+  color: #003641;
+  font-weight: 600;
+}
+
+.p-inputtext, .p-inputnumber-input {
+  border-radius: 8px;
+  border-color: #cbd5e1;
+}
+
+.p-inputtext:enabled:focus, .p-inputnumber-input:enabled:focus {
+  border-color: #00ae9d;
+  box-shadow: 0 0 0 1px #00ae9d;
+}
+
+.p-checkbox .p-checkbox-box {
+  border-radius: 4px;
+}
