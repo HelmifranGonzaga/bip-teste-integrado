@@ -18,7 +18,9 @@ class ApiExceptionHandlerTest {
         ResponseEntity<Map<String, String>> response = handler.handleBusiness(ex);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Invalid argument", response.getBody().get("message"));
+        Map<String, String> body = response.getBody();
+        assertNotNull(body);
+        assertEquals("Invalid argument", body.get("message"));
     }
 
     @Test
@@ -28,7 +30,9 @@ class ApiExceptionHandlerTest {
         ResponseEntity<Map<String, String>> response = handler.handleBusiness(ex);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Invalid state", response.getBody().get("message"));
+        Map<String, String> body = response.getBody();
+        assertNotNull(body);
+        assertEquals("Invalid state", body.get("message"));
     }
 
     @Test
@@ -38,6 +42,8 @@ class ApiExceptionHandlerTest {
         ResponseEntity<Map<String, String>> response = handler.handleNotFound(ex);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Not found", response.getBody().get("message"));
+        Map<String, String> body = response.getBody();
+        assertNotNull(body);
+        assertEquals("Not found", body.get("message"));
     }
 }
