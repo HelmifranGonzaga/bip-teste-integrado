@@ -15,35 +15,38 @@ class ApiExceptionHandlerTest {
     void shouldHandleIllegalArgumentException() {
         IllegalArgumentException ex = new IllegalArgumentException("Invalid argument");
 
-        ResponseEntity<Map<String, String>> response = handler.handleBusiness(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleBadRequest(ex);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        Map<String, String> body = response.getBody();
+        Map<String, Object> body = response.getBody();
         assertNotNull(body);
         assertEquals("Invalid argument", body.get("message"));
+        assertEquals("BAD_REQUEST", body.get("code"));
     }
 
     @Test
     void shouldHandleIllegalStateException() {
         IllegalStateException ex = new IllegalStateException("Invalid state");
 
-        ResponseEntity<Map<String, String>> response = handler.handleBusiness(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleConflict(ex);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        Map<String, String> body = response.getBody();
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Map<String, Object> body = response.getBody();
         assertNotNull(body);
         assertEquals("Invalid state", body.get("message"));
+        assertEquals("CONFLICT", body.get("code"));
     }
 
     @Test
     void shouldHandleResourceNotFoundException() {
         ResourceNotFoundException ex = new ResourceNotFoundException("Not found");
 
-        ResponseEntity<Map<String, String>> response = handler.handleNotFound(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleNotFound(ex);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        Map<String, String> body = response.getBody();
+        Map<String, Object> body = response.getBody();
         assertNotNull(body);
         assertEquals("Not found", body.get("message"));
+        assertEquals("NOT_FOUND", body.get("code"));
     }
 }
