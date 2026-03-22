@@ -1,16 +1,17 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { Beneficio, BeneficioPayload } from '../../core/models/beneficio.model';
 import { BeneficioService } from '../../core/services/beneficio.service';
 
-// PrimeNG Imports
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 
-// Components
 import { BeneficioFormComponent } from './components/beneficio-form/beneficio-form.component';
 import { BeneficioTransferComponent } from './components/beneficio-transfer/beneficio-transfer.component';
 import { BeneficioListComponent } from './components/beneficio-list/beneficio-list.component';
@@ -19,28 +20,30 @@ import { BeneficioListComponent } from './components/beneficio-list/beneficio-li
   selector: 'app-beneficios',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     MessageModule,
     ToastModule,
     DialogModule,
     ButtonModule,
+    ConfirmDialogModule,
     BeneficioFormComponent,
     BeneficioTransferComponent,
     BeneficioListComponent
   ],
+  providers: [ConfirmationService],
   templateUrl: './beneficios.component.html',
   styleUrl: './beneficios.component.css'
 })
 export class BeneficiosComponent implements OnInit {
   private readonly service = inject(BeneficioService);
   private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  // Signals for state management
   beneficios = signal<Beneficio[]>([]);
   editingBeneficio = signal<Beneficio | null>(null);
   errorMessage = signal<string>('');
-  
-  // Modal visibility signals
+
   showFormModal = signal<boolean>(false);
   showTransferModal = signal<boolean>(false);
 
@@ -49,13 +52,17 @@ export class BeneficiosComponent implements OnInit {
   }
 
   loadBeneficios(): void {
-    this.service.list().subscribe({
-      next: (items) => {
-        this.beneficios.set(items);
-        this.errorMessage.set('');
-      },
-      error: (error) => this.handleError(error, 'Erro ao carregar benefícios')
-    });
+    this.service.list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (items) => {
+          this.beneficios.set(items);
+          this.errorMessage.set('');
+        },
+        error: (error) => {
+          this.errorMessage.set(error.error?.message ?? 'Erro ao carregar benefícios');
+        }
+      });
   }
 
   onSave(event: { id: number | null, payload: BeneficioPayload }): void {
@@ -63,15 +70,19 @@ export class BeneficiosComponent implements OnInit {
       ? this.service.update(event.id, event.payload)
       : this.service.create(event.payload);
 
-    request.subscribe({
-      next: () => {
-        this.editingBeneficio.set(null);
-        this.showFormModal.set(false);
-        this.loadBeneficios();
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício salvo com sucesso!' });
-      },
-      error: (error) => this.handleError(error, 'Erro ao salvar benefício')
-    });
+    request
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.editingBeneficio.set(null);
+          this.showFormModal.set(false);
+          this.loadBeneficios();
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício salvo com sucesso!' });
+        },
+        error: (error) => {
+          this.errorMessage.set(error.error?.message ?? 'Erro ao salvar benefício');
+        }
+      });
   }
 
   openNew(): void {
@@ -98,29 +109,47 @@ export class BeneficiosComponent implements OnInit {
   }
 
   onRemove(id: number): void {
-    this.service.delete(id).subscribe({
-      next: () => {
-        this.loadBeneficios();
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício removido com sucesso!' });
-      },
-      error: (error) => this.handleError(error, 'Erro ao remover benefício')
+    const beneficio = this.beneficios().find(b => b.id === id);
+    
+    this.confirmationService.confirm({
+      message: `Tem certeza que deseja excluir o benefício "${beneficio?.nome}"?`,
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.confirmDelete(id);
+      }
     });
+  }
+
+  private confirmDelete(id: number): void {
+    this.service.delete(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loadBeneficios();
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício removido com sucesso!' });
+        },
+        error: (error) => {
+          this.errorMessage.set(error.error?.message ?? 'Erro ao remover benefício');
+        }
+      });
   }
 
   onTransfer(payload: { fromId: number; toId: number; amount: number }): void {
-    this.service.transfer(payload).subscribe({
-      next: () => {
-        this.showTransferModal.set(false);
-        this.loadBeneficios();
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Transferência realizada com sucesso!' });
-      },
-      error: (error) => this.handleError(error, 'Erro na transferência')
-    });
-  }
-
-  private handleError(error: any, defaultMessage: string): void {
-    const errorMessage = error.error?.message ?? defaultMessage;
-    this.errorMessage.set(errorMessage);
-    this.messageService.add({ severity: 'error', summary: 'Erro', detail: errorMessage });
+    this.service.transfer(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.showTransferModal.set(false);
+          this.loadBeneficios();
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Transferência realizada com sucesso!' });
+        },
+        error: (error) => {
+          this.errorMessage.set(error.error?.message ?? 'Erro na transferência');
+        }
+      });
   }
 }

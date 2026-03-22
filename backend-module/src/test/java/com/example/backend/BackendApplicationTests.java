@@ -3,15 +3,12 @@ package com.example.backend;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class BackendApplicationTests {
+@SpringBootTest(properties = {
+    "spring.jpa.hibernate.ddl-auto=create-drop"
+})
+class BackendApplicationTests extends BaseIntegrationTest {
 
     @Test
     void contextLoads() {
-    }
-
-    @Test
-    void main() {
-        BackendApplication.main(new String[] {"--server.port=0"});
     }
 }

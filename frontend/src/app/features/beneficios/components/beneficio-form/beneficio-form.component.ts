@@ -41,7 +41,7 @@ import { FluidModule } from 'primeng/fluid';
           @if (form.get('valor')!.invalid && form.get('valor')!.touched) {
             <small class="text-red-500">
               @if (form.get('valor')!.hasError('required')) { Valor é obrigatório. }
-              @else if (form.get('valor')!.hasError('min')) { Valor deve ser maior ou igual a zero. }
+              @else if (form.get('valor')!.hasError('min')) { Valor deve ser maior que zero. }
             </small>
           }
         </div>
@@ -87,9 +87,9 @@ export class BeneficioFormComponent {
   @Output() cancel = new EventEmitter<void>();
 
   form = this.fb.group({
-    nome: ['', [Validators.required]],
-    descricao: [''],
-    valor: [null as number | null, [Validators.required, Validators.min(0)]],
+    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+    descricao: ['', [Validators.maxLength(500)]],
+    valor: [null as number | null, [Validators.required, Validators.min(0.01)]],
     ativo: [true, [Validators.required]]
   });
 

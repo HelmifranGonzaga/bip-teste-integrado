@@ -2,11 +2,15 @@ package com.example.backend;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
 
 import com.example.backend.domain.model.Beneficio;
 import com.example.backend.domain.port.inbound.BeneficioUseCase;
 import com.example.backend.domain.port.outbound.BeneficioRepositoryPort;
 import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,13 +18,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class BeneficioServiceIntegrationTest {
+class BeneficioServiceIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private BeneficioUseCase service;
 
     @Autowired
     private BeneficioRepositoryPort repository;
+
+    @BeforeEach
+    void setup() {
+        doAnswer(invocation -> {
+            Long fromId = invocation.getArgument(0);
+            Long toId = invocation.getArgument(1);
+            BigDecimal amount = invocation.getArgument(2);
+            Beneficio from = repository.findById(fromId).orElseThrow();
+            Beneficio to = repository.findById(toId).orElseThrow();
+            if (from.getValor().compareTo(amount) < 0) {
+                throw new IllegalStateException("Saldo insuficiente para transferência");
+            }
+            from.setValor(from.getValor().subtract(amount));
+            to.setValor(to.getValor().add(amount));
+            repository.save(from);
+            repository.save(to);
+            return null;
+        }).when(beneficioEjbService).transfer(anyLong(), anyLong(), any(BigDecimal.class));
+    }
 
     @Test
     void shouldTransferBetweenBenefits() {

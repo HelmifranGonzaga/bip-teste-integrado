@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class BeneficioControllerTest {
+class BeneficioControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

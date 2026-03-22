@@ -10,11 +10,11 @@ public record TransferRequest(
         @Schema(description = "ID do benefício de origem (de onde o valor será retirado)", example = "1")
         @NotNull(message = "ID de origem é obrigatório")
         Long fromId,
-        
+
         @Schema(description = "ID do benefício de destino (para onde o valor será enviado)", example = "2")
         @NotNull(message = "ID de destino é obrigatório")
         Long toId,
-        
+
         @Schema(description = "Valor a ser transferido", example = "150.00")
         @NotNull(message = "Valor é obrigatório")
         @DecimalMin(value = "0.01", inclusive = true, message = "Valor deve ser maior que zero")

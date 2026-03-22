@@ -1,5 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
@@ -8,6 +8,7 @@ import { providePrimeNG } from 'primeng/config';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
 import { SicoobPreset } from './app/core/theme/sicoob-theme';
+import { errorInterceptor } from './app/core/interceptors/error.interceptor';
 
 registerLocaleData(localePt);
 
@@ -15,7 +16,7 @@ async function bootstrap(): Promise<void> {
   try {
     await bootstrapApplication(AppComponent, {
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([errorInterceptor])),
         provideAnimationsAsync(),
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         MessageService,
@@ -23,7 +24,7 @@ async function bootstrap(): Promise<void> {
           theme: {
             preset: SicoobPreset,
             options: {
-              darkModeSelector: 'none' // Force light mode for Sicoob theme
+              darkModeSelector: 'none'
             }
           }
         })

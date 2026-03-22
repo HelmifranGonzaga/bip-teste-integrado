@@ -7,12 +7,17 @@ import com.example.backend.domain.port.outbound.BeneficioRepositoryPort;
 import com.example.backend.domain.port.outbound.BeneficioTransferPort;
 import java.math.BigDecimal;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BeneficioServiceImpl implements BeneficioUseCase {
 
+    private static final Logger log = LoggerFactory.getLogger(BeneficioServiceImpl.class);
     private final BeneficioRepositoryPort repositoryPort;
     private final BeneficioTransferPort transferPort;
 
@@ -24,43 +29,65 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     @Override
     @Transactional(readOnly = true)
     public List<Beneficio> listAll() {
-        return repositoryPort.findAll();
+        log.debug("Listing all beneficios");
+        List<Beneficio> beneficios = repositoryPort.findAll();
+        log.debug("Found {} beneficios", beneficios.size());
+        return beneficios;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Beneficio getById(Long id) {
+        log.debug("Finding beneficio by id: {}", id);
         return repositoryPort.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Benefício não encontrado: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Beneficio not found: {}", id);
+                    return new ResourceNotFoundException("Benefício não encontrado: " + id);
+                });
     }
 
     @Override
     @Transactional
     public Beneficio create(Beneficio beneficio) {
-        return repositoryPort.save(beneficio);
+        log.debug("Creating beneficio: {}", beneficio.getNome());
+        Beneficio saved = repositoryPort.save(beneficio);
+        log.info("Created beneficio with id: {}", saved.getId());
+        return saved;
     }
 
     @Override
     @Transactional
     public Beneficio update(Long id, Beneficio beneficio) {
+        log.debug("Updating beneficio with id: {}", id);
         Beneficio existing = getById(id);
         existing.setNome(beneficio.getNome());
         existing.setDescricao(beneficio.getDescricao());
         existing.setValor(beneficio.getValor());
         existing.setAtivo(beneficio.getAtivo());
-        return repositoryPort.save(existing);
+        Beneficio updated = repositoryPort.save(existing);
+        log.info("Updated beneficio with id: {}", updated.getId());
+        return updated;
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
+        log.debug("Deleting beneficio with id: {}", id);
         Beneficio existing = getById(id);
         repositoryPort.delete(existing);
+        log.info("Deleted beneficio with id: {}", id);
     }
 
     @Override
     @Transactional
+    @Retryable(
+            retryFor = {Exception.class},
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 100, multiplier = 2)
+    )
     public void transfer(Long fromId, Long toId, BigDecimal amount) {
+        log.debug("Transferring {} from {} to {}", amount, fromId, toId);
         transferPort.transfer(fromId, toId, amount);
+        log.info("Transfer completed: {} from {} to {}", amount, fromId, toId);
     }
 }
