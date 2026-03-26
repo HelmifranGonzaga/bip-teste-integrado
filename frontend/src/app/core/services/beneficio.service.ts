@@ -1,9 +1,9 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { Beneficio, BeneficioPayload, TransferPayload } from '../models/beneficio.model';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
+import { Beneficio, BeneficioPayload, TransferPayload } from '../models/beneficio.model';
 
 @Injectable({ providedIn: 'root' })
 export class BeneficioService {
@@ -15,31 +15,18 @@ export class BeneficioService {
   }
 
   create(payload: BeneficioPayload): Observable<Beneficio> {
-    return this.http.post<Beneficio>(this.apiUrl, payload).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<Beneficio>(this.apiUrl, payload);
   }
 
   update(id: number, payload: BeneficioPayload): Observable<Beneficio> {
-    return this.http.put<Beneficio>(`${this.apiUrl}/${id}`, payload).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.put<Beneficio>(`${this.apiUrl}/${id}`, payload);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   transfer(payload: TransferPayload): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/transfer`, payload).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    const errorMessage = error.error?.message ?? 'Ocorreu um erro inesperado';
-    return throwError(() => new Error(errorMessage));
+    return this.http.post<void>(`${this.apiUrl}/transfer`, payload);
   }
 }

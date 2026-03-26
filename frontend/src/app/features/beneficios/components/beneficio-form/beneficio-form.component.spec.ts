@@ -31,7 +31,14 @@ describe('BeneficioFormComponent', () => {
   });
 
   it('should populate form when editingBeneficio is set', () => {
-    component.editingBeneficio = { id: 1, nome: 'Teste', descricao: 'Desc', valor: 100, ativo: false, version: 0 };
+    component.editingBeneficio = {
+      id: 1,
+      nome: 'Teste',
+      descricao: 'Desc',
+      valor: 100,
+      ativo: false,
+      version: 0
+    };
     expect(component.form.value).toEqual({
       nome: 'Teste',
       descricao: 'Desc',
@@ -43,7 +50,7 @@ describe('BeneficioFormComponent', () => {
 
   it('should emit save event on valid submit', () => {
     jest.spyOn(component.save, 'emit');
-    
+
     component.form.setValue({
       nome: 'Novo',
       descricao: 'Nova desc',

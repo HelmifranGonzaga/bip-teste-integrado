@@ -1,10 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Beneficio, BeneficioPayload } from '../../core/models/beneficio.model';
-import { BeneficioService } from '../../core/services/beneficio.service';
+import { ConfirmationService } from 'primeng/api';
+import { Beneficio } from '../../core/models/beneficio.model';
+import { mapHttpError } from '../../core/errors/http-error.mapper';
 
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
@@ -14,6 +15,8 @@ import { ButtonModule } from 'primeng/button';
 import { BeneficioFormComponent } from './components/beneficio-form/beneficio-form.component';
 import { BeneficioTransferComponent } from './components/beneficio-transfer/beneficio-transfer.component';
 import { BeneficioListComponent } from './components/beneficio-list/beneficio-list.component';
+import { BeneficiosFacade } from './beneficios.facade';
+import { SaveBeneficioEvent, TransferBeneficioEvent } from './beneficios.types';
 
 @Component({
   selector: 'app-beneficios',
@@ -34,10 +37,7 @@ import { BeneficioListComponent } from './components/beneficio-list/beneficio-li
   styleUrl: './beneficios.component.css'
 })
 export class BeneficiosComponent implements OnInit {
-  private static readonly CONNECTION_ERROR_MESSAGE = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
-
-  private readonly service = inject(BeneficioService);
-  private readonly messageService = inject(MessageService);
+  private readonly facade = inject(BeneficiosFacade);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -54,7 +54,8 @@ export class BeneficiosComponent implements OnInit {
   }
 
   loadBeneficios(): void {
-    this.service.list()
+    this.facade
+      .list()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (items) => {
@@ -68,19 +69,15 @@ export class BeneficiosComponent implements OnInit {
       });
   }
 
-  onSave(event: { id: number | null, payload: BeneficioPayload }): void {
-    const request = event.id
-      ? this.service.update(event.id, event.payload)
-      : this.service.create(event.payload);
-
-    request
+  onSave(event: SaveBeneficioEvent): void {
+    this.facade
+      .save(event)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.editingBeneficio.set(null);
           this.showFormModal.set(false);
           this.loadBeneficios();
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício salvo com sucesso!' });
         },
         error: (error) => {
           this.handleRequestError(error, 'Erro ao salvar benefício');
@@ -112,8 +109,8 @@ export class BeneficiosComponent implements OnInit {
   }
 
   onRemove(id: number): void {
-    const beneficio = this.beneficios().find(b => b.id === id);
-    
+    const beneficio = this.beneficios().find((b) => b.id === id);
+
     this.confirmationService.confirm({
       message: `Tem certeza que deseja excluir o benefício "${beneficio?.nome}"?`,
       header: 'Confirmar Exclusão',
@@ -128,12 +125,12 @@ export class BeneficiosComponent implements OnInit {
   }
 
   private confirmDelete(id: number): void {
-    this.service.delete(id)
+    this.facade
+      .remove(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.loadBeneficios();
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício removido com sucesso!' });
         },
         error: (error) => {
           this.handleRequestError(error, 'Erro ao remover benefício');
@@ -141,14 +138,14 @@ export class BeneficiosComponent implements OnInit {
       });
   }
 
-  onTransfer(payload: { fromId: number; toId: number; amount: number }): void {
-    this.service.transfer(payload)
+  onTransfer(payload: TransferBeneficioEvent): void {
+    this.facade
+      .transfer(payload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.showTransferModal.set(false);
           this.loadBeneficios();
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Transferência realizada com sucesso!' });
         },
         error: (error) => {
           this.handleRequestError(error, 'Erro na transferência');
@@ -156,13 +153,9 @@ export class BeneficiosComponent implements OnInit {
       });
   }
 
-  private handleRequestError(error: any, fallbackMessage: string): void {
-    const isConnectionError = error?.status === 0 || error?.error?.message === BeneficiosComponent.CONNECTION_ERROR_MESSAGE;
-    const detailMessage = isConnectionError
-      ? BeneficiosComponent.CONNECTION_ERROR_MESSAGE
-      : (error?.error?.message ?? fallbackMessage);
-
-    this.connectionError.set(isConnectionError);
-    this.errorMessage.set(detailMessage);
+  private handleRequestError(error: HttpErrorResponse, fallbackMessage: string): void {
+    const mappedError = mapHttpError(error, fallbackMessage);
+    this.connectionError.set(mappedError.isConnectionError);
+    this.errorMessage.set(mappedError.detail);
   }
 }

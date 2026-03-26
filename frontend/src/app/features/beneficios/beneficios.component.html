@@ -11,58 +11,70 @@
     <h1 class="page-title m-0">Painel de Controle</h1>
     <div class="flex gap-2">
       <p-button label="Novo Benefício" icon="pi pi-plus" (onClick)="openNew()"></p-button>
-      <p-button label="Transferir Saldo" icon="pi pi-arrow-right-arrow-left" severity="info" (onClick)="openTransfer()"></p-button>
+      <p-button
+        label="Transferir Saldo"
+        icon="pi pi-arrow-right-arrow-left"
+        severity="info"
+        (onClick)="openTransfer()"
+      ></p-button>
     </div>
   </div>
 
-  <app-beneficio-list
-    *ngIf="!connectionError()"
-    [beneficios]="beneficios()"
-    (edit)="onEdit($event)"
-    (remove)="onRemove($event)">
-  </app-beneficio-list>
-
-  <div *ngIf="connectionError()" class="connection-error-screen">
-    <div class="connection-error-content">
-      <i class="pi pi-wifi text-4xl"></i>
-      <h2>Sem conexão com o servidor</h2>
-      <p>{{ errorMessage() }}</p>
-      <p-button label="Tentar novamente" icon="pi pi-refresh" (onClick)="loadBeneficios()"></p-button>
+  @if (!connectionError()) {
+    <app-beneficio-list
+      [beneficios]="beneficios()"
+      (edit)="onEdit($event)"
+      (remove)="onRemove($event)"
+    >
+    </app-beneficio-list>
+  } @else {
+    <div class="connection-error-screen">
+      <div class="connection-error-content">
+        <i class="pi pi-wifi text-4xl"></i>
+        <h2>Sem conexão com o servidor</h2>
+        <p>{{ errorMessage() }}</p>
+        <p-button
+          label="Tentar novamente"
+          icon="pi pi-refresh"
+          (onClick)="loadBeneficios()"
+        ></p-button>
+      </div>
     </div>
-  </div>
+  }
 </div>
 
 <!-- Modal de Formulário (Criar/Editar) -->
-<p-dialog 
-  [header]="editingBeneficio() ? 'Editar Benefício' : 'Novo Benefício'" 
-  [visible]="showFormModal()" 
+<p-dialog
+  [header]="editingBeneficio() ? 'Editar Benefício' : 'Novo Benefício'"
+  [visible]="showFormModal()"
   (visibleChange)="showFormModal.set($event)"
-  [modal]="true" 
-  [style]="{ width: '450px' }" 
-  [draggable]="false" 
-  [resizable]="false">
-  
-  <app-beneficio-form 
-    *ngIf="showFormModal()"
-    [editingBeneficio]="editingBeneficio()"
-    (save)="onSave($event)"
-    (cancel)="onCancelEdit()">
-  </app-beneficio-form>
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  @if (showFormModal()) {
+    <app-beneficio-form
+      [editingBeneficio]="editingBeneficio()"
+      (save)="onSave($event)"
+      (cancelOperation)="onCancelEdit()"
+    >
+    </app-beneficio-form>
+  }
 </p-dialog>
 
 <!-- Modal de Transferência -->
-<p-dialog 
-  header="Transferência de Saldo" 
-  [visible]="showTransferModal()" 
+<p-dialog
+  header="Transferência de Saldo"
+  [visible]="showTransferModal()"
   (visibleChange)="showTransferModal.set($event)"
-  [modal]="true" 
-  [style]="{ width: '450px' }" 
-  [draggable]="false" 
-  [resizable]="false">
-  
-  <app-beneficio-transfer 
-    *ngIf="showTransferModal()"
-    (transfer)="onTransfer($event)"
-    (cancel)="onCancelTransfer()">
-  </app-beneficio-transfer>
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  @if (showTransferModal()) {
+    <app-beneficio-transfer (transfer)="onTransfer($event)" (cancelTransfer)="onCancelTransfer()">
+    </app-beneficio-transfer>
+  }
 </p-dialog>

@@ -17,10 +17,7 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [
-        { provide: BeneficioService, useValue: serviceMock },
-        MessageService
-      ]
+      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -40,10 +37,7 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [
-        { provide: BeneficioService, useValue: serviceMock },
-        MessageService
-      ]
+      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -52,6 +46,8 @@ describe('BeneficiosComponent', () => {
     fixture.detectChanges();
 
     expect(component.connectionError()).toBe(true);
-    expect(component.errorMessage()).toBe('Não foi possível conectar ao servidor. Verifique sua conexão.');
+    expect(component.errorMessage()).toBe(
+      'Não foi possível conectar ao servidor. Verifique sua conexão.'
+    );
   });
 });

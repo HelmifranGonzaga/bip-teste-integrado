@@ -7,5 +7,4 @@ import { BeneficiosComponent } from './features/beneficios/beneficios.component'
   imports: [BeneficiosComponent],
   templateUrl: './app.component.html'
 })
-export class AppComponent {
-}
+export class AppComponent {}

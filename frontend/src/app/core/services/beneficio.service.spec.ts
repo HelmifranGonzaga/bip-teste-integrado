@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BeneficioService } from './beneficio.service';
 import { Beneficio, BeneficioPayload } from '../models/beneficio.model';
 
@@ -9,8 +10,7 @@ describe('BeneficioService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [BeneficioService]
+      providers: [BeneficioService, provideHttpClient(), provideHttpClientTesting()]
     });
     service = TestBed.inject(BeneficioService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -25,9 +25,11 @@ describe('BeneficioService', () => {
   });
 
   it('should list beneficios', () => {
-    const mockBeneficios: Beneficio[] = [{ id: 1, nome: 'Teste', descricao: 'Desc', valor: 100, ativo: true, version: 0 }];
+    const mockBeneficios: Beneficio[] = [
+      { id: 1, nome: 'Teste', descricao: 'Desc', valor: 100, ativo: true, version: 0 }
+    ];
 
-    service.list().subscribe(beneficios => {
+    service.list().subscribe((beneficios) => {
       expect(beneficios.length).toBe(1);
       expect(beneficios).toEqual(mockBeneficios);
     });
@@ -41,7 +43,7 @@ describe('BeneficioService', () => {
     const payload: BeneficioPayload = { nome: 'Teste', descricao: 'Desc', valor: 100, ativo: true };
     const mockResponse: Beneficio = { id: 1, version: 0, ...payload };
 
-    service.create(payload).subscribe(beneficio => {
+    service.create(payload).subscribe((beneficio) => {
       expect(beneficio).toEqual(mockResponse);
     });
 
@@ -52,10 +54,15 @@ describe('BeneficioService', () => {
   });
 
   it('should update beneficio', () => {
-    const payload: BeneficioPayload = { nome: 'Teste Atualizado', descricao: 'Desc', valor: 200, ativo: true };
+    const payload: BeneficioPayload = {
+      nome: 'Teste Atualizado',
+      descricao: 'Desc',
+      valor: 200,
+      ativo: true
+    };
     const mockResponse: Beneficio = { id: 1, version: 0, ...payload };
 
-    service.update(1, payload).subscribe(beneficio => {
+    service.update(1, payload).subscribe((beneficio) => {
       expect(beneficio).toEqual(mockResponse);
     });
 
@@ -66,7 +73,7 @@ describe('BeneficioService', () => {
   });
 
   it('should delete beneficio', () => {
-    service.delete(1).subscribe(res => {
+    service.delete(1).subscribe((res) => {
       expect(res).toBeNull();
     });
 
@@ -78,7 +85,7 @@ describe('BeneficioService', () => {
   it('should transfer balance', () => {
     const payload = { fromId: 1, toId: 2, amount: 50 };
 
-    service.transfer(payload).subscribe(res => {
+    service.transfer(payload).subscribe((res) => {
       expect(res).toBeNull();
     });
 

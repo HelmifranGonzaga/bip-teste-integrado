@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BeneficioTransferComponent } from './beneficio-transfer.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('BeneficioTransferComponent', () => {
   let component: BeneficioTransferComponent;
@@ -9,7 +8,7 @@ describe('BeneficioTransferComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BeneficioTransferComponent, ReactiveFormsModule, NoopAnimationsModule]
+      imports: [BeneficioTransferComponent, ReactiveFormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BeneficioTransferComponent);
@@ -32,7 +31,7 @@ describe('BeneficioTransferComponent', () => {
 
   it('should emit transfer event on valid submit', () => {
     jest.spyOn(component.transfer, 'emit');
-    
+
     component.form.setValue({
       fromId: 1,
       toId: 2,
@@ -50,8 +49,8 @@ describe('BeneficioTransferComponent', () => {
   });
 
   it('should emit cancel event on cancel', () => {
-    jest.spyOn(component.cancel, 'emit');
-    
+    jest.spyOn(component.cancelTransfer, 'emit');
+
     component.form.setValue({
       fromId: 1,
       toId: 2,
@@ -60,7 +59,7 @@ describe('BeneficioTransferComponent', () => {
 
     component.onCancel();
 
-    expect(component.cancel.emit).toHaveBeenCalled();
+    expect(component.cancelTransfer.emit).toHaveBeenCalled();
     expect(component.form.value).toEqual({ fromId: null, toId: null, amount: null });
   });
 });

@@ -13,10 +13,7 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [AppComponent, BeneficiosComponent],
-      providers: [
-        { provide: BeneficioService, useValue: serviceMock },
-        MessageService
-      ]
+      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
     });
 
     const fixture = TestBed.createComponent(AppComponent);

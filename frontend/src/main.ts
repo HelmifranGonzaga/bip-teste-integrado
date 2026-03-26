@@ -1,6 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -9,6 +8,7 @@ import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
 import { SicoobPreset } from './app/core/theme/sicoob-theme';
 import { errorInterceptor } from './app/core/interceptors/error.interceptor';
+import { environment } from './environments/environment';
 
 registerLocaleData(localePt);
 
@@ -17,7 +17,6 @@ async function bootstrap(): Promise<void> {
     await bootstrapApplication(AppComponent, {
       providers: [
         provideHttpClient(withInterceptors([errorInterceptor])),
-        provideAnimationsAsync(),
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         MessageService,
         providePrimeNG({
@@ -31,7 +30,9 @@ async function bootstrap(): Promise<void> {
       ]
     });
   } catch (error) {
-    console.error(error);
+    if (!environment.production) {
+      console.error(error);
+    }
   }
 }
 

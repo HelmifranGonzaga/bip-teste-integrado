@@ -8,28 +8,67 @@ body {
 }
 
 /* PrimeFlex utility classes (minimal subset used in app.component.html) */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.flex-1 { flex: 1 1 0%; }
-.flex-wrap { flex-wrap: wrap; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.justify-end { justify-content: flex-end; }
-.gap-2 { gap: 0.5rem; }
-.gap-4 { gap: 1rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 0.75rem; }
-.mb-4 { margin-bottom: 1rem; }
-.mt-4 { margin-top: 1rem; }
-.w-full { width: 100%; }
-.block { display: block; }
-.text-center { text-align: center; }
-.p-4 { padding: 1rem; }
-.text-green-500 { color: #00ae9d; } /* Sicoob Green */
-.text-red-500 { color: #ef4444; }
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-1 {
+  flex: 1 1 0%;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.items-center {
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.w-full {
+  width: 100%;
+}
+.block {
+  display: block;
+}
+.text-center {
+  text-align: center;
+}
+.p-4 {
+  padding: 1rem;
+}
+.text-green-500 {
+  color: #00ae9d;
+} /* Sicoob Green */
+.text-red-500 {
+  color: #ef4444;
+}
 
 /* Sicoob specific styles */
-h1, h2 {
+h1,
+h2 {
   color: #003641;
   font-weight: 700;
 }
@@ -67,12 +106,14 @@ h1, h2 {
   font-weight: 600;
 }
 
-.p-inputtext, .p-inputnumber-input {
+.p-inputtext,
+.p-inputnumber-input {
   border-radius: 8px;
   border-color: #cbd5e1;
 }
 
-.p-inputtext:enabled:focus, .p-inputnumber-input:enabled:focus {
+.p-inputtext:enabled:focus,
+.p-inputnumber-input:enabled:focus {
   border-color: #00ae9d;
   box-shadow: 0 0 0 1px #00ae9d;
 }
