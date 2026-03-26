@@ -1,6 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { CONNECTION_ERROR_MESSAGE, GENERIC_ERROR_MESSAGE, SERVER_ERROR_MESSAGE } from './error-messages';
+import {
+  CONNECTION_ERROR_MESSAGE,
+  GENERIC_ERROR_MESSAGE,
+  SERVER_ERROR_MESSAGE
+} from './error-messages';
 
 export interface MappedHttpError {
   summary: string;
