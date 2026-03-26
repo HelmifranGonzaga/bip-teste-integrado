@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "moduleResolution": "bundler",
+    "isolatedModules": true,
     "esModuleInterop": true,
     "types": [
       "jest",

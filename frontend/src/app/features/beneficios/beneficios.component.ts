@@ -2,13 +2,12 @@ import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Beneficio, BeneficioPayload } from '../../core/models/beneficio.model';
 import { BeneficioService } from '../../core/services/beneficio.service';
 
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 
@@ -35,6 +34,8 @@ import { BeneficioListComponent } from './components/beneficio-list/beneficio-li
   styleUrl: './beneficios.component.css'
 })
 export class BeneficiosComponent implements OnInit {
+  private static readonly CONNECTION_ERROR_MESSAGE = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
+
   private readonly service = inject(BeneficioService);
   private readonly messageService = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
@@ -43,6 +44,7 @@ export class BeneficiosComponent implements OnInit {
   beneficios = signal<Beneficio[]>([]);
   editingBeneficio = signal<Beneficio | null>(null);
   errorMessage = signal<string>('');
+  connectionError = signal<boolean>(false);
 
   showFormModal = signal<boolean>(false);
   showTransferModal = signal<boolean>(false);
@@ -58,9 +60,10 @@ export class BeneficiosComponent implements OnInit {
         next: (items) => {
           this.beneficios.set(items);
           this.errorMessage.set('');
+          this.connectionError.set(false);
         },
         error: (error) => {
-          this.errorMessage.set(error.error?.message ?? 'Erro ao carregar benefícios');
+          this.handleRequestError(error, 'Erro ao carregar benefícios');
         }
       });
   }
@@ -80,7 +83,7 @@ export class BeneficiosComponent implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício salvo com sucesso!' });
         },
         error: (error) => {
-          this.errorMessage.set(error.error?.message ?? 'Erro ao salvar benefício');
+          this.handleRequestError(error, 'Erro ao salvar benefício');
         }
       });
   }
@@ -133,7 +136,7 @@ export class BeneficiosComponent implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Benefício removido com sucesso!' });
         },
         error: (error) => {
-          this.errorMessage.set(error.error?.message ?? 'Erro ao remover benefício');
+          this.handleRequestError(error, 'Erro ao remover benefício');
         }
       });
   }
@@ -148,8 +151,18 @@ export class BeneficiosComponent implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Transferência realizada com sucesso!' });
         },
         error: (error) => {
-          this.errorMessage.set(error.error?.message ?? 'Erro na transferência');
+          this.handleRequestError(error, 'Erro na transferência');
         }
       });
+  }
+
+  private handleRequestError(error: any, fallbackMessage: string): void {
+    const isConnectionError = error?.status === 0 || error?.error?.message === BeneficiosComponent.CONNECTION_ERROR_MESSAGE;
+    const detailMessage = isConnectionError
+      ? BeneficiosComponent.CONNECTION_ERROR_MESSAGE
+      : (error?.error?.message ?? fallbackMessage);
+
+    this.connectionError.set(isConnectionError);
+    this.errorMessage.set(detailMessage);
   }
 }

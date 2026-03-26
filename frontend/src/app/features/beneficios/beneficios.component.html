@@ -15,11 +15,21 @@
     </div>
   </div>
 
-  <app-beneficio-list 
+  <app-beneficio-list
+    *ngIf="!connectionError()"
     [beneficios]="beneficios()"
     (edit)="onEdit($event)"
     (remove)="onRemove($event)">
   </app-beneficio-list>
+
+  <div *ngIf="connectionError()" class="connection-error-screen">
+    <div class="connection-error-content">
+      <i class="pi pi-wifi text-4xl"></i>
+      <h2>Sem conexão com o servidor</h2>
+      <p>{{ errorMessage() }}</p>
+      <p-button label="Tentar novamente" icon="pi pi-refresh" (onClick)="loadBeneficios()"></p-button>
+    </div>
+  </div>
 </div>
 
 <!-- Modal de Formulário (Criar/Editar) -->
