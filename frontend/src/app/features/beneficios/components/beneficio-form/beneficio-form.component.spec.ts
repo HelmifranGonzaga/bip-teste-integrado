@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BeneficioFormComponent } from './beneficio-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('BeneficioFormComponent', () => {
   let component: BeneficioFormComponent;
@@ -9,7 +8,7 @@ describe('BeneficioFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BeneficioFormComponent, ReactiveFormsModule, NoopAnimationsModule]
+      imports: [BeneficioFormComponent, ReactiveFormsModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BeneficioFormComponent);
@@ -61,8 +60,8 @@ describe('BeneficioFormComponent', () => {
   });
 
   it('should emit cancel event on cancel', () => {
-    jest.spyOn(component.cancel, 'emit');
+    jest.spyOn(component.cancelOperation, 'emit');
     component.onCancel();
-    expect(component.cancel.emit).toHaveBeenCalled();
+    expect(component.cancelOperation.emit).toHaveBeenCalled();
   });
 });

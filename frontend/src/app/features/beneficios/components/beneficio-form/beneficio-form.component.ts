@@ -85,7 +85,7 @@ export class BeneficioFormComponent {
   private _editingBeneficio: Beneficio | null = null;
 
   @Output() save = new EventEmitter<{ id: number | null, payload: BeneficioPayload }>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() cancelOperation = new EventEmitter<void>();
 
   form = this.fb.group({
     nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
@@ -108,6 +108,6 @@ export class BeneficioFormComponent {
   }
 
   onCancel() {
-    this.cancel.emit();
+    this.cancelOperation.emit();
   }
 }
