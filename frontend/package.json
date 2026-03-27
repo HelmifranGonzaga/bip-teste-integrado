@@ -9,7 +9,7 @@
     "lint": "eslint \"src/**/*.{ts,html}\"",
     "lint:fix": "eslint \"src/**/*.{ts,html}\" --fix",
     "format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
-    "prepare": "husky"
+    "prepare": "cd .. && npx --prefix frontend husky frontend/.husky"
   },
   "dependencies": {
     "@angular/animations": "^21.0.0",
