@@ -174,7 +174,7 @@ export class BeneficiosComponent implements OnInit {
   }
 
   openNew(): void {
-    if (this.loading()) {
+    if (this.loading() || this.connectionError()) {
       return;
     }
     this.editingBeneficio.set(null);
@@ -195,7 +195,7 @@ export class BeneficiosComponent implements OnInit {
   }
 
   openTransfer(): void {
-    if (this.loading()) {
+    if (this.loading() || this.connectionError()) {
       return;
     }
     this.showTransferModal.set(true);

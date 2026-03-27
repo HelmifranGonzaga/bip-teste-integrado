@@ -16,14 +16,14 @@
       <p-button
         label="Novo Benefício"
         icon="pi pi-plus"
-        [disabled]="loading()"
+        [disabled]="loading() || connectionError()"
         (onClick)="openNew()"
       ></p-button>
       <p-button
         label="Transferir Saldo"
         icon="pi pi-arrow-right-arrow-left"
         severity="info"
-        [disabled]="loading()"
+        [disabled]="loading() || connectionError()"
         (onClick)="openTransfer()"
       ></p-button>
     </div>
@@ -56,7 +56,6 @@
 
         @if (reconnecting()) {
           <div class="reconnect-status" aria-live="polite">
-            <i class="pi pi-spinner pi-spin reconnect-spinner"></i>
             <p class="reconnect-title">Tentando reconectar automaticamente...</p>
             <p class="reconnect-subtitle">Tentativas realizadas: {{ reconnectAttempts() }} de 3</p>
             <p class="reconnect-subtitle">
@@ -103,6 +102,7 @@
           <p-button
             label="Tentar novamente agora"
             icon="pi pi-refresh"
+            styleClass="connection-btn-primary"
             (onClick)="retryNow()"
           ></p-button>
           <p-button
@@ -110,13 +110,15 @@
             icon="pi pi-replay"
             severity="secondary"
             [outlined]="true"
+            styleClass="connection-btn-secondary"
             (onClick)="reloadPage()"
           ></p-button>
           <p-button
             label="Contatar suporte"
             icon="pi pi-envelope"
-            severity="contrast"
-            [text]="true"
+            severity="secondary"
+            [outlined]="true"
+            styleClass="connection-btn-secondary"
             (onClick)="openSupportContact()"
           ></p-button>
         </div>
