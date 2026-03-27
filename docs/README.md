@@ -106,7 +106,7 @@ Em seguida, inicie a aplicação Spring Boot:
 mvn -f backend-module spring-boot:run
 ```
 
-O backend estará disponível em: `http://localhost:8080`
+O backend estará disponível em: `http://localhost:8082`
 
 #### 3. Executar o Frontend
 
