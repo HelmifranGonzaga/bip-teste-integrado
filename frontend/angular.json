@@ -24,10 +24,21 @@
             "scripts": []
           },
           "configurations": {
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            },
             "production": {
               "optimization": true,
               "extractLicenses": true,
-              "sourceMap": false
+              "sourceMap": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
             }
           }
         },
@@ -35,6 +46,14 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "buildTarget": "frontend:build"
+          },
+          "configurations": {
+            "development": {
+              "buildTarget": "frontend:build:development"
+            },
+            "production": {
+              "buildTarget": "frontend:build:production"
+            }
           }
         },
         "test": {

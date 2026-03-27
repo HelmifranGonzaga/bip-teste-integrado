@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "ng serve --port 4200",
+    "start": "ng serve --configuration development --port 4200",
     "build": "ng build",
     "test": "jest",
     "lint": "eslint \"src/**/*.{ts,html}\"",

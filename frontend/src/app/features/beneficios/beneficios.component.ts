@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { Beneficio } from '../../core/models/beneficio.model';
-import { mapHttpError } from '../../core/errors/http-error.mapper';
+import { CONNECTION_ERROR_MESSAGE } from '../../core/errors/error-messages';
 
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
@@ -64,7 +64,7 @@ export class BeneficiosComponent implements OnInit {
           this.connectionError.set(false);
         },
         error: (error) => {
-          this.handleRequestError(error, 'Erro ao carregar benefícios');
+          this.handleRequestError(error);
         }
       });
   }
@@ -80,7 +80,7 @@ export class BeneficiosComponent implements OnInit {
           this.loadBeneficios();
         },
         error: (error) => {
-          this.handleRequestError(error, 'Erro ao salvar benefício');
+          this.handleRequestError(error);
         }
       });
   }
@@ -133,7 +133,7 @@ export class BeneficiosComponent implements OnInit {
           this.loadBeneficios();
         },
         error: (error) => {
-          this.handleRequestError(error, 'Erro ao remover benefício');
+          this.handleRequestError(error);
         }
       });
   }
@@ -148,14 +148,19 @@ export class BeneficiosComponent implements OnInit {
           this.loadBeneficios();
         },
         error: (error) => {
-          this.handleRequestError(error, 'Erro na transferência');
+          this.handleRequestError(error);
         }
       });
   }
 
-  private handleRequestError(error: HttpErrorResponse, fallbackMessage: string): void {
-    const mappedError = mapHttpError(error, fallbackMessage);
-    this.connectionError.set(mappedError.isConnectionError);
-    this.errorMessage.set(mappedError.detail);
+  private handleRequestError(error: HttpErrorResponse): void {
+    if (error.status === 0) {
+      this.connectionError.set(true);
+      this.errorMessage.set(CONNECTION_ERROR_MESSAGE);
+      return;
+    }
+
+    this.connectionError.set(false);
+    this.errorMessage.set('');
   }
 }
