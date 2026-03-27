@@ -13,12 +13,14 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       const mappedError = mapHttpError(error);
 
-      messageService.add({
-        severity: 'error',
-        summary: mappedError.summary,
-        detail: mappedError.detail,
-        life: 5000
-      });
+      if (!mappedError.isConnectionError) {
+        messageService.add({
+          severity: 'error',
+          summary: mappedError.summary,
+          detail: mappedError.detail,
+          life: 5000
+        });
+      }
 
       if (!environment.production) {
         console.error('HTTP Error:', error);

@@ -1,22 +1,22 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { Beneficio } from '../../core/models/beneficio.model';
-import { CONNECTION_ERROR_MESSAGE } from '../../core/errors/error-messages';
-
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
+import { Observable } from 'rxjs';
 
-import { BeneficioFormComponent } from './components/beneficio-form/beneficio-form.component';
-import { BeneficioTransferComponent } from './components/beneficio-transfer/beneficio-transfer.component';
-import { BeneficioListComponent } from './components/beneficio-list/beneficio-list.component';
+import { CONNECTION_ERROR_MESSAGE } from '../../core/errors/error-messages';
+import { Beneficio } from '../../core/models/beneficio.model';
 import { BeneficiosFacade } from './beneficios.facade';
 import { SaveBeneficioEvent, TransferBeneficioEvent } from './beneficios.types';
+import { BeneficioFormComponent } from './components/beneficio-form/beneficio-form.component';
+import { BeneficioListComponent } from './components/beneficio-list/beneficio-list.component';
+import { BeneficioTransferComponent } from './components/beneficio-transfer/beneficio-transfer.component';
 
 @Component({
   selector: 'app-beneficios',
@@ -54,35 +54,18 @@ export class BeneficiosComponent implements OnInit {
   }
 
   loadBeneficios(): void {
-    this.facade
-      .list()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (items) => {
-          this.beneficios.set(items);
-          this.errorMessage.set('');
-          this.connectionError.set(false);
-        },
-        error: (error) => {
-          this.handleRequestError(error);
-        }
-      });
+    this.execute(this.facade.list(), (items) => {
+      this.beneficios.set(items);
+      this.clearConnectionError();
+    });
   }
 
   onSave(event: SaveBeneficioEvent): void {
-    this.facade
-      .save(event)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.editingBeneficio.set(null);
-          this.showFormModal.set(false);
-          this.loadBeneficios();
-        },
-        error: (error) => {
-          this.handleRequestError(error);
-        }
-      });
+    this.execute(this.facade.save(event), () => {
+      this.editingBeneficio.set(null);
+      this.showFormModal.set(false);
+      this.loadBeneficios();
+    });
   }
 
   openNew(): void {
@@ -125,32 +108,23 @@ export class BeneficiosComponent implements OnInit {
   }
 
   private confirmDelete(id: number): void {
-    this.facade
-      .remove(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.loadBeneficios();
-        },
-        error: (error) => {
-          this.handleRequestError(error);
-        }
-      });
+    this.execute(this.facade.remove(id), () => this.loadBeneficios());
   }
 
   onTransfer(payload: TransferBeneficioEvent): void {
-    this.facade
-      .transfer(payload)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.showTransferModal.set(false);
-          this.loadBeneficios();
-        },
-        error: (error) => {
-          this.handleRequestError(error);
-        }
-      });
+    this.execute(this.facade.transfer(payload), () => {
+      this.showTransferModal.set(false);
+      this.loadBeneficios();
+    });
+  }
+
+  private execute<T>(request$: Observable<T>, onSuccess: (result: T) => void): void {
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: onSuccess,
+      error: (error) => {
+        this.handleRequestError(error);
+      }
+    });
   }
 
   private handleRequestError(error: HttpErrorResponse): void {
@@ -160,6 +134,10 @@ export class BeneficiosComponent implements OnInit {
       return;
     }
 
+    this.clearConnectionError();
+  }
+
+  private clearConnectionError(): void {
     this.connectionError.set(false);
     this.errorMessage.set('');
   }
