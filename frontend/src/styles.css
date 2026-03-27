@@ -4,7 +4,7 @@ body {
   margin: 0;
   font-family: 'Montserrat', var(--font-family, Arial, sans-serif);
   background: #f4f4f5;
-  color: #003641; /* Sicoob Dark Blue */
+  color: #003641; /* BIP Dark Blue */
 }
 
 /* PrimeFlex utility classes (minimal subset used in app.component.html) */
@@ -61,12 +61,12 @@ body {
 }
 .text-green-500 {
   color: #00ae9d;
-} /* Sicoob Green */
+} /* BIP Green */
 .text-red-500 {
   color: #ef4444;
 }
 
-/* Sicoob specific styles */
+/* BIP specific styles */
 h1,
 h2 {
   color: #003641;

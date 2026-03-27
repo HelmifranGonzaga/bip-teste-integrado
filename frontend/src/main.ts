@@ -6,7 +6,7 @@ import localePt from '@angular/common/locales/pt';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
-import { SicoobPreset } from './app/core/theme/sicoob-theme';
+import { BipPreset } from './app/core/theme/bip-theme';
 import { errorInterceptor } from './app/core/interceptors/error.interceptor';
 
 registerLocaleData(localePt);
@@ -18,7 +18,7 @@ void bootstrapApplication(AppComponent, {
     MessageService,
     providePrimeNG({
       theme: {
-        preset: SicoobPreset,
+        preset: BipPreset,
         options: {
           darkModeSelector: 'none'
         }

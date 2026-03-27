@@ -1,7 +1,7 @@
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 
-export const SicoobPreset = definePreset(Aura, {
+export const BipPreset = definePreset(Aura, {
   semantic: {
     primary: {
       50: '#e0f7f5',
@@ -9,7 +9,7 @@ export const SicoobPreset = definePreset(Aura, {
       200: '#80ded3',
       300: '#4dd1c1',
       400: '#26c7b3',
-      500: '#00ae9d', // Sicoob Green
+      500: '#00ae9d', // BIP Green
       600: '#00a091',
       700: '#008f82',
       800: '#007d72',
@@ -30,7 +30,7 @@ export const SicoobPreset = definePreset(Aura, {
           700: '#334155',
           800: '#1e293b',
           900: '#0f172a',
-          950: '#003641' // Sicoob Dark Blue
+          950: '#003641' // BIP Dark Blue
         }
       }
     }
