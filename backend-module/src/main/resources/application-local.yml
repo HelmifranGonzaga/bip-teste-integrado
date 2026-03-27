@@ -1,4 +1,4 @@
 logging:
   level:
-    com.example: DEBUG
-    org.springframework.retry: DEBUG
+    com.example: INFO
+    org.springframework.retry: INFO

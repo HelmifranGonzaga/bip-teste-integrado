@@ -14,6 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class RequestLoggingFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
+    private static final long SLOW_REQUEST_THRESHOLD_MS = 500;
+    private static final String REQUEST_LOG_PATTERN = "{} {} -> {} ({} ms)";
 
     @Override
     protected void doFilterInternal(
@@ -27,13 +29,17 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             long elapsedMs = System.currentTimeMillis() - startedAt;
-            log.info(
-                    "{} {} -> {} ({} ms)",
-                    request.getMethod(),
-                    request.getRequestURI(),
-                    response.getStatus(),
-                    elapsedMs
-            );
+            String method = request.getMethod();
+            String uri = request.getRequestURI();
+            int status = response.getStatus();
+
+            if ("OPTIONS".equalsIgnoreCase(method)) {
+                log.trace(REQUEST_LOG_PATTERN, method, uri, status, elapsedMs);
+            } else if (elapsedMs >= SLOW_REQUEST_THRESHOLD_MS) {
+                log.warn(REQUEST_LOG_PATTERN, method, uri, status, elapsedMs);
+            } else {
+                log.info(REQUEST_LOG_PATTERN, method, uri, status, elapsedMs);
+            }
         }
     }
 }

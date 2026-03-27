@@ -25,10 +25,13 @@ cors:
 
 logging:
   level:
+    root: INFO
     com.example: INFO
     org.springframework.retry: INFO
+    org.springframework.web.servlet.DispatcherServlet: WARN
+    org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: WARN
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n"
 
 springdoc:
   swagger-ui:
