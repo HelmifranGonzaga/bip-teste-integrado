@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication(scanBasePackages = "com.example")
 @EntityScan(basePackages = "com.example.ejb")
+@EnableRetry
 @OpenAPIDefinition(
     info = @Info(
         title = "API de Gestão de Benefícios",

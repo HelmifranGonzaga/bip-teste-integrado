@@ -1,6 +1,5 @@
 package com.example.backend.adapter.inbound.web.exception;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,43 +10,33 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    private static final String MESSAGE = "message";
-
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-            MESSAGE, ex.getMessage(),
-            "code", "NOT_FOUND"
-        ));
+    public ResponseEntity<ApiErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        return buildError(HttpStatus.NOT_FOUND, "NOT_FOUND", ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleBadRequest(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-            MESSAGE, ex.getMessage(),
-            "code", "BAD_REQUEST"
-        ));
+    public ResponseEntity<ApiErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+        return buildError(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage());
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, Object>> handleConflict(IllegalStateException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
-            MESSAGE, ex.getMessage(),
-            "code", "CONFLICT"
-        ));
+    public ResponseEntity<ApiErrorResponse> handleConflict(IllegalStateException ex) {
+        return buildError(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> formatFieldError(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.joining("; "));
-        return ResponseEntity.badRequest().body(Map.of(
-            MESSAGE, message,
-            "code", "VALIDATION_ERROR"
-        ));
+        return buildError(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", message);
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildError(HttpStatus status, String code, String message) {
+        return ResponseEntity.status(status).body(new ApiErrorResponse(code, message));
     }
 
     private String formatFieldError(String field, String message) {

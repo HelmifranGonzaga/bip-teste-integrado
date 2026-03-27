@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.PessimisticLockingFailureException;
+import org.springframework.dao.QueryTimeoutException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -39,11 +42,7 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     @Transactional(readOnly = true)
     public Beneficio getById(Long id) {
         log.debug("Finding beneficio by id: {}", id);
-        return repositoryPort.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Beneficio not found: {}", id);
-                    return new ResourceNotFoundException("Benefício não encontrado: " + id);
-                });
+        return findByIdOrThrow(id);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     @Transactional
     public Beneficio update(Long id, Beneficio beneficio) {
         log.debug("Updating beneficio with id: {}", id);
-        Beneficio existing = getById(id);
+        Beneficio existing = findByIdOrThrow(id);
         existing.setNome(beneficio.getNome());
         existing.setDescricao(beneficio.getDescricao());
         existing.setValor(beneficio.getValor());
@@ -73,7 +72,7 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     @Transactional
     public void delete(Long id) {
         log.debug("Deleting beneficio with id: {}", id);
-        Beneficio existing = getById(id);
+        Beneficio existing = findByIdOrThrow(id);
         repositoryPort.delete(existing);
         log.info("Deleted beneficio with id: {}", id);
     }
@@ -81,7 +80,11 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     @Override
     @Transactional
     @Retryable(
-            retryFor = {Exception.class},
+            retryFor = {
+                CannotAcquireLockException.class,
+                PessimisticLockingFailureException.class,
+                QueryTimeoutException.class
+            },
             maxAttempts = 3,
             backoff = @Backoff(delay = 100, multiplier = 2)
     )
@@ -89,5 +92,13 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
         log.debug("Transferring {} from {} to {}", amount, fromId, toId);
         transferPort.transfer(fromId, toId, amount);
         log.info("Transfer completed: {} from {} to {}", amount, fromId, toId);
+    }
+
+    private Beneficio findByIdOrThrow(Long id) {
+        return repositoryPort.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Beneficio not found: {}", id);
+                    return new ResourceNotFoundException("Benefício não encontrado: " + id);
+                });
     }
 }

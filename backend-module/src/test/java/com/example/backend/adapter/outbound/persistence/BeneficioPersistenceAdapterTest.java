@@ -19,6 +19,9 @@ class BeneficioPersistenceAdapterTest {
     @Mock
     private BeneficioJpaRepository repository;
 
+    @Mock
+    private BeneficioPersistenceMapper mapper;
+
     @InjectMocks
     private BeneficioPersistenceAdapter adapter;
 
@@ -36,7 +39,9 @@ class BeneficioPersistenceAdapterTest {
 
     @Test
     void shouldSave() {
+        when(mapper.toEntity(domain)).thenReturn(entity);
         when(repository.save(any(com.example.ejb.Beneficio.class))).thenReturn(entity);
+        when(mapper.toDomain(entity)).thenReturn(domain);
 
         Beneficio saved = adapter.save(domain);
 
@@ -47,6 +52,7 @@ class BeneficioPersistenceAdapterTest {
     @Test
     void shouldFindById() {
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        when(mapper.toDomain(entity)).thenReturn(domain);
 
         Optional<Beneficio> found = adapter.findById(1L);
 
@@ -57,6 +63,7 @@ class BeneficioPersistenceAdapterTest {
     @Test
     void shouldFindAll() {
         when(repository.findAll()).thenReturn(List.of(entity));
+        when(mapper.toDomain(entity)).thenReturn(domain);
 
         List<Beneficio> list = adapter.findAll();
 
@@ -66,6 +73,7 @@ class BeneficioPersistenceAdapterTest {
 
     @Test
     void shouldDelete() {
+        when(mapper.toEntity(domain)).thenReturn(entity);
         doNothing().when(repository).delete(any(com.example.ejb.Beneficio.class));
 
         adapter.delete(domain);
