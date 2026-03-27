@@ -16,7 +16,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 
 import { CONNECTION_ERROR_MESSAGE } from '../../core/errors/error-messages';
 import { Beneficio } from '../../core/models/beneficio.model';
@@ -53,6 +53,8 @@ export class BeneficiosComponent implements OnInit {
   private readonly messageService = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly reconnectDelayMs = 5000;
+  private readonly loadingShowDelayMs = 200;
+  private readonly loadingMinVisibleMs = 600;
   private readonly maxReconnectAttempts = 3;
   private readonly supportEmail = 'suporte@sicoob.com.br';
   private readonly onBrowserOnline = () => {
@@ -65,6 +67,10 @@ export class BeneficiosComponent implements OnInit {
   };
   private reconnectTimerId: ReturnType<typeof setInterval> | null = null;
   private reconnectCountdownTimerId: ReturnType<typeof setInterval> | null = null;
+  private loadingShowTimerId: ReturnType<typeof setTimeout> | null = null;
+  private loadingHideTimerId: ReturnType<typeof setTimeout> | null = null;
+  private loadingVisibleSince = 0;
+  private pendingRequests = 0;
   private hasFocusedConnectionError = false;
 
   beneficios = signal<Beneficio[]>([]);
@@ -77,6 +83,8 @@ export class BeneficiosComponent implements OnInit {
   reconnectCountdownSeconds = signal<number>(0);
   networkOnline = signal<boolean>(typeof navigator === 'undefined' ? true : navigator.onLine);
   diagnosticCode = signal<string>('');
+  loading = signal<boolean>(false);
+  uiLoading = signal<boolean>(false);
 
   showFormModal = signal<boolean>(false);
   showTransferModal = signal<boolean>(false);
@@ -84,17 +92,18 @@ export class BeneficiosComponent implements OnInit {
   readonly isProduction = environment.production;
 
   constructor() {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', this.onBrowserOnline);
-      window.addEventListener('offline', this.onBrowserOffline);
+    if (globalThis.window !== undefined) {
+      globalThis.window.addEventListener('online', this.onBrowserOnline);
+      globalThis.window.addEventListener('offline', this.onBrowserOffline);
     }
 
     this.destroyRef.onDestroy(() => {
       this.stopReconnectLoop();
+      this.clearLoadingTimers();
 
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('online', this.onBrowserOnline);
-        window.removeEventListener('offline', this.onBrowserOffline);
+      if (globalThis.window !== undefined) {
+        globalThis.window.removeEventListener('online', this.onBrowserOnline);
+        globalThis.window.removeEventListener('offline', this.onBrowserOffline);
       }
     });
   }
@@ -120,14 +129,14 @@ export class BeneficiosComponent implements OnInit {
   }
 
   reloadPage(): void {
-    if (typeof window !== 'undefined') {
-      window.location.reload();
+    if (globalThis.window !== undefined) {
+      globalThis.window.location.reload();
     }
   }
 
   openSupportContact(): void {
-    if (typeof window !== 'undefined') {
-      window.location.href = `mailto:${this.supportEmail}?subject=Falha%20de%20conexao%20-%20Desafio%20BIP`;
+    if (globalThis.window !== undefined) {
+      globalThis.window.location.href = `mailto:${this.supportEmail}?subject=Falha%20de%20conexao%20-%20Desafio%20BIP`;
     }
   }
 
@@ -165,11 +174,17 @@ export class BeneficiosComponent implements OnInit {
   }
 
   openNew(): void {
+    if (this.loading()) {
+      return;
+    }
     this.editingBeneficio.set(null);
     this.showFormModal.set(true);
   }
 
   onEdit(item: Beneficio): void {
+    if (this.loading()) {
+      return;
+    }
     this.editingBeneficio.set(item);
     this.showFormModal.set(true);
   }
@@ -180,6 +195,9 @@ export class BeneficiosComponent implements OnInit {
   }
 
   openTransfer(): void {
+    if (this.loading()) {
+      return;
+    }
     this.showTransferModal.set(true);
   }
 
@@ -188,6 +206,9 @@ export class BeneficiosComponent implements OnInit {
   }
 
   onRemove(id: number): void {
+    if (this.loading()) {
+      return;
+    }
     const beneficio = this.beneficios().find((b) => b.id === id);
 
     this.confirmationService.confirm({
@@ -215,12 +236,19 @@ export class BeneficiosComponent implements OnInit {
   }
 
   private execute<T>(request$: Observable<T>, onSuccess: (result: T) => void): void {
-    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: onSuccess,
-      error: (error) => {
-        this.handleRequestError(error);
-      }
-    });
+    this.beginRequestLoading();
+
+    request$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.endRequestLoading())
+      )
+      .subscribe({
+        next: onSuccess,
+        error: (error) => {
+          this.handleRequestError(error);
+        }
+      });
   }
 
   private handleRequestError(error: HttpErrorResponse): void {
@@ -310,7 +338,7 @@ export class BeneficiosComponent implements OnInit {
 
     this.reconnectCountdownTimerId = setInterval(() => {
       const next = this.reconnectCountdownSeconds() - 1;
-      this.reconnectCountdownSeconds.set(next > 0 ? next : 0);
+      this.reconnectCountdownSeconds.set(Math.max(next, 0));
     }, 1000);
   }
 
@@ -341,6 +369,85 @@ export class BeneficiosComponent implements OnInit {
         online: this.networkOnline(),
         exhausted: this.reconnectExhausted()
       });
+    }
+  }
+
+  private beginRequestLoading(): void {
+    this.pendingRequests += 1;
+    this.loading.set(true);
+
+    if (this.pendingRequests > 1) {
+      return;
+    }
+
+    if (this.loadingHideTimerId) {
+      clearTimeout(this.loadingHideTimerId);
+      this.loadingHideTimerId = null;
+    }
+
+    if (this.uiLoading()) {
+      return;
+    }
+
+    this.loadingShowTimerId = setTimeout(() => {
+      this.loadingShowTimerId = null;
+
+      if (this.pendingRequests > 0) {
+        this.loadingVisibleSince = Date.now();
+        this.uiLoading.set(true);
+      }
+    }, this.loadingShowDelayMs);
+  }
+
+  private endRequestLoading(): void {
+    if (this.pendingRequests === 0) {
+      return;
+    }
+
+    this.pendingRequests -= 1;
+
+    if (this.pendingRequests > 0) {
+      return;
+    }
+
+    this.loading.set(false);
+
+    if (this.loadingShowTimerId) {
+      clearTimeout(this.loadingShowTimerId);
+      this.loadingShowTimerId = null;
+      return;
+    }
+
+    if (!this.uiLoading()) {
+      return;
+    }
+
+    const elapsed = Date.now() - this.loadingVisibleSince;
+    const remaining = Math.max(this.loadingMinVisibleMs - elapsed, 0);
+
+    if (remaining === 0) {
+      this.uiLoading.set(false);
+      return;
+    }
+
+    this.loadingHideTimerId = setTimeout(() => {
+      this.loadingHideTimerId = null;
+
+      if (this.pendingRequests === 0) {
+        this.uiLoading.set(false);
+      }
+    }, remaining);
+  }
+
+  private clearLoadingTimers(): void {
+    if (this.loadingShowTimerId) {
+      clearTimeout(this.loadingShowTimerId);
+      this.loadingShowTimerId = null;
+    }
+
+    if (this.loadingHideTimerId) {
+      clearTimeout(this.loadingHideTimerId);
+      this.loadingHideTimerId = null;
     }
   }
 }

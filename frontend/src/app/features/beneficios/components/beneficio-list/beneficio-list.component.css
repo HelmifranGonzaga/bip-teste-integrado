@@ -1,0 +1,9 @@
+.table-wrapper {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+}

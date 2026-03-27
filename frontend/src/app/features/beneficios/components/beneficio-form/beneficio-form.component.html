@@ -4,7 +4,15 @@
       <label for="nome" class="block mb-2">Nome</label>
       <input pInputText id="nome" formControlName="nome" placeholder="Nome" />
       @if (form.get('nome')!.invalid && form.get('nome')!.touched) {
-        <small class="text-red-500">Nome é obrigatório.</small>
+        <small class="text-red-500">
+          @if (form.get('nome')!.hasError('required')) {
+            Nome é obrigatório.
+          } @else if (form.get('nome')!.hasError('minlength')) {
+            Nome deve ter ao menos 3 caracteres.
+          } @else if (form.get('nome')!.hasError('maxlength')) {
+            Nome deve ter no máximo 100 caracteres.
+          }
+        </small>
       }
     </div>
 
@@ -54,12 +62,14 @@
       label="Cancelar"
       icon="pi pi-times"
       severity="secondary"
+      [disabled]="submitting"
       (onClick)="onCancel()"
     ></p-button>
     <p-button
       type="submit"
       [label]="editingBeneficio ? 'Atualizar' : 'Criar'"
       icon="pi pi-check"
+      [disabled]="form.invalid || submitting"
     ></p-button>
   </div>
 </form>

@@ -1,5 +1,5 @@
 .topbar {
-  background-color: var(--p-primary-500);
+  background-color: var(--p-primary-800);
   padding: 1rem 2rem;
   color: white;
   display: flex;
@@ -25,9 +25,33 @@
   margin: 0 auto;
 }
 
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
 .page-title {
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   color: var(--p-surface-950);
+}
+
+.page-subtitle {
+  color: var(--p-surface-700);
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 .connection-error-screen {
@@ -183,6 +207,19 @@
 }
 
 @media (max-width: 700px) {
+  .page-header {
+    flex-direction: column;
+  }
+
+  .page-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .page-actions p-button {
+    width: 100%;
+  }
+
   .connection-error-content {
     align-items: stretch;
   }

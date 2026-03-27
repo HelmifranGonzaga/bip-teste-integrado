@@ -30,6 +30,7 @@ import { SaveBeneficioEvent } from '../../beneficios.types';
 })
 export class BeneficioFormComponent {
   private readonly fb = inject(NonNullableFormBuilder);
+  @Input() submitting = false;
 
   @Input() set editingBeneficio(val: Beneficio | null) {
     this._editingBeneficio = val;
@@ -61,7 +62,7 @@ export class BeneficioFormComponent {
 
   onSubmit() {
     this.form.markAllAsTouched();
-    if (this.form.valid) {
+    if (this.form.valid && !this.submitting) {
       this.save.emit({
         id: this.editingBeneficio?.id ?? null,
         payload: this.form.getRawValue() as BeneficioPayload

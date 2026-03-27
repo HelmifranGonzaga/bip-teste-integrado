@@ -1,30 +1,38 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
   <p-fluid>
     <div class="field mb-3">
-      <label for="fromId" class="block mb-2">ID Origem</label>
-      <p-inputNumber
-        inputId="fromId"
-        formControlName="fromId"
-        [useGrouping]="false"
-        placeholder="ID Origem"
-      ></p-inputNumber>
+      <label for="fromId" class="block mb-2">Benefício de origem</label>
+      <select id="fromId" class="p-inputtext w-full" formControlName="fromId">
+        <option [ngValue]="null">Selecione o benefício de origem</option>
+        @for (beneficio of beneficios; track beneficio.id) {
+          <option [ngValue]="beneficio.id">{{ getBeneficioLabel(beneficio) }}</option>
+        }
+      </select>
       @if (form.get('fromId')!.invalid && form.get('fromId')!.touched) {
-        <small class="text-red-500">ID de origem é obrigatório.</small>
+        <small class="text-red-500">Benefício de origem é obrigatório.</small>
       }
     </div>
 
     <div class="field mb-3">
-      <label for="toId" class="block mb-2">ID Destino</label>
-      <p-inputNumber
-        inputId="toId"
-        formControlName="toId"
-        [useGrouping]="false"
-        placeholder="ID Destino"
-      ></p-inputNumber>
+      <label for="toId" class="block mb-2">Benefício de destino</label>
+      <select id="toId" class="p-inputtext w-full" formControlName="toId">
+        <option [ngValue]="null">Selecione o benefício de destino</option>
+        @for (beneficio of beneficios; track beneficio.id) {
+          <option [ngValue]="beneficio.id">{{ getBeneficioLabel(beneficio) }}</option>
+        }
+      </select>
       @if (form.get('toId')!.invalid && form.get('toId')!.touched) {
-        <small class="text-red-500">ID de destino é obrigatório.</small>
+        <small class="text-red-500">Benefício de destino é obrigatório.</small>
       }
     </div>
+
+    @if (
+      form.hasError('sameBeneficio') && (form.get('fromId')!.touched || form.get('toId')!.touched)
+    ) {
+      <small class="text-red-500 mb-3 block"
+        >Origem e destino devem ser benefícios diferentes.</small
+      >
+    }
 
     <div class="field mb-4">
       <label for="amount" class="block mb-2">Valor</label>
@@ -56,6 +64,7 @@
       label="Cancelar"
       icon="pi pi-times"
       severity="secondary"
+      [disabled]="submitting"
       (onClick)="onCancel()"
     ></p-button>
     <p-button
@@ -63,7 +72,7 @@
       label="Transferir"
       icon="pi pi-arrow-right-arrow-left"
       severity="info"
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || submitting"
     ></p-button>
   </div>
 </form>

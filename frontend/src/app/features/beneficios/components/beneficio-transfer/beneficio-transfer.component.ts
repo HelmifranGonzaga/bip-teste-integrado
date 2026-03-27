@@ -1,10 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  AbstractControl,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FluidModule } from 'primeng/fluid';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { Beneficio } from '../../../../core/models/beneficio.model';
 import { TransferBeneficioEvent } from '../../beneficios.types';
 
 @Component({
@@ -22,17 +29,29 @@ import { TransferBeneficioEvent } from '../../beneficios.types';
 })
 export class BeneficioTransferComponent {
   private readonly fb = inject(NonNullableFormBuilder);
+  @Input() beneficios: Beneficio[] = [];
+  @Input() submitting = false;
   @Output() transfer = new EventEmitter<TransferBeneficioEvent>();
   @Output() cancelTransfer = new EventEmitter<void>();
 
-  form = this.fb.group({
-    fromId: [null as number | null, [Validators.required]],
-    toId: [null as number | null, [Validators.required]],
-    amount: [null as number | null, [Validators.required, Validators.min(0.01)]]
-  });
+  form = this.fb.group(
+    {
+      fromId: [null as number | null, [Validators.required, Validators.min(1)]],
+      toId: [null as number | null, [Validators.required, Validators.min(1)]],
+      amount: [null as number | null, [Validators.required, Validators.min(0.01)]]
+    },
+    { validators: [this.differentBeneficiosValidator] }
+  );
+
+  getBeneficioLabel(beneficio: Beneficio): string {
+    return `${beneficio.nome} (#${beneficio.id}) - ${new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(beneficio.valor)}`;
+  }
 
   onSubmit() {
-    if (this.form.valid) {
+    if (this.form.valid && !this.submitting) {
       this.transfer.emit(
         this.form.getRawValue() as { fromId: number; toId: number; amount: number }
       );
@@ -43,5 +62,16 @@ export class BeneficioTransferComponent {
   onCancel() {
     this.form.reset({ fromId: null, toId: null, amount: null });
     this.cancelTransfer.emit();
+  }
+
+  private differentBeneficiosValidator(control: AbstractControl): ValidationErrors | null {
+    const fromId = control.get('fromId')?.value;
+    const toId = control.get('toId')?.value;
+
+    if (fromId && toId && fromId === toId) {
+      return { sameBeneficio: true };
+    }
+
+    return null;
   }
 }

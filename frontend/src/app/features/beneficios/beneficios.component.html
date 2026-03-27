@@ -7,31 +7,43 @@
 </div>
 
 <div class="container">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="page-title m-0">Painel de Controle</h1>
-    <div class="flex gap-2">
-      <p-button label="Novo Benefício" icon="pi pi-plus" (onClick)="openNew()"></p-button>
+  <section class="page-header mb-4" aria-label="Ações principais">
+    <div class="page-title-group">
+      <h1 class="page-title m-0">Painel de Controle</h1>
+      <p class="page-subtitle m-0">Gerencie benefícios, cadastros e transferências de saldo.</p>
+    </div>
+    <div class="page-actions">
+      <p-button
+        label="Novo Benefício"
+        icon="pi pi-plus"
+        [disabled]="loading()"
+        (onClick)="openNew()"
+      ></p-button>
       <p-button
         label="Transferir Saldo"
         icon="pi pi-arrow-right-arrow-left"
         severity="info"
+        [disabled]="loading()"
         (onClick)="openTransfer()"
       ></p-button>
     </div>
-  </div>
+  </section>
 
   @if (!connectionError()) {
     <app-beneficio-list
       [beneficios]="beneficios()"
+      [loading]="uiLoading()"
       (edit)="onEdit($event)"
       (remove)="onRemove($event)"
     >
     </app-beneficio-list>
   } @else {
     <div class="connection-error-screen">
-      <div class="connection-error-content" aria-live="assertive">
+      <div class="connection-error-content" aria-live="polite">
         <i class="pi pi-wifi text-4xl"></i>
-        <h2 #connectionErrorTitle tabindex="-1">Sem conexão com o servidor</h2>
+        <h2 #connectionErrorTitle tabindex="-1" role="alert" aria-live="assertive">
+          Sem conexão com o servidor
+        </h2>
         <p>{{ errorMessage() }}</p>
 
         <p class="connection-status" aria-live="polite">
@@ -126,6 +138,7 @@
   @if (showFormModal()) {
     <app-beneficio-form
       [editingBeneficio]="editingBeneficio()"
+      [submitting]="loading()"
       (save)="onSave($event)"
       (cancelOperation)="onCancelEdit()"
     >
@@ -144,7 +157,12 @@
   [resizable]="false"
 >
   @if (showTransferModal()) {
-    <app-beneficio-transfer (transfer)="onTransfer($event)" (cancelTransfer)="onCancelTransfer()">
+    <app-beneficio-transfer
+      [beneficios]="beneficios()"
+      [submitting]="loading()"
+      (transfer)="onTransfer($event)"
+      (cancelTransfer)="onCancelTransfer()"
+    >
     </app-beneficio-transfer>
   }
 </p-dialog>
