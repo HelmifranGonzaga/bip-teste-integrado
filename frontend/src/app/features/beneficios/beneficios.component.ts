@@ -56,7 +56,7 @@ export class BeneficiosComponent implements OnInit {
   private readonly loadingShowDelayMs = 200;
   private readonly loadingMinVisibleMs = 600;
   private readonly maxReconnectAttempts = 3;
-  private readonly supportEmail = 'suporte@sicoob.com.br';
+  private readonly supportEmail = 'suporte@bip.com.br';
   private readonly onBrowserOnline = () => {
     this.networkOnline.set(true);
     this.updateDiagnosticCode();
