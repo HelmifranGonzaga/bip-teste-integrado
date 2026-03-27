@@ -1,6 +1,5 @@
 package com.example.ejb;
 
-import jakarta.ejb.Stateless;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Stateless
 @Component
 public class BeneficioEjbService {
 

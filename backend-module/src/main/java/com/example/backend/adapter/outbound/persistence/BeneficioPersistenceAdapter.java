@@ -34,7 +34,7 @@ public class BeneficioPersistenceAdapter implements BeneficioRepositoryPort {
     }
 
     @Override
-    public void delete(Beneficio beneficio) {
-        repository.delete(mapper.toEntity(beneficio));
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }

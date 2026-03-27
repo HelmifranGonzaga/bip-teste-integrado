@@ -12,8 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +29,6 @@ import java.util.List;
 @Tag(name = "Benefícios", description = "API para gerenciamento de benefícios corporativos e transferências de saldo")
 public class BeneficioController {
 
-    private static final Logger log = LoggerFactory.getLogger(BeneficioController.class);
     private final BeneficioUseCase useCase;
     private final BeneficioMapper mapper;
 
@@ -44,9 +41,7 @@ public class BeneficioController {
     @ApiResponse(responseCode = "200", description = "Lista de benefícios retornada com sucesso")
     @GetMapping
     public List<BeneficioResponse> list() {
-        log.debug("Listing all beneficios");
         List<Beneficio> beneficios = useCase.listAll();
-        log.info("Retrieved {} beneficios", beneficios.size());
         return beneficios.stream().map(mapper::toResponse).toList();
     }
 
@@ -58,9 +53,7 @@ public class BeneficioController {
     @GetMapping("/{id}")
     public BeneficioResponse getById(
             @Parameter(description = "ID do benefício a ser buscado", example = "1") @PathVariable Long id) {
-        log.debug("Finding beneficio with id: {}", id);
         Beneficio beneficio = useCase.getById(id);
-        log.info("Found beneficio: {} ({})", beneficio.getNome(), id);
         return mapper.toResponse(beneficio);
     }
 
@@ -72,10 +65,8 @@ public class BeneficioController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BeneficioResponse create(@Valid @RequestBody BeneficioRequest request) {
-        log.debug("Creating new beneficio: {}", request.nome());
         Beneficio beneficio = mapper.toDomain(request);
         Beneficio saved = useCase.create(beneficio);
-        log.info("Created beneficio with id: {}", saved.getId());
         return mapper.toResponse(saved);
     }
 
@@ -89,10 +80,8 @@ public class BeneficioController {
     public BeneficioResponse update(
             @Parameter(description = "ID do benefício a ser atualizado", example = "1") @PathVariable Long id,
             @Valid @RequestBody BeneficioRequest request) {
-        log.debug("Updating beneficio with id: {}", id);
         Beneficio beneficio = mapper.toDomain(request);
         Beneficio updated = useCase.update(id, beneficio);
-        log.info("Updated beneficio with id: {}", updated.getId());
         return mapper.toResponse(updated);
     }
 
@@ -105,9 +94,7 @@ public class BeneficioController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @Parameter(description = "ID do benefício a ser excluído", example = "1") @PathVariable Long id) {
-        log.debug("Deleting beneficio with id: {}", id);
         useCase.delete(id);
-        log.info("Deleted beneficio with id: {}", id);
     }
 
     @Operation(summary = "Transferir saldo", description = "Realiza a transferência de saldo entre dois benefícios diferentes.")
@@ -119,8 +106,6 @@ public class BeneficioController {
     @PostMapping("/transfer")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void transfer(@Valid @RequestBody TransferRequest request) {
-        log.debug("Transferring {} from beneficio {} to {}", request.amount(), request.fromId(), request.toId());
         useCase.transfer(request.fromId(), request.toId(), request.amount());
-        log.info("Transfer completed: {} from {} to {}", request.amount(), request.fromId(), request.toId());
     }
 }

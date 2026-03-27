@@ -7,7 +7,7 @@ public class Beneficio {
     private String nome;
     private String descricao;
     private BigDecimal valor;
-    private Boolean ativo;
+    private Boolean ativo = Boolean.TRUE;
     private Long version;
 
     public Long getId() {
@@ -23,6 +23,9 @@ public class Beneficio {
     }
 
     public void setNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome é obrigatório");
+        }
         this.nome = nome;
     }
 
@@ -31,6 +34,9 @@ public class Beneficio {
     }
 
     public void setDescricao(String descricao) {
+        if (descricao != null && descricao.length() > 255) {
+            throw new IllegalArgumentException("Descrição deve ter no máximo 255 caracteres");
+        }
         this.descricao = descricao;
     }
 
@@ -39,6 +45,12 @@ public class Beneficio {
     }
 
     public void setValor(BigDecimal valor) {
+        if (valor == null) {
+            throw new IllegalArgumentException("Valor é obrigatório");
+        }
+        if (valor.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Valor não pode ser negativo");
+        }
         this.valor = valor;
     }
 
@@ -47,6 +59,9 @@ public class Beneficio {
     }
 
     public void setAtivo(Boolean ativo) {
+        if (ativo == null) {
+            throw new IllegalArgumentException("Status ativo é obrigatório");
+        }
         this.ativo = ativo;
     }
 

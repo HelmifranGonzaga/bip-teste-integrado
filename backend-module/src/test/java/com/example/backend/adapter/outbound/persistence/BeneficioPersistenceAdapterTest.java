@@ -73,11 +73,10 @@ class BeneficioPersistenceAdapterTest {
 
     @Test
     void shouldDelete() {
-        when(mapper.toEntity(domain)).thenReturn(entity);
-        doNothing().when(repository).delete(any(com.example.ejb.Beneficio.class));
+        doNothing().when(repository).deleteById(1L);
 
-        adapter.delete(domain);
+        adapter.deleteById(1L);
 
-        verify(repository).delete(any(com.example.ejb.Beneficio.class));
+        verify(repository).deleteById(1L);
     }
 }

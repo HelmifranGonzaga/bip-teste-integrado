@@ -3,6 +3,7 @@ package com.example.backend.application.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.example.backend.adapter.inbound.web.exception.ResourceNotFoundException;
 import com.example.backend.domain.model.Beneficio;
 import com.example.backend.domain.port.outbound.BeneficioRepositoryPort;
 import com.example.backend.domain.port.outbound.BeneficioTransferPort;
@@ -25,6 +26,9 @@ class BeneficioServiceImplTest {
     @Mock
     private BeneficioTransferPort transferPort;
 
+    @Mock
+    private BeneficioUpdateMapper updateMapper;
+
     @InjectMocks
     private BeneficioServiceImpl service;
 
@@ -35,7 +39,9 @@ class BeneficioServiceImplTest {
         beneficio = new Beneficio();
         beneficio.setId(1L);
         beneficio.setNome("Teste");
+        beneficio.setDescricao("Descricao inicial");
         beneficio.setValor(new BigDecimal("100.00"));
+        beneficio.setAtivo(true);
     }
 
     @Test
@@ -53,23 +59,39 @@ class BeneficioServiceImplTest {
     void shouldUpdateBeneficio() {
         when(repositoryPort.findById(1L)).thenReturn(Optional.of(beneficio));
         when(repositoryPort.save(any(Beneficio.class))).thenReturn(beneficio);
+        doAnswer(invocation -> {
+            Beneficio source = invocation.getArgument(0);
+            Beneficio target = invocation.getArgument(1);
+            target.setNome(source.getNome());
+            target.setDescricao(source.getDescricao());
+            target.setValor(source.getValor());
+            target.setAtivo(source.getAtivo());
+            return null;
+        }).when(updateMapper).merge(any(Beneficio.class), any(Beneficio.class));
 
         Beneficio updatedInfo = new Beneficio();
         updatedInfo.setNome("Atualizado");
+        updatedInfo.setDescricao("Descricao atualizada");
         updatedInfo.setValor(new BigDecimal("200.00"));
+        updatedInfo.setAtivo(true);
 
         Beneficio updated = service.update(1L, updatedInfo);
 
         assertEquals("Atualizado", updated.getNome());
         assertEquals(new BigDecimal("200.00"), updated.getValor());
+        verify(updateMapper).merge(updatedInfo, beneficio);
         verify(repositoryPort).save(beneficio);
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingNonExistentBeneficio() {
         when(repositoryPort.findById(1L)).thenReturn(Optional.empty());
+        Beneficio payload = new Beneficio();
+        payload.setNome("Nao existe");
+        payload.setValor(BigDecimal.ONE);
+        payload.setAtivo(true);
 
-        assertThrows(RuntimeException.class, () -> service.update(1L, new Beneficio()));
+        assertThrows(ResourceNotFoundException.class, () -> service.update(1L, payload));
     }
 
     @Test
@@ -95,18 +117,18 @@ class BeneficioServiceImplTest {
     @Test
     void shouldDeleteBeneficio() {
         when(repositoryPort.findById(1L)).thenReturn(Optional.of(beneficio));
-        doNothing().when(repositoryPort).delete(beneficio);
+        doNothing().when(repositoryPort).deleteById(1L);
 
         service.delete(1L);
 
-        verify(repositoryPort).delete(beneficio);
+        verify(repositoryPort).deleteById(1L);
     }
 
     @Test
     void shouldThrowExceptionWhenDeletingNonExistentBeneficio() {
         when(repositoryPort.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> service.delete(1L));
+        assertThrows(ResourceNotFoundException.class, () -> service.delete(1L));
     }
 
     @Test

@@ -23,10 +23,16 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     private static final Logger log = LoggerFactory.getLogger(BeneficioServiceImpl.class);
     private final BeneficioRepositoryPort repositoryPort;
     private final BeneficioTransferPort transferPort;
+    private final BeneficioUpdateMapper updateMapper;
 
-    public BeneficioServiceImpl(BeneficioRepositoryPort repositoryPort, BeneficioTransferPort transferPort) {
+    public BeneficioServiceImpl(
+            BeneficioRepositoryPort repositoryPort,
+            BeneficioTransferPort transferPort,
+            BeneficioUpdateMapper updateMapper
+    ) {
         this.repositoryPort = repositoryPort;
         this.transferPort = transferPort;
+        this.updateMapper = updateMapper;
     }
 
     @Override
@@ -59,10 +65,7 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     public Beneficio update(Long id, Beneficio beneficio) {
         log.debug("Updating beneficio with id: {}", id);
         Beneficio existing = findByIdOrThrow(id);
-        existing.setNome(beneficio.getNome());
-        existing.setDescricao(beneficio.getDescricao());
-        existing.setValor(beneficio.getValor());
-        existing.setAtivo(beneficio.getAtivo());
+        updateMapper.merge(beneficio, existing);
         Beneficio updated = repositoryPort.save(existing);
         log.info("Updated beneficio with id: {}", updated.getId());
         return updated;
@@ -72,8 +75,8 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
     @Transactional
     public void delete(Long id) {
         log.debug("Deleting beneficio with id: {}", id);
-        Beneficio existing = findByIdOrThrow(id);
-        repositoryPort.delete(existing);
+        findByIdOrThrow(id);
+        repositoryPort.deleteById(id);
         log.info("Deleted beneficio with id: {}", id);
     }
 

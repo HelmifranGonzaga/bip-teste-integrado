@@ -1,6 +1,9 @@
 package com.example.backend.adapter.inbound.web.exception;
 
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +12,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+    private static final Map<String, String> FIELD_LABELS = Map.of(
+            "nome", "Nome",
+            "descricao", "Descrição",
+            "valor", "Valor",
+            "ativo", "Status",
+            "fromId", "Benefício de origem",
+            "toId", "Benefício de destino",
+            "amount", "Valor da transferência"
+    );
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(ResourceNotFoundException ex) {
@@ -35,21 +49,18 @@ public class ApiExceptionHandler {
         return buildError(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", message);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleUnexpected(Exception ex) {
+        log.error("Unexpected error", ex);
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Erro interno no servidor");
+    }
+
     private ResponseEntity<ApiErrorResponse> buildError(HttpStatus status, String code, String message) {
         return ResponseEntity.status(status).body(new ApiErrorResponse(code, message));
     }
 
     private String formatFieldError(String field, String message) {
-        String fieldLabel = switch (field) {
-            case "nome" -> "Nome";
-            case "descricao" -> "Descrição";
-            case "valor" -> "Valor";
-            case "ativo" -> "Status";
-            case "fromId" -> "Benefício de origem";
-            case "toId" -> "Benefício de destino";
-            case "amount" -> "Valor da transferência";
-            default -> field;
-        };
+        String fieldLabel = FIELD_LABELS.getOrDefault(field, field);
         return fieldLabel + ": " + message;
     }
 }

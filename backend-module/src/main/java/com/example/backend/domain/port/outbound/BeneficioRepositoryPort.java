@@ -8,5 +8,5 @@ public interface BeneficioRepositoryPort {
     List<Beneficio> findAll();
     Optional<Beneficio> findById(Long id);
     Beneficio save(Beneficio beneficio);
-    void delete(Beneficio beneficio);
+    void deleteById(Long id);
 }

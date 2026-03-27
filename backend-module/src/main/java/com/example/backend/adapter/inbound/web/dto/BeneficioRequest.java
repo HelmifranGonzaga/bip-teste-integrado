@@ -15,7 +15,7 @@ public record BeneficioRequest(
         String nome,
 
         @Schema(description = "Descrição detalhada do benefício", example = "Auxílio para compras em supermercados")
-        @Size(max = 500, message = "Descrição deve ter no máximo 500 caracteres")
+        @Size(max = 255, message = "Descrição deve ter no máximo 255 caracteres")
         String descricao,
 
         @Schema(description = "Valor monetário do benefício", example = "850.00")
