@@ -29,15 +29,85 @@
     </app-beneficio-list>
   } @else {
     <div class="connection-error-screen">
-      <div class="connection-error-content">
+      <div class="connection-error-content" aria-live="assertive">
         <i class="pi pi-wifi text-4xl"></i>
-        <h2>Sem conexão com o servidor</h2>
+        <h2 #connectionErrorTitle tabindex="-1">Sem conexão com o servidor</h2>
         <p>{{ errorMessage() }}</p>
-        <p-button
-          label="Tentar novamente"
-          icon="pi pi-refresh"
-          (onClick)="loadBeneficios()"
-        ></p-button>
+
+        <p class="connection-status" aria-live="polite">
+          @if (networkOnline()) {
+            Seu dispositivo está online, mas o servidor não respondeu.
+          } @else {
+            Seu dispositivo parece estar offline. Verifique internet ou VPN.
+          }
+        </p>
+
+        @if (reconnecting()) {
+          <div class="reconnect-status" aria-live="polite">
+            <i class="pi pi-spinner pi-spin reconnect-spinner"></i>
+            <p class="reconnect-title">Tentando reconectar automaticamente...</p>
+            <p class="reconnect-subtitle">Tentativas realizadas: {{ reconnectAttempts() }} de 3</p>
+            <p class="reconnect-subtitle">
+              Próxima tentativa em {{ reconnectCountdownSeconds() }}s
+            </p>
+            <div class="reconnect-dots" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        }
+
+        @if (reconnectExhausted()) {
+          <div class="troubleshooting-card" aria-live="polite">
+            <p class="troubleshooting-title">Não foi possível reconectar após 3 tentativas.</p>
+            <ul class="troubleshooting-list">
+              <li>Verifique se sua internet está funcionando.</li>
+              <li>Confirme se sua VPN corporativa está conectada.</li>
+              <li>Atualize a página e tente novamente.</li>
+              @if (!isProduction) {
+                <li>Em ambiente local, confirme se o backend está em execução.</li>
+              }
+            </ul>
+            <p class="troubleshooting-support">
+              Se o problema persistir por alguns minutos, entre em contato com o suporte.
+            </p>
+
+            <div class="diagnostic-box">
+              <p class="diagnostic-label">Código de diagnóstico</p>
+              <p class="diagnostic-code">{{ diagnosticCode() }}</p>
+              <p-button
+                label="Copiar diagnóstico"
+                icon="pi pi-copy"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="copyDiagnosticCode()"
+              ></p-button>
+            </div>
+          </div>
+        }
+
+        <div class="connection-actions">
+          <p-button
+            label="Tentar novamente agora"
+            icon="pi pi-refresh"
+            (onClick)="retryNow()"
+          ></p-button>
+          <p-button
+            label="Recarregar página"
+            icon="pi pi-replay"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="reloadPage()"
+          ></p-button>
+          <p-button
+            label="Contatar suporte"
+            icon="pi pi-envelope"
+            severity="contrast"
+            [text]="true"
+            (onClick)="openSupportContact()"
+          ></p-button>
+        </div>
       </div>
     </div>
   }
