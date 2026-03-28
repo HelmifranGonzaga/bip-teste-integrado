@@ -6,6 +6,7 @@
     "start": "ng serve --configuration development --port 4200",
     "build": "ng build",
     "test": "jest",
+    "lint-staged": "lint-staged",
     "lint": "eslint \"src/**/*.{ts,html}\"",
     "lint:fix": "eslint \"src/**/*.{ts,html}\" --fix",
     "format": "prettier --write \"src/**/*.{ts,html,css,json}\"",
