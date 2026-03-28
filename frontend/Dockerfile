@@ -1,11 +1,14 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
+# CI build: avoid lifecycle scripts (e.g., husky prepare) during dependency install
+ENV CI=true
+
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Copy source code
 COPY . .
