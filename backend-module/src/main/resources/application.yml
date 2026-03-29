@@ -20,19 +20,62 @@ spring:
 server:
   port: 8082
 
+# Security Configuration
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-me-in-production-super-secret-key-12345678901234567890}
+      expiration: ${JWT_EXPIRATION:3600000}
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
+
+# CORS (deprecated - now in SecurityConfig, but kept for reference)
 cors:
   allowed-origins: http://localhost:4200
+
+# Actuator & Observability (FASE 3)
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - metrics
+          - prometheus
+          - info
+  endpoint:
+    health:
+      show-details: when-authorized  # Mostrar detalhes de health via autorização
+      show-components: when-authorized
+      probes:
+        enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+        # Gravar quantis de latência
+      slo:
+        http.server.requests: 100,500,1000,2000,5000  # ms
 
 logging:
   level:
     root: INFO
-    com.example: INFO
+    com.example: DEBUG
     org.springframework.retry: INFO
     org.springframework.web.servlet.DispatcherServlet: WARN
     org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: WARN
+    org.springframework.security: DEBUG
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/desafio-bip.log
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+

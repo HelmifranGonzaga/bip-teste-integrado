@@ -3,17 +3,37 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { BeneficioService } from './beneficio.service';
 import { Beneficio, BeneficioPayload } from '../models/beneficio.model';
+import { ConfigService } from '../config/config.service';
+import { of } from 'rxjs';
 
 describe('BeneficioService', () => {
   let service: BeneficioService;
   let httpMock: HttpTestingController;
+  let configService: jest.Mocked<ConfigService>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BeneficioService, provideHttpClient(), provideHttpClientTesting()]
+      providers: [
+        BeneficioService,
+        {
+          provide: ConfigService,
+          useValue: {
+            getConfig: jest.fn(() =>
+              of({
+                apiUrl: 'http://localhost:8082/api/v1',
+                version: '0.0.1',
+                environment: 'development'
+              })
+            )
+          }
+        },
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     });
     service = TestBed.inject(BeneficioService);
     httpMock = TestBed.inject(HttpTestingController);
+    configService = TestBed.inject(ConfigService) as jest.Mocked<ConfigService>;
   });
 
   afterEach(() => {
@@ -93,5 +113,17 @@ describe('BeneficioService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     req.flush(null);
+  });
+
+  it('should use ConfigService apiUrl', () => {
+    const mockBeneficios: Beneficio[] = [];
+
+    service.list().subscribe();
+
+    // Verify ConfigService.getConfig was called
+    expect(configService.getConfig).toHaveBeenCalled();
+
+    const req = httpMock.expectOne('http://localhost:8082/api/v1/beneficios');
+    req.flush(mockBeneficios);
   });
 });
