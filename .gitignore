@@ -1,9 +1,34 @@
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
 # Frontend
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+frontend/coverage/
+
 # EJB
 ejb-module/target/
-# backend
+
+# Backend
 backend-module/target/
+backend-module/logs/
+
+# Test & Development
+test-jwt-flow.sh
+*.disabled
+
+# Documentation (progress tracking - temporary)
+FASE_*.md
+RESUMO_*.md
+PROGRESSO_*.md
+
+# OS Files
+Thumbs.db
+.directory
 

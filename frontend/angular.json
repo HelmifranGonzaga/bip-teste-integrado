@@ -16,7 +16,9 @@
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "assets": [],
+            "assets": [
+              "src/assets"
+            ],
             "styles": [
               "node_modules/primeicons/primeicons.css",
               "src/styles.css"

@@ -5,6 +5,9 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "8082:8082"
+    environment:
+      - JWT_SECRET=/eZQxAE8tR6y7dqaaRxCgdneVQzIx7a+VSjfjSRkSy/zpV1hkEk9n7qvQSb3ojIssds0K6fPgQMoCIZwtqz6HQ==
+      - CORS_ALLOWED_ORIGINS=http://localhost:4200,http://localhost,http://127.0.0.1:4200
     networks:
       - app-network
     restart: unless-stopped
