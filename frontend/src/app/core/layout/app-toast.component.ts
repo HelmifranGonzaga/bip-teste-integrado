@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
 
 /**
- * Componente global de toast com design inspirado no GitHub
- * - Posicionado no topo direito (top-right) - padrão GitHub
- * - Responsivo: center-top no mobile, top-right no desktop
- * - Design minimalista: sem gradientes, borders sutis
- * - Animação suave com fade + slide
- * - Acessibilidade WCAG compliant
+ * Componente global de toast centralizado
+ * - Posicionado no topo direito (top-right)
+ * - Responsivo: center no mobile, top-right no desktop
+ * - Acessibilidade: live region com ARIA
+ * - Z-index alto: aparece acima de modais
  */
 @Component({
   selector: 'app-toast',
@@ -19,61 +18,55 @@ import { ToastModule } from 'primeng/toast';
       [baseZIndex]="9999"
       [showTransitionOptions]="'translateX(0.3s)'"
       [hideTransitionOptions]="'translateX(0.3s)'"
-      [breakpoints]="{ '576px': { right: '0.5rem', left: '0.5rem', top: '0.5rem' } }"
+      [breakpoints]="{ '576px': { right: '0', left: '0' } }"
       styleClass="app-toast-container"
       contentStyleClass="app-toast-content"
     ></p-toast>
   `,
   styles: [`
     :host ::ng-deep {
-      /* Container base */
-      .p-toast {
-        width: 420px;
-        max-width: 95vw;
-      }
-
-      /* Mobile: top-center */
+      /* Responsivo: mobile adjustments */
       @media (max-width: 576px) {
         .p-toast {
-          width: calc(100vw - var(--spacing-4));
-          top: var(--spacing-2) !important;
-          left: var(--spacing-2) !important;
-          right: var(--spacing-2) !important;
+          width: calc(100vw - 1rem);
+          right: 0.5rem !important;
+          left: 0.5rem !important;
+          max-width: none;
+        }
+
+        /* Stack toasts verticamente no mobile */
+        .p-toast .p-toast-message {
+          margin-bottom: 0.5rem;
         }
       }
 
-      /* Desktop: top-right */
+      /* Desktop: top-right com margem segura */
       @media (min-width: 577px) {
         .p-toast {
-          top: var(--spacing-4);
-          right: var(--spacing-4);
-          left: auto;
+          top: var(--toast-top-offset, 1rem);
+          right: 1rem;
+          width: 400px;
+          max-width: 90vw;
         }
       }
 
-      /* Safe area support */
+      /* Safe area para dispositivos com notch */
       @supports (padding: max(0px)) {
         .p-toast {
-          top: max(var(--spacing-4), env(safe-area-inset-top));
-          right: max(var(--spacing-4), env(safe-area-inset-right));
+          top: max(1rem, env(safe-area-inset-top));
+          right: max(1rem, env(safe-area-inset-right));
+          left: max(auto, env(safe-area-inset-left));
         }
       }
 
-      /* Toast message base - GitHub style */
+      /* Animações suave */
       .p-toast-message {
-        animation: slideInRightGithub 0.3s var(--easing-ease-out);
-        border-radius: var(--radius-md);
-        border: 1px solid;
-        padding: var(--spacing-3) var(--spacing-4);
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-3);
-        box-shadow: var(--shadow-toast);
-        font-size: var(--font-size-sm);
-        margin-bottom: var(--spacing-3);
+        animation: slideInRight 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
       }
 
-      @keyframes slideInRightGithub {
+      @keyframes slideInRight {
         from {
           transform: translateX(400px);
           opacity: 0;
@@ -84,187 +77,124 @@ import { ToastModule } from 'primeng/toast';
         }
       }
 
-      /* Success - GitHub success style */
+      /* Success - verde suave */
       .p-toast-message.ng-enter-active.p-toast-message-success {
-        background-color: var(--color-success-bg-light);
-        border-color: var(--color-success-border-light);
-        color: var(--color-success-text-light);
+        border-left: 4px solid #10b981;
+        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        color: #065f46;
       }
 
       .p-toast-message.ng-enter-active.p-toast-message-success .p-toast-message-icon {
-        color: var(--color-success);
-        font-weight: var(--font-weight-semibold);
+        color: #10b981;
       }
 
-      /* Error - GitHub error style */
+      /* Error - vermelho suave */
       .p-toast-message.ng-enter-active.p-toast-message-error {
-        background-color: var(--color-danger-bg-light);
-        border-color: var(--color-danger-border-light);
-        color: var(--color-danger-text-light);
+        border-left: 4px solid #ef4444;
+        background: linear-gradient(135deg, #fef2f2 0%, #fef5f5 100%);
+        color: #7f1d1d;
       }
 
       .p-toast-message.ng-enter-active.p-toast-message-error .p-toast-message-icon {
-        color: var(--color-danger);
-        font-weight: var(--font-weight-semibold);
+        color: #ef4444;
       }
 
-      /* Warning - GitHub warning style */
+      /* Warning - amarelo suave */
       .p-toast-message.ng-enter-active.p-toast-message-warn {
-        background-color: var(--color-warning-bg-light);
-        border-color: var(--color-warning-border-light);
-        color: var(--color-warning-text-light);
+        border-left: 4px solid #f59e0b;
+        background: linear-gradient(135deg, #fffbeb 0%, #fef9e7 100%);
+        color: #7c2d12;
       }
 
       .p-toast-message.ng-enter-active.p-toast-message-warn .p-toast-message-icon {
-        color: var(--color-warning);
-        font-weight: var(--font-weight-semibold);
+        color: #f59e0b;
       }
 
-      /* Info - GitHub info style */
+      /* Info - azul suave */
       .p-toast-message.ng-enter-active.p-toast-message-info {
-        background-color: var(--color-info-bg-light);
-        border-color: var(--color-info-border-light);
-        color: var(--color-info-text-light);
+        border-left: 4px solid #3b82f6;
+        background: linear-gradient(135deg, #eff6ff 0%, #ecf0ff 100%);
+        color: #1e3a8a;
       }
 
       .p-toast-message.ng-enter-active.p-toast-message-info .p-toast-message-icon {
         color: #3b82f6;
-        font-weight: 600;
       }
 
-      /* Icon styling */
+      /* Conteúdo do toast */
+      .p-toast-message-content {
+        padding: 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
       .p-toast-message-icon {
+        font-size: 1.25rem;
+        min-width: 1.25rem;
+        margin-top: 0.125rem;
         flex-shrink: 0;
-        font-size: 1.1rem;
-        line-height: 1;
       }
 
-      /* Text content */
       .p-toast-message-text {
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-1);
       }
 
       .p-toast-summary {
-        font-weight: var(--font-weight-semibold);
-        font-size: var(--font-size-sm);
-        line-height: var(--line-height-normal);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
       }
 
       .p-toast-detail {
-        font-size: var(--font-size-xs);
-        opacity: 0.85;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+        font-size: 0.875rem;
+        opacity: 0.9;
+        word-break: break-word;
       }
 
-      /* Close button - GitHub style */
-      .p-toast-close {
-        flex-shrink: 0;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border: none;
-        background: transparent;
-        color: currentColor;
+      /* Botão fechar */
+      .p-toast-close-icon {
         opacity: 0.6;
-        transition: opacity var(--transition-base);
-        padding: 0;
-        margin-left: var(--spacing-2);
-        border-radius: var(--radius-sm);
+        transition: opacity 0.2s ease;
       }
 
-      .p-toast-close:hover {
-        opacity: 0.85;
-      }
-
-      .p-toast-close:active {
+      .p-toast-close-icon:hover {
         opacity: 1;
       }
 
-      /* Accessibility - removed motion */
+      /* Redução de movimento */
       @media (prefers-reduced-motion: reduce) {
         .p-toast-message {
           animation: none;
-          transform: none !important;
+          transition: none;
         }
       }
 
-      /* Dark mode - GitHub Dimmed style */
+      /* Light mode - texto mais legível */
+      .p-toast-message {
+        border-radius: 8px;
+      }
+
+      /* Dark mode support */
       @media (prefers-color-scheme: dark) {
-        .p-toast-message {
-          box-shadow: var(--shadow-xl);
-        }
-
         .p-toast-message.ng-enter-active.p-toast-message-success {
-          background-color: var(--color-success-bg-dark);
-          border-color: var(--color-success-border-dark);
-          color: var(--color-success-text-dark);
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-success .p-toast-message-icon {
-          color: var(--color-success);
+          background: linear-gradient(135deg, #1b3a1f 0%, #1f4d23 100%);
+          color: #86efac;
         }
 
         .p-toast-message.ng-enter-active.p-toast-message-error {
-          background-color: var(--color-danger-bg-dark);
-          border-color: var(--color-danger-border-dark);
-          color: var(--color-danger-text-dark);
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-error .p-toast-message-icon {
-          color: var(--color-danger);
+          background: linear-gradient(135deg, #3f1e1e 0%, #4a2222 100%);
+          color: #fca5a5;
         }
 
         .p-toast-message.ng-enter-active.p-toast-message-warn {
-          background-color: #3d2817;
-          border-color: #d29922;
-          color: #d4a574;
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-warn .p-toast-message-icon {
-          color: #d4a574;
+          background: linear-gradient(135deg, #3f2815 0%, #4a3018 100%);
+          color: #fcd34d;
         }
 
         .p-toast-message.ng-enter-active.p-toast-message-info {
-          background-color: #0d1b1f;
-          border-color: #1f6feb;
-          color: #79c0ff;
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-info .p-toast-message-icon {
-          color: #58a6ff;
-        }
-      }
-
-      /* High contrast mode support */
-      @media (prefers-contrast: more) {
-        .p-toast-message {
-          border-width: 2px;
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-success {
-          color: #004d24;
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-error {
-          color: #5a0606;
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-warn {
-          color: #5a3a0a;
-        }
-
-        .p-toast-message.ng-enter-active.p-toast-message-info {
-          color: #001a4d;
+          background: linear-gradient(135deg, #1e2d4a 0%, #1f3a5a 100%);
+          color: #93c5fd;
         }
       }
     }

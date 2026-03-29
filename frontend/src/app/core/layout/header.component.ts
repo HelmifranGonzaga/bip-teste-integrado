@@ -62,33 +62,33 @@ import { trigger, transition, style, animate } from '@angular/animations';
   `,
   styles: [`
     .app-header {
-      background: linear-gradient(135deg, var(--color-accent-1) 0%, var(--color-accent-2) 100%);
-      box-shadow: 0 2px 8px var(--shadow-sm);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding: 0;
       position: sticky;
       top: 0;
-      z-index: var(--z-sticky);
+      z-index: 100;
     }
 
     .header-container {
       display: flex;
       align-items: center;
-      padding: var(--spacing-4) var(--spacing-8);
+      padding: 1rem 2rem;
       max-width: 1400px;
       margin: 0 auto;
       width: 100%;
-      gap: var(--spacing-6);
+      gap: 1.5rem;
     }
 
     /* Logo */
     .header-logo {
       display: flex;
       align-items: center;
-      gap: var(--spacing-3);
+      gap: 0.75rem;
       text-decoration: none;
       cursor: pointer;
-      transition: transform var(--transition-base);
+      transition: transform 0.3s ease;
       flex-shrink: 0;
     }
 
@@ -100,7 +100,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
       width: 50px;
       height: 50px;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: var(--radius-xl);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -120,15 +120,15 @@ import { trigger, transition, style, animate } from '@angular/animations';
     .logo-text h1 {
       margin: 0;
       color: white;
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
+      font-size: 1.3rem;
+      font-weight: 700;
       letter-spacing: 1.5px;
     }
 
     .logo-text span {
       color: rgba(255, 255, 255, 0.9);
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-medium);
+      font-size: 0.75rem;
+      font-weight: 500;
       letter-spacing: 2px;
       text-transform: uppercase;
     }
@@ -148,14 +148,14 @@ import { trigger, transition, style, animate } from '@angular/animations';
     .user-menu-toggle {
       display: flex !important;
       align-items: center;
-      gap: var(--spacing-3);
+      gap: 0.75rem;
       background: rgba(255, 255, 255, 0.15) !important;
       border: 1px solid rgba(255, 255, 255, 0.25) !important;
       color: white !important;
       padding: 0.6rem 1.2rem !important;
-      border-radius: var(--radius-lg);
+      border-radius: 8px;
       cursor: pointer;
-      transition: all var(--transition-base);
+      transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
 
@@ -170,8 +170,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
     }
 
     .user-name {
-      font-weight: var(--font-weight-semibold);
-      font-size: var(--font-size-sm);
+      font-weight: 600;
+      font-size: 0.95rem;
       max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -179,7 +179,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     }
 
     .user-menu-toggle i {
-      font-size: var(--font-size-xs);
+      font-size: 0.75rem;
       opacity: 0.8;
     }
 
@@ -188,65 +188,65 @@ import { trigger, transition, style, animate } from '@angular/animations';
       height: 36px !important;
       background: rgba(255, 255, 255, 0.3) !important;
       color: white !important;
-      font-weight: var(--font-weight-semibold) !important;
+      font-weight: 600 !important;
     }
 
     /* Dropdown Menu */
     :host ::ng-deep .p-menu {
-      border-radius: var(--radius-lg);
+      border-radius: 8px;
       border: none;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       overflow: hidden;
     }
 
     :host ::ng-deep .p-menu .p-menu-list {
-      padding: var(--spacing-2) 0;
+      padding: 0.5rem 0;
     }
 
     :host ::ng-deep .p-menuitem-content {
-      padding: var(--spacing-3) var(--spacing-4) !important;
+      padding: 0.75rem 1rem !important;
       border-radius: 0 !important;
-      transition: all var(--transition-base);
+      transition: all 0.2s ease;
     }
 
     :host ::ng-deep .p-menuitem-content:hover {
-      background: var(--color-surface-100) !important;
+      background: #f3f4f6 !important;
     }
 
     :host ::ng-deep .p-menuitem-link {
       display: flex;
       align-items: center;
-      gap: var(--spacing-3);
-      color: var(--color-text) !important;
+      gap: 0.75rem;
+      color: #333 !important;
     }
 
     :host ::ng-deep .p-menuitem-icon {
-      color: var(--color-accent-1);
-      font-size: var(--font-size-lg);
+      color: #667eea;
+      font-size: 1.1rem;
     }
 
     :host ::ng-deep .p-menuitem-text {
-      font-weight: var(--font-weight-medium);
-      color: var(--color-text) !important;
+      font-weight: 500;
+      color: #333 !important;
     }
 
     :host ::ng-deep .p-menuitem:last-child .p-menuitem-content {
-      border-top: 1px solid var(--color-border);
+      border-top: 1px solid #e5e7eb;
     }
 
     :host ::ng-deep .p-menuitem:last-child .p-menuitem-link {
-      color: var(--color-danger) !important;
+      color: #ef4444 !important;
     }
 
     :host ::ng-deep .p-menuitem:last-child .p-menuitem-icon {
-      color: var(--color-danger) !important;
+      color: #ef4444 !important;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
       .header-container {
-        padding: var(--spacing-3) var(--spacing-4);
-        gap: var(--spacing-4);
+        padding: 0.75rem 1rem;
+        gap: 1rem;
       }
 
       .logo-icon {
@@ -256,7 +256,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
       }
 
       .logo-text h1 {
-        font-size: var(--font-size-lg);
+        font-size: 1.1rem;
       }
 
       .logo-text span {

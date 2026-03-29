@@ -21,9 +21,6 @@
             ],
             "styles": [
               "node_modules/primeicons/primeicons.css",
-              "src/styles/tokens.css",
-              "src/styles/tokens-dark.css",
-              "src/styles/github-palette.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -72,9 +69,6 @@
             ],
             "styles": [
               "node_modules/primeicons/primeicons.css",
-              "src/styles/tokens.css",
-              "src/styles/tokens-dark.css",
-              "src/styles/github-palette.css",
               "src/styles.css"
             ],
             "scripts": []
