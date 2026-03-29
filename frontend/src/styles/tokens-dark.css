@@ -1,0 +1,126 @@
+/*
+ * Design Tokens - Dark Mode Overrides
+ * Applied when user prefers dark color scheme
+ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ═════════════════════════════════════════════════════════════════
+       COLORS - Neutral Grayscale (Dark Mode)
+       ═════════════════════════════════════════════════════════════════ */
+
+    --color-neutral-50: #0f172a;
+    --color-neutral-100: #1a202c;
+    --color-neutral-200: #2d3748;
+    --color-neutral-300: #4a5568;
+    --color-neutral-400: #718096;
+    --color-neutral-500: #a0aec0;
+    --color-neutral-600: #cbd5e1;
+    --color-neutral-700: #e2e8f0;
+    --color-neutral-800: #f1f5f9;
+    --color-neutral-900: #f8fafc;
+    --color-neutral-950: #ffffff;
+
+    /* ═════════════════════════════════════════════════════════════════
+       COLORS - Primary (BIP Green - Dark Mode)
+       ═════════════════════════════════════════════════════════════════ */
+
+    --color-primary-50: #002622;
+    --color-primary-100: #004a44;
+    --color-primary-200: #006b62;
+    --color-primary-300: #008a7c;
+    --color-primary-400: #00a89a;
+    --color-primary-500: #2ec5b8;
+    --color-primary-600: #6dd9cd;
+    --color-primary-700: #a0e9e3;
+    --color-primary-800: #c0f0ec;
+    --color-primary-900: #e0f7f5;
+    --color-primary-950: #ffffff;
+
+    --color-primary: var(--color-primary-400);
+
+    /* ═════════════════════════════════════════════════════════════════
+       COLORS - Semantic Status Colors (Dark Mode)
+       ═════════════════════════════════════════════════════════════════ */
+
+    --color-success-50: #0d3817;
+    --color-success-500: #3fb950;
+    --color-success-600: #238636;
+    --color-success-900: #a6f3d0;
+
+    --color-danger-50: #3d1f1a;
+    --color-danger-500: #f85149;
+    --color-danger-600: #da3633;
+    --color-danger-900: #f85149;
+
+    --color-warning-50: #3d2817;
+    --color-warning-500: #d4a574;
+    --color-warning-600: #d29922;
+    --color-warning-900: #d4a574;
+
+    --color-info-50: #0d1b1f;
+    --color-info-500: #58a6ff;
+    --color-info-600: #1f6feb;
+    --color-info-900: #79c0ff;
+
+    --color-success: var(--color-success-500);
+    --color-danger: var(--color-danger-500);
+    --color-warning: var(--color-warning-500);
+    --color-info: var(--color-info-500);
+
+    /* ═════════════════════════════════════════════════════════════════
+       COLORS - Surface & Background (Dark Mode)
+       ═════════════════════════════════════════════════════════════════ */
+
+    --color-surface-50: #0f172a;
+    --color-surface-100: #1a202c;
+    --color-surface-200: #2d3748;
+    --color-surface-800: #e2e8f0;
+    --color-surface-900: #f8fafc;
+
+    --color-background: #0f172a;
+    --color-surface: #1a202c;
+    --color-border: #2d3748;
+    --color-text: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+
+    /* ═════════════════════════════════════════════════════════════════
+       COLORS - Component Specific Dark Mode
+       ═════════════════════════════════════════════════════════════════ */
+
+    --color-accent-1: #1e4bb3;
+    --color-accent-2: #1d3b62;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+   ═════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0s;
+    --transition-base: 0s;
+    --transition-slow: 0s;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   HIGH CONTRAST MODE SUPPORT
+   ═════════════════════════════════════════════════════════════════ */
+
+@media (prefers-contrast: more) {
+  :root {
+    /* Increase border contrast */
+    --color-border: var(--color-neutral-400);
+    --shadow-sm: 0 0 0 1px var(--color-neutral-400);
+    --shadow-md: 0 0 0 1px var(--color-neutral-400);
+    --shadow-lg: 0 0 0 2px var(--color-neutral-400);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-border: var(--color-neutral-500);
+    }
+  }
+}
