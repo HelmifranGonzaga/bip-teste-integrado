@@ -15,7 +15,6 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
-import { ToastModule } from 'primeng/toast';
 import { finalize, Observable } from 'rxjs';
 
 import { CONNECTION_ERROR_MESSAGE } from '../../core/errors/error-messages';
@@ -33,7 +32,6 @@ import { BeneficioTransferComponent } from './components/beneficio-transfer/bene
   imports: [
     CommonModule,
     MessageModule,
-    ToastModule,
     DialogModule,
     ButtonModule,
     ConfirmDialogModule,

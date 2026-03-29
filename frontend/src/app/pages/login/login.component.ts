@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -20,7 +19,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    ToastModule,
     ButtonModule,
     InputTextModule,
     PasswordModule,
@@ -28,8 +26,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
     DividerModule
   ],
   template: `
-    <p-toast position="top-right"></p-toast>
-
     <div class="login-wrapper" role="presentation">
       <!-- Background Decoration -->
       <div class="decoration decoration-1" aria-hidden="true"></div>

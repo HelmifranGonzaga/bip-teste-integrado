@@ -4,13 +4,17 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { filter } from 'rxjs';
 import { HeaderComponent } from './core/layout/header.component';
+import { AppToastComponent } from './core/layout/app-toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, AppToastComponent],
   template: `
     <div class="app-wrapper">
+      <!-- Global Toast Component -->
+      <app-toast></app-toast>
+
       <!-- Header (nunca mostrar em login) -->
       <app-header *ngIf="!isLoginPage()"></app-header>
 
