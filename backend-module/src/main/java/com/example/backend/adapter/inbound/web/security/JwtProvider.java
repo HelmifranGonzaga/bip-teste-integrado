@@ -3,7 +3,6 @@ package com.example.backend.adapter.inbound.web.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -36,7 +35,7 @@ public class JwtProvider {
                 .subject(username)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .signWith(secretKey)
                 .compact();
     }
 
