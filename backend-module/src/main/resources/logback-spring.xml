@@ -13,7 +13,8 @@
                 <loggerName>logger</loggerName>
                 <threadName>thread</threadName>
             </fieldNames>
-            <customFields>{"service":"desafio-bip","version":"0.0.1","correlationId":"${correlationId}"}</customFields>
+            <customFields>{"service":"desafio-bip","version":"0.0.1"}</customFields>
+            <mdcFieldNames>correlationId</mdcFieldNames>
         </encoder>
     </appender>
 
