@@ -30,9 +30,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         console.error('HTTP Error:', {
           status: displayError.httpStatus,
           code: displayError.code,
-          message: displayError.detail,
-          correlationId: displayError.correlationId,
-          originalError: error
+          message: displayError.detail
         });
       }
 

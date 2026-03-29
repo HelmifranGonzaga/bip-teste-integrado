@@ -802,14 +802,46 @@ export class LoginComponent {
       },
       error: (error) => {
         this.loading = false;
+        const errorMessage = this.getErrorMessage(error);
         this.messageService.add({
           severity: 'error',
-          summary: 'Erro na autenticação',
-          detail: 'Verifique suas credenciais e tente novamente.',
+          summary: errorMessage.summary,
+          detail: errorMessage.detail,
           life: 5000
         });
-        console.error('Login error:', error);
       }
     });
+  }
+
+  private getErrorMessage(error: any): { summary: string; detail: string } {
+    // Erro de conexão com o servidor
+    if (error?.status === 0) {
+      return {
+        summary: 'Servidor indisponível',
+        detail: 'Não foi possível conectar ao servidor. Verifique se ele está ativo.'
+      };
+    }
+
+    // Erro de autenticação (credenciais inválidas)
+    if (error?.status === 401 || error?.code === 'UNAUTHORIZED') {
+      return {
+        summary: 'Erro na autenticação',
+        detail: 'Verifique suas credenciais e tente novamente.'
+      };
+    }
+
+    // Erro do servidor
+    if (error?.status >= 500) {
+      return {
+        summary: 'Erro no servidor',
+        detail: 'O servidor encontrou um erro. Tente novamente mais tarde.'
+      };
+    }
+
+    // Erro genérico
+    return {
+      summary: 'Erro na autenticação',
+      detail: error?.message || 'Erro desconhecido. Tente novamente.'
+    };
   }
 }

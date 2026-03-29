@@ -219,7 +219,6 @@ describe('LoginComponent - Lógica', () => {
     });
 
     it('should set loading to false on login failure', (done) => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       (authService.login as jest.Mock).mockReturnValue(
         throwError(() => new Error('Unauthorized'))
       );
@@ -228,13 +227,11 @@ describe('LoginComponent - Lógica', () => {
 
       setTimeout(() => {
         expect(component.loading).toBeFalsy();
-        consoleSpy.mockRestore();
         done();
       }, 50);
     });
 
     it('should show error message on login failure', (done) => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       (authService.login as jest.Mock).mockReturnValue(
         throwError(() => new Error('Unauthorized'))
       );
@@ -248,13 +245,11 @@ describe('LoginComponent - Lógica', () => {
             summary: 'Erro na autenticação'
           })
         );
-        consoleSpy.mockRestore();
         done();
       }, 100);
     }, 10000);
 
     it('should not navigate on login failure', (done) => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       (authService.login as jest.Mock).mockReturnValue(
         throwError(() => new Error('Unauthorized'))
       );
@@ -263,9 +258,51 @@ describe('LoginComponent - Lógica', () => {
 
       setTimeout(() => {
         expect(router.navigate).not.toHaveBeenCalled();
-        consoleSpy.mockRestore();
         done();
       }, 100);
     }, 10000);
   });
-});
+
+  describe('getErrorMessage', () => {
+    it('should return connection error for status 0', () => {
+      const error = { status: 0 };
+      const result = component['getErrorMessage'](error);
+      expect(result.summary).toBe('Servidor indisponível');
+      expect(result.detail).toContain('Não foi possível conectar ao servidor');
+    });
+
+    it('should return auth error for status 401', () => {
+      const error = { status: 401 };
+      const result = component['getErrorMessage'](error);
+      expect(result.summary).toBe('Erro na autenticação');
+      expect(result.detail).toContain('Verifique suas credenciais');
+    });
+
+    it('should return auth error for UNAUTHORIZED code', () => {
+      const error = { code: 'UNAUTHORIZED' };
+      const result = component['getErrorMessage'](error);
+      expect(result.summary).toBe('Erro na autenticação');
+      expect(result.detail).toContain('Verifique suas credenciais');
+    });
+
+    it('should return server error for status 500+', () => {
+      const error = { status: 500 };
+      const result = component['getErrorMessage'](error);
+      expect(result.summary).toBe('Erro no servidor');
+      expect(result.detail).toContain('O servidor encontrou um erro');
+    });
+
+    it('should return generic error for unknown error', () => {
+      const error = { message: 'Unknown error' };
+      const result = component['getErrorMessage'](error);
+      expect(result.summary).toBe('Erro na autenticação');
+      expect(result.detail).toBe('Unknown error');
+    });
+
+    it('should return generic error for null error', () => {
+      const error = null;
+      const result = component['getErrorMessage'](error);
+      expect(result.summary).toBe('Erro na autenticação');
+      expect(result.detail).toContain('Erro desconhecido');
+    });
+  });
