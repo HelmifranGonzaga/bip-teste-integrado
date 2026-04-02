@@ -5,7 +5,25 @@ import {
   GENERIC_ERROR_MESSAGE,
   SERVER_ERROR_MESSAGE
 } from './error-messages';
-import { AppError, DisplayError, isAppError } from './app-error.model';
+import { DisplayError, isAppError } from './app-error.model';
+
+const ERROR_CODE_TO_SUMMARY: Record<string, string> = {
+  VALIDATION_ERROR: 'Dados inválidos',
+  NOT_FOUND: 'Não encontrado',
+  CONFLICT: 'Conflito',
+  UNAUTHORIZED: 'Não autenticado',
+  FORBIDDEN: 'Acesso negado',
+  INTERNAL_ERROR: 'Erro no servidor',
+  CONNECTION_ERROR: 'Sem conexão'
+};
+
+const STATUS_TO_METADATA: Record<number, { summary: string; code: string }> = {
+  400: { summary: 'Dados inválidos', code: 'BAD_REQUEST' },
+  401: { summary: 'Não autenticado', code: 'UNAUTHORIZED' },
+  403: { summary: 'Acesso negado', code: 'FORBIDDEN' },
+  404: { summary: 'Não encontrado', code: 'NOT_FOUND' },
+  409: { summary: 'Conflito', code: 'CONFLICT' }
+};
 
 /**
  * Mapeia erros HTTP para exibição na UI
@@ -32,7 +50,7 @@ export function mapHttpError(
       summary: 'Erro no servidor',
       detail: SERVER_ERROR_MESSAGE,
       code: 'INTERNAL_ERROR',
-      correlationId: isAppError(error.error) ? (error.error as AppError).correlationId : undefined,
+      correlationId: isAppError(error.error) ? error.error.correlationId : undefined,
       isConnectionError: false,
       httpStatus: error.status
     };
@@ -40,7 +58,7 @@ export function mapHttpError(
 
   // Extrai AppError do backend se disponível
   if (isAppError(error.error)) {
-    const appError = error.error as AppError;
+    const appError = error.error;
     return {
       summary: getSummaryForErrorCode(appError.code),
       detail: appError.message,
@@ -52,14 +70,16 @@ export function mapHttpError(
   }
 
   // Fallback para mapeamento por status HTTP
-  const detail = typeof error.error?.message === 'string'
-    ? error.error.message
-    : fallbackMessage;
+  const detail = getDetailFromHttpError(error, fallbackMessage);
+  const metadata = STATUS_TO_METADATA[error.status] ?? {
+    summary: 'Erro',
+    code: 'GENERIC_ERROR'
+  };
 
   return {
-    summary: getSummaryForStatus(error.status),
+    summary: metadata.summary,
     detail,
-    code: getCodeForStatus(error.status),
+    code: metadata.code,
     isConnectionError: false,
     httpStatus: error.status
   };
@@ -69,40 +89,11 @@ export function mapHttpError(
  * Retorna um resumo legível baseado no código de erro
  */
 function getSummaryForErrorCode(code: string): string {
-  const summaryMap: Record<string, string> = {
-    'VALIDATION_ERROR': 'Dados inválidos',
-    'NOT_FOUND': 'Não encontrado',
-    'CONFLICT': 'Conflito',
-    'UNAUTHORIZED': 'Não autenticado',
-    'FORBIDDEN': 'Acesso negado',
-    'INTERNAL_ERROR': 'Erro no servidor',
-    'CONNECTION_ERROR': 'Sem conexão'
-  };
-  return summaryMap[code] || 'Erro';
+  return ERROR_CODE_TO_SUMMARY[code] || 'Erro';
 }
 
-/**
- * Retorna um resumo legível baseado no status HTTP
- */
-function getSummaryForStatus(status: number): string {
-  if (status === 400) return 'Dados inválidos';
-  if (status === 401) return 'Não autenticado';
-  if (status === 403) return 'Acesso negado';
-  if (status === 404) return 'Não encontrado';
-  if (status === 409) return 'Conflito';
-  return 'Erro';
-}
-
-/**
- * Retorna código de erro baseado no status HTTP
- */
-function getCodeForStatus(status: number): string {
-  if (status === 400) return 'BAD_REQUEST';
-  if (status === 401) return 'UNAUTHORIZED';
-  if (status === 403) return 'FORBIDDEN';
-  if (status === 404) return 'NOT_FOUND';
-  if (status === 409) return 'CONFLICT';
-  return 'GENERIC_ERROR';
+function getDetailFromHttpError(error: HttpErrorResponse, fallbackMessage: string): string {
+  return typeof error.error?.message === 'string' ? error.error.message : fallbackMessage;
 }
 
 /**
