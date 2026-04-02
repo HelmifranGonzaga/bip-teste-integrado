@@ -29,6 +29,11 @@ import { TransferBeneficioEvent } from '../../beneficios.types';
 })
 export class BeneficioTransferComponent {
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly currencyFormatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+
   @Input() beneficios: Beneficio[] = [];
   @Input() submitting = false;
   @Output() transfer = new EventEmitter<TransferBeneficioEvent>();
@@ -40,31 +45,34 @@ export class BeneficioTransferComponent {
       toId: [null as number | null, [Validators.required, Validators.min(1)]],
       amount: [null as number | null, [Validators.required, Validators.min(0.01)]]
     },
-    { validators: [this.differentBeneficiosValidator] }
+    { validators: [this.sameBeneficioValidator] }
   );
 
   getBeneficioLabel(beneficio: Beneficio): string {
-    return `${beneficio.nome} (#${beneficio.id}) - ${new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(beneficio.valor)}`;
+    return `${beneficio.nome} (#${beneficio.id}) - ${this.currencyFormatter.format(beneficio.valor)}`;
   }
 
-  onSubmit() {
-    if (this.form.valid && !this.submitting) {
-      this.transfer.emit(
-        this.form.getRawValue() as { fromId: number; toId: number; amount: number }
-      );
-      this.form.reset({ fromId: null, toId: null, amount: null });
+  onSubmit(): void {
+    if (this.canSubmit()) {
+      this.transfer.emit(this.form.getRawValue() as TransferBeneficioEvent);
+      this.resetForm();
     }
   }
 
-  onCancel() {
-    this.form.reset({ fromId: null, toId: null, amount: null });
+  onCancel(): void {
+    this.resetForm();
     this.cancelTransfer.emit();
   }
 
-  private differentBeneficiosValidator(control: AbstractControl): ValidationErrors | null {
+  private canSubmit(): boolean {
+    return this.form.valid && !this.submitting;
+  }
+
+  private resetForm(): void {
+    this.form.reset({ fromId: null, toId: null, amount: null });
+  }
+
+  private sameBeneficioValidator(control: AbstractControl): ValidationErrors | null {
     const fromId = control.get('fromId')?.value;
     const toId = control.get('toId')?.value;
 
