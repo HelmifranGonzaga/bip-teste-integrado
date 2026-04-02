@@ -113,7 +113,8 @@ export class AuthService {
         } else {
           this.clearStoredUser();
         }
-      } catch (e) {
+      } catch (error) {
+        console.warn('[AuthService] Failed to parse stored auth user', error);
         this.clearStoredUser();
       }
     }
