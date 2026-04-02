@@ -9,31 +9,45 @@ import { of } from 'rxjs';
 describe('BeneficioService', () => {
   let service: BeneficioService;
   let httpMock: HttpTestingController;
-  let configService: jest.Mocked<ConfigService>;
+  let configServiceMock: { getConfig: jest.Mock };
+  let currentApiUrl = 'http://localhost:8082/api/v1';
 
-  beforeEach(() => {
+  const defaultConfig = {
+    apiUrl: 'http://localhost:8082/api/v1',
+    version: '0.0.1',
+    environment: 'development'
+  };
+
+  function configureTestingModule(apiUrl = defaultConfig.apiUrl): void {
+    TestBed.resetTestingModule();
+    currentApiUrl = apiUrl;
+    configServiceMock = {
+      getConfig: jest.fn(() =>
+        of({
+          ...defaultConfig,
+          apiUrl: currentApiUrl
+        })
+      )
+    };
+
     TestBed.configureTestingModule({
       providers: [
         BeneficioService,
         {
           provide: ConfigService,
-          useValue: {
-            getConfig: jest.fn(() =>
-              of({
-                apiUrl: 'http://localhost:8082/api/v1',
-                version: '0.0.1',
-                environment: 'development'
-              })
-            )
-          }
+          useValue: configServiceMock
         },
         provideHttpClient(),
         provideHttpClientTesting()
       ]
     });
+
     service = TestBed.inject(BeneficioService);
     httpMock = TestBed.inject(HttpTestingController);
-    configService = TestBed.inject(ConfigService) as jest.Mocked<ConfigService>;
+  }
+
+  beforeEach(() => {
+    configureTestingModule();
   });
 
   afterEach(() => {
@@ -121,9 +135,29 @@ describe('BeneficioService', () => {
     service.list().subscribe();
 
     // Verify ConfigService.getConfig was called
-    expect(configService.getConfig).toHaveBeenCalled();
+    expect(configServiceMock.getConfig).toHaveBeenCalled();
 
     const req = httpMock.expectOne('http://localhost:8082/api/v1/beneficios');
     req.flush(mockBeneficios);
+  });
+
+  it('should use custom apiUrl from config when provided', () => {
+    configureTestingModule('https://api.example.com/v2');
+
+    service.list().subscribe();
+
+    const req = httpMock.expectOne('https://api.example.com/v2/beneficios');
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
+
+  it('should fallback to environment apiUrl when config apiUrl is default', () => {
+    configureTestingModule('/api/v1');
+
+    service.list().subscribe();
+
+    const req = httpMock.expectOne('http://localhost:8082/api/v1/beneficios');
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
   });
 });

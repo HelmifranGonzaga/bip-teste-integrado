@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, Observable, switchMap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Beneficio, BeneficioPayload, TransferPayload } from '../models/beneficio.model';
@@ -17,7 +16,7 @@ export class BeneficioService {
    */
   list(): Observable<Beneficio[]> {
     return this.getApiUrl().pipe(
-      switchMap(apiUrl => this.http.get<Beneficio[]>(`${apiUrl}/beneficios`))
+      switchMap((apiUrl) => this.http.get<Beneficio[]>(`${apiUrl}/beneficios`))
     );
   }
 
@@ -26,7 +25,7 @@ export class BeneficioService {
    */
   create(payload: BeneficioPayload): Observable<Beneficio> {
     return this.getApiUrl().pipe(
-      switchMap(apiUrl => this.http.post<Beneficio>(`${apiUrl}/beneficios`, payload))
+      switchMap((apiUrl) => this.http.post<Beneficio>(`${apiUrl}/beneficios`, payload))
     );
   }
 
@@ -35,7 +34,7 @@ export class BeneficioService {
    */
   update(id: number, payload: BeneficioPayload): Observable<Beneficio> {
     return this.getApiUrl().pipe(
-      switchMap(apiUrl => this.http.put<Beneficio>(`${apiUrl}/beneficios/${id}`, payload))
+      switchMap((apiUrl) => this.http.put<Beneficio>(`${apiUrl}/beneficios/${id}`, payload))
     );
   }
 
@@ -44,7 +43,7 @@ export class BeneficioService {
    */
   delete(id: number): Observable<void> {
     return this.getApiUrl().pipe(
-      switchMap(apiUrl => this.http.delete<void>(`${apiUrl}/beneficios/${id}`))
+      switchMap((apiUrl) => this.http.delete<void>(`${apiUrl}/beneficios/${id}`))
     );
   }
 
@@ -53,7 +52,7 @@ export class BeneficioService {
    */
   transfer(payload: TransferPayload): Observable<void> {
     return this.getApiUrl().pipe(
-      switchMap(apiUrl => this.http.post<void>(`${apiUrl}/beneficios/transfer`, payload))
+      switchMap((apiUrl) => this.http.post<void>(`${apiUrl}/beneficios/transfer`, payload))
     );
   }
 
@@ -63,14 +62,15 @@ export class BeneficioService {
    */
   private getApiUrl(): Observable<string> {
     return this.configService.getConfig().pipe(
-      switchMap(config => {
-        // Se config tem apiUrl diferente da env padrão, usar dele
-        if (config.apiUrl && config.apiUrl !== '/api/v1') {
-          return from([config.apiUrl]);
-        }
-        // Fallback para environment
-        return from([environment.apiUrl]);
-      })
+      map((config) => this.resolveApiUrl(config.apiUrl))
     );
+  }
+
+  private resolveApiUrl(configApiUrl?: string): string {
+    if (configApiUrl && configApiUrl !== '/api/v1') {
+      return configApiUrl;
+    }
+
+    return environment.apiUrl;
   }
 }
