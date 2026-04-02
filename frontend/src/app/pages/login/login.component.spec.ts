@@ -1,11 +1,12 @@
-import { FormBuilder } from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoginComponent } from './login.component';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/services/auth.service';
 
 describe('LoginComponent - Lógica', () => {
+  let fixture: ComponentFixture<LoginComponent>;
   let component: LoginComponent;
   let authService: jest.Mocked<AuthService>;
   let router: jest.Mocked<Router>;
@@ -24,7 +25,18 @@ describe('LoginComponent - Lógica', () => {
       add: jest.fn()
     } as unknown as jest.Mocked<MessageService>;
 
-    component = new LoginComponent(new FormBuilder(), authService, router, messageService);
+    TestBed.configureTestingModule({
+      imports: [LoginComponent],
+      providers: [
+        { provide: AuthService, useValue: authService },
+        { provide: Router, useValue: router },
+        { provide: MessageService, useValue: messageService }
+      ]
+    });
+
+    fixture = TestBed.createComponent(LoginComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {

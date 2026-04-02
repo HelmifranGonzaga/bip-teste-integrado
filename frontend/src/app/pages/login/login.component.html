@@ -1,4 +1,4 @@
-<div class="login-wrapper" role="presentation">
+<div class="login-wrapper">
   <!-- Background Decoration -->
   <div class="decoration decoration-1" aria-hidden="true"></div>
   <div class="decoration decoration-2" aria-hidden="true"></div>
@@ -98,11 +98,14 @@
               Lembrar de mim
             </label>
           </div>
-          <a href="javascript:void(0)" class="forgot-password-link"
-             (click)="showForgotPasswordHelp($event)"
-             aria-label="Esqueci minha senha">
+          <button
+            type="button"
+            class="forgot-password-link"
+            (click)="showForgotPasswordHelp($event)"
+            aria-label="Esqueci minha senha"
+          >
             Esqueci minha senha
-          </a>
+          </button>
         </div>
 
         <!-- Submit Button -->
@@ -114,7 +117,7 @@
           icon="pi pi-sign-in"
           class="submit-button"
           [disabled]="!loginForm.valid || loading"
-          aria-busy="loading"
+          [attr.aria-busy]="loading"
         ></button>
       </form>
 

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -27,32 +27,19 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  loginForm: FormGroup;
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
+  private readonly rememberedUsername = sessionStorage.getItem('remembered_username');
+
+  readonly loginForm = this.fb.nonNullable.group({
+    username: [this.rememberedUsername ?? '', Validators.required],
+    password: ['', Validators.required]
+  });
+
   loading = false;
-  rememberMe = false;
-
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly authService: AuthService,
-    private readonly router: Router,
-    private readonly messageService: MessageService
-  ) {
-    this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
-
-    // Restore remembered username if available
-    this.restoreRememberedUsername();
-  }
-
-  private restoreRememberedUsername(): void {
-    const rememberedUsername = sessionStorage.getItem('remembered_username');
-    if (rememberedUsername) {
-      this.loginForm.patchValue({ username: rememberedUsername });
-      this.rememberMe = true;
-    }
-  }
+  rememberMe = this.rememberedUsername !== null;
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.loginForm.get(fieldName);
@@ -72,7 +59,6 @@ export class LoginComponent {
 
   onLogin(): void {
     if (!this.loginForm.valid) {
-      // Mark all fields as touched to show validation errors
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
       });
@@ -80,9 +66,8 @@ export class LoginComponent {
     }
 
     this.loading = true;
-    const { username, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.getRawValue();
 
-    // Save remembered username
     if (this.rememberMe) {
       sessionStorage.setItem('remembered_username', username);
     } else {
@@ -90,7 +75,7 @@ export class LoginComponent {
     }
 
     this.authService.login(username, password).subscribe({
-      next: (response) => {
+      next: () => {
         this.loading = false;
         this.messageService.add({
           severity: 'success',
@@ -114,7 +99,6 @@ export class LoginComponent {
   }
 
   private getErrorMessage(error: any): { summary: string; detail: string } {
-    // Erro de conexão com o servidor
     if (error?.status === 0) {
       return {
         summary: 'Servidor indisponível',
@@ -122,7 +106,6 @@ export class LoginComponent {
       };
     }
 
-    // Erro de autenticação (credenciais inválidas)
     if (error?.status === 401 || error?.code === 'UNAUTHORIZED') {
       return {
         summary: 'Erro na autenticação',
@@ -130,7 +113,6 @@ export class LoginComponent {
       };
     }
 
-    // Erro do servidor
     if (error?.status >= 500) {
       return {
         summary: 'Erro no servidor',
@@ -138,7 +120,6 @@ export class LoginComponent {
       };
     }
 
-    // Erro genérico
     return {
       summary: 'Erro na autenticação',
       detail: error?.message || 'Erro desconhecido. Tente novamente.'
