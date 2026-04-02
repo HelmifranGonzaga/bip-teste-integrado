@@ -7,19 +7,23 @@
       <p class="page-subtitle m-0">Gerencie seus benefícios e transfira saldos de forma segura.</p>
     </div>
     <div class="page-actions">
-      <p-button
+      <button
+        pButton
         label="Novo Benefício"
         icon="pi pi-plus"
+        type="button"
         [disabled]="loading() || connectionError()"
-        (onClick)="openNew()"
-      ></p-button>
-      <p-button
+        (click)="openNew()"
+      ></button>
+      <button
+        pButton
         label="Transferir Saldo"
         icon="pi pi-arrow-right-arrow-left"
         severity="info"
+        type="button"
         [disabled]="loading() || connectionError()"
-        (onClick)="openTransfer()"
-      ></p-button>
+        (click)="openTransfer()"
+      ></button>
     </div>
   </section>
 
@@ -81,40 +85,48 @@
             <div class="diagnostic-box">
               <p class="diagnostic-label">Código de diagnóstico</p>
               <p class="diagnostic-code">{{ diagnosticCode() }}</p>
-              <p-button
+              <button
+                pButton
+                type="button"
                 label="Copiar diagnóstico"
                 icon="pi pi-copy"
                 severity="secondary"
                 [outlined]="true"
-                (onClick)="copyDiagnosticCode()"
-              ></p-button>
+                (click)="copyDiagnosticCode()"
+              ></button>
             </div>
           </div>
         }
 
         <div class="connection-actions">
-          <p-button
+          <button
+            pButton
+            type="button"
             label="Tentar novamente agora"
             icon="pi pi-refresh"
             styleClass="connection-btn-primary"
-            (onClick)="retryNow()"
-          ></p-button>
-          <p-button
+            (click)="retryNow()"
+          ></button>
+          <button
+            pButton
+            type="button"
             label="Recarregar página"
             icon="pi pi-replay"
             severity="secondary"
             [outlined]="true"
             styleClass="connection-btn-secondary"
-            (onClick)="reloadPage()"
-          ></p-button>
-          <p-button
+            (click)="reloadPage()"
+          ></button>
+          <button
+            pButton
+            type="button"
             label="Contatar suporte"
             icon="pi pi-envelope"
             severity="secondary"
             [outlined]="true"
             styleClass="connection-btn-secondary"
-            (onClick)="openSupportContact()"
-          ></p-button>
+            (click)="openSupportContact()"
+          ></button>
         </div>
       </div>
     </div>

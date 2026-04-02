@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -7,7 +7,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from '../../core/services/auth.service';
 import { RippleModule } from 'primeng/ripple';
-import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-header',
@@ -19,8 +18,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
     AvatarModule,
     RippleModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <header class="app-header" @slideDown>
+    <header class="app-header">
       <div class="header-container">
         <!-- Logo Section -->
         <div class="header-logo">
@@ -275,50 +275,34 @@ import { trigger, transition, style, animate } from '@angular/animations';
         margin-left: 0;
       }
     }
-  `],
-  animations: [
-    trigger('slideDown', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(-20px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
-    ])
-  ]
+  `]
 })
 export class HeaderComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
 
-  authUser$ = this.authService.getAuthUser$();
-  userMenuItems: MenuItem[] = [];
-
-  constructor() {
-    this.initializeMenu();
-  }
-
-  private initializeMenu(): void {
-    this.userMenuItems = [
-      {
-        label: 'Meu Perfil',
-        icon: 'pi pi-user',
-        command: () => this.viewProfile()
-      },
-      {
-        label: 'Configurações',
-        icon: 'pi pi-cog',
-        command: () => this.openSettings()
-      },
-      {
-        separator: true
-      },
-      {
-        label: 'Sair',
-        icon: 'pi pi-sign-out',
-        command: () => this.onLogout()
-      }
-    ];
-  }
+  readonly authUser$ = this.authService.getAuthUser$();
+  readonly userMenuItems: MenuItem[] = [
+    {
+      label: 'Meu Perfil',
+      icon: 'pi pi-user',
+      command: () => this.viewProfile()
+    },
+    {
+      label: 'Configurações',
+      icon: 'pi pi-cog',
+      command: () => this.openSettings()
+    },
+    {
+      separator: true
+    },
+    {
+      label: 'Sair',
+      icon: 'pi pi-sign-out',
+      command: () => this.onLogout()
+    }
+  ];
 
   private viewProfile(): void {
     this.messageService.add({

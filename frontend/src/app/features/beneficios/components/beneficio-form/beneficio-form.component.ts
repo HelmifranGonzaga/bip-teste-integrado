@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -26,11 +26,12 @@ import { SaveBeneficioEvent } from '../../beneficios.types';
     CardModule,
     FluidModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './beneficio-form.component.html'
 })
 export class BeneficioFormComponent {
   private readonly fb = inject(NonNullableFormBuilder);
-  @Input() submitting = false;
+  @Input() readonly submitting = false;
 
   @Input() set editingBeneficio(val: Beneficio | null) {
     this._editingBeneficio = val;
@@ -50,17 +51,17 @@ export class BeneficioFormComponent {
   }
   private _editingBeneficio: Beneficio | null = null;
 
-  @Output() save = new EventEmitter<SaveBeneficioEvent>();
-  @Output() cancelOperation = new EventEmitter<void>();
+  @Output() readonly save = new EventEmitter<SaveBeneficioEvent>();
+  @Output() readonly cancelOperation = new EventEmitter<void>();
 
-  form = this.fb.group({
+  readonly form = this.fb.group({
     nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
     descricao: ['', [Validators.maxLength(500)]],
     valor: [null as number | null, [Validators.required, Validators.min(0.01)]],
     ativo: [true, [Validators.required]]
   });
 
-  onSubmit() {
+  onSubmit(): void {
     this.form.markAllAsTouched();
     if (this.form.valid && !this.submitting) {
       this.save.emit({
@@ -73,7 +74,7 @@ export class BeneficioFormComponent {
     }
   }
 
-  onCancel() {
+  onCancel(): void {
     this.cancelOperation.emit();
   }
 }

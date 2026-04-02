@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
   inject,
-  OnInit,
   signal,
   ViewChild
 } from '@angular/core';
@@ -40,10 +40,11 @@ import { BeneficioTransferComponent } from './components/beneficio-transfer/bene
     BeneficioListComponent
   ],
   providers: [ConfirmationService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './beneficios.component.html',
   styleUrl: './beneficios.component.css'
 })
-export class BeneficiosComponent implements OnInit {
+export class BeneficiosComponent {
   @ViewChild('connectionErrorTitle') connectionErrorTitle?: ElementRef<HTMLHeadingElement>;
 
   private readonly facade = inject(BeneficiosFacade);
@@ -104,9 +105,7 @@ export class BeneficiosComponent implements OnInit {
         globalThis.window.removeEventListener('offline', this.onBrowserOffline);
       }
     });
-  }
 
-  ngOnInit(): void {
     this.loadBeneficios();
   }
 

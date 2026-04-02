@@ -36,26 +36,30 @@
           </td>
           <td>
             <div class="flex gap-2">
-              <p-button
+              <button
+                pButton
+                type="button"
                 icon="pi pi-pencil"
                 severity="success"
                 [rounded]="true"
                 [text]="true"
                 [disabled]="loading"
                 [attr.aria-label]="getEditLabel(item)"
-                (onClick)="edit.emit(item)"
+                (click)="edit.emit(item)"
                 pTooltip="Editar"
-              ></p-button>
-              <p-button
+              ></button>
+              <button
+                pButton
+                type="button"
                 icon="pi pi-trash"
                 severity="danger"
                 [rounded]="true"
                 [text]="true"
                 [disabled]="loading"
                 [attr.aria-label]="getRemoveLabel(item)"
-                (onClick)="remove.emit(item.id)"
+                (click)="remove.emit(item.id)"
                 pTooltip="Excluir"
-              ></p-button>
+              ></button>
             </div>
           </td>
         </tr>

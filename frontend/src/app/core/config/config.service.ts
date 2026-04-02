@@ -32,7 +32,7 @@ const DEFAULT_CONFIG: AppConfig = {
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
   private readonly http = inject(HttpClient);
-  private config$: Observable<AppConfig> | null = null;
+  private config$?: Observable<AppConfig>;
 
   /**
    * Carrega configuração em runtime com fallback automático.
@@ -40,23 +40,22 @@ export class ConfigService {
    * Nunca lança erro - retorna valores padrão em caso de falha.
    */
   getConfig(): Observable<AppConfig> {
-    if (!this.config$) {
-      this.config$ = this.http.get<AppConfig>('/assets/config.json').pipe(
-        tap((config) => {
-          if (!environment.production) {
-            console.log('[ConfigService] Loaded config from /assets/config.json:', config);
-          }
-        }),
-        catchError((error) => {
-          if (!environment.production) {
-            console.warn('[ConfigService] Failed to load /assets/config.json, using defaults:', error);
-          }
-          // Retorna config padrão em caso de erro (arquivo não encontrado, sem conexão, etc)
-          return of(DEFAULT_CONFIG);
-        }),
-        shareReplay(1) // Cache + compartilhar entre subscribers
-      );
-    }
+    this.config$ ??= this.http.get<AppConfig>('/assets/config.json').pipe(
+      tap((config) => {
+        if (!environment.production) {
+          console.log('[ConfigService] Loaded config from /assets/config.json:', config);
+        }
+      }),
+      catchError((error) => {
+        if (!environment.production) {
+          console.warn('[ConfigService] Failed to load /assets/config.json, using defaults:', error);
+        }
+        // Retorna config padrão em caso de erro (arquivo não encontrado, sem conexão, etc)
+        return of(DEFAULT_CONFIG);
+      }),
+      shareReplay(1) // Cache + compartilhar entre subscribers
+    );
+
     return this.config$;
   }
 

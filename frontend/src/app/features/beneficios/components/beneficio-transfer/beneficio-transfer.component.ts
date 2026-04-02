@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import {
   AbstractControl,
   NonNullableFormBuilder,
@@ -25,6 +25,7 @@ import { TransferBeneficioEvent } from '../../beneficios.types';
     CardModule,
     FluidModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './beneficio-transfer.component.html'
 })
 export class BeneficioTransferComponent {
@@ -34,12 +35,12 @@ export class BeneficioTransferComponent {
     currency: 'BRL'
   });
 
-  @Input() beneficios: Beneficio[] = [];
-  @Input() submitting = false;
-  @Output() transfer = new EventEmitter<TransferBeneficioEvent>();
-  @Output() cancelTransfer = new EventEmitter<void>();
+  @Input() readonly beneficios: Beneficio[] = [];
+  @Input() readonly submitting = false;
+  @Output() readonly transfer = new EventEmitter<TransferBeneficioEvent>();
+  @Output() readonly cancelTransfer = new EventEmitter<void>();
 
-  form = this.fb.group(
+  readonly form = this.fb.group(
     {
       fromId: [null as number | null, [Validators.required, Validators.min(1)]],
       toId: [null as number | null, [Validators.required, Validators.min(1)]],
