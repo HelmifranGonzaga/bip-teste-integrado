@@ -1,52 +1,30 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/services/auth.service';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 describe('LoginComponent - Lógica', () => {
   let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
-  let authService: AuthService;
-  let router: Router;
-  let messageService: MessageService;
+  let authService: jest.Mocked<AuthService>;
+  let router: jest.Mocked<Router>;
+  let messageService: jest.Mocked<MessageService>;
 
-  beforeEach(async () => {
-    const authServiceMock = {
+  beforeEach(() => {
+    sessionStorage.clear();
+
+    authService = {
       login: jest.fn()
-    };
-    const routerMock = {
+    } as unknown as jest.Mocked<AuthService>;
+    router = {
       navigate: jest.fn()
-    };
-    const messageServiceMock = {
+    } as unknown as jest.Mocked<Router>;
+    messageService = {
       add: jest.fn()
-    };
+    } as unknown as jest.Mocked<MessageService>;
 
-    await TestBed.configureTestingModule({
-      imports: [LoginComponent, ReactiveFormsModule],
-      providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock },
-        { provide: MessageService, useValue: messageServiceMock }
-      ]
-    }).overrideComponent(LoginComponent, {
-      remove: {
-        imports: [] // Remove problematic imports in test
-      }
-    }).compileComponents();
-
-    authService = TestBed.inject(AuthService);
-    router = TestBed.inject(Router);
-    messageService = TestBed.inject(MessageService);
-
-    // Skip creating component view to avoid template initialization
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    // Don't call detectChanges to avoid template compilation
+    component = new LoginComponent(new FormBuilder(), authService, router, messageService);
   });
 
   it('should create', () => {
@@ -128,6 +106,18 @@ describe('LoginComponent - Lógica', () => {
       expect(authService.login).not.toHaveBeenCalled();
     });
 
+    it('should mark all fields as touched when form is invalid', () => {
+      component.loginForm.patchValue({
+        username: '',
+        password: ''
+      });
+
+      component.onLogin();
+
+      expect(component.loginForm.get('username')?.touched).toBe(true);
+      expect(component.loginForm.get('password')?.touched).toBe(true);
+    });
+
     it('should not call authService.login when username is empty', () => {
       component.loginForm.patchValue({
         username: '',
@@ -163,6 +153,30 @@ describe('LoginComponent - Lógica', () => {
       component.onLogin();
 
       expect(authService.login).toHaveBeenCalledWith('testuser', 'testpass');
+    });
+
+    it('should persist remembered username when rememberMe is enabled', () => {
+      (authService.login as jest.Mock).mockReturnValue(
+        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
+      );
+
+      component.rememberMe = true;
+      component.onLogin();
+
+      expect(sessionStorage.getItem('remembered_username')).toBe('testuser');
+    });
+
+    it('should clear remembered username when rememberMe is disabled', () => {
+      sessionStorage.setItem('remembered_username', 'old-user');
+
+      (authService.login as jest.Mock).mockReturnValue(
+        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
+      );
+
+      component.rememberMe = false;
+      component.onLogin();
+
+      expect(sessionStorage.getItem('remembered_username')).toBeNull();
     });
 
     it('should set loading to false after successful login', (done) => {

@@ -1,0 +1,130 @@
+<div class="login-wrapper" role="presentation">
+  <!-- Background Decoration -->
+  <div class="decoration decoration-1" aria-hidden="true"></div>
+  <div class="decoration decoration-2" aria-hidden="true"></div>
+
+  <div class="login-container">
+    <div class="login-content">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="logo-circle" aria-label="Logo BIP Benefícios">
+          <i class="pi pi-wallet" aria-hidden="true"></i>
+        </div>
+        <h1 class="brand-title">BIP Benefícios</h1>
+        <p class="subtitle">Sistema de Gerenciamento de Benefícios</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+        <!-- Username Field -->
+        <div class="field">
+          <label for="username" class="label-text">
+            <i class="pi pi-user" aria-hidden="true"></i>
+            <span>Usuário</span>
+          </label>
+          <input
+            id="username"
+            type="text"
+            pInputText
+            formControlName="username"
+            placeholder="texto@exemplo.com ou nome_de_usuário"
+            class="form-input"
+            [class.error]="isFieldInvalid('username')"
+            aria-describedby="username-error username-help"
+            autocomplete="username"
+            spellcheck="false"
+          />
+          <small class="help-text" id="username-help" *ngIf="!isFieldInvalid('username')">
+            <i class="pi pi-info-circle" aria-hidden="true"></i>
+            Use email ou nome de usuário
+          </small>
+          <small
+            class="error-message"
+            id="username-error"
+            *ngIf="isFieldInvalid('username')"
+            role="alert"
+          >
+            <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+            Usuário é obrigatório
+          </small>
+        </div>
+
+        <!-- Password Field -->
+        <div class="field">
+          <label for="password" class="label-text">
+            <i class="pi pi-lock" aria-hidden="true"></i>
+            <span>Senha</span>
+          </label>
+          <p-password
+            id="password"
+            formControlName="password"
+            placeholder="••••••••"
+            [toggleMask]="true"
+            [feedback]="false"
+            class="form-password"
+            aria-describedby="password-error password-help"
+            autocomplete="current-password"
+            [styleClass]="{ 'error': isFieldInvalid('password') }"
+          ></p-password>
+          <small class="help-text" id="password-help" *ngIf="!isFieldInvalid('password')">
+            <i class="pi pi-check-circle" aria-hidden="true"></i>
+            Mínimo 6 caracteres
+          </small>
+          <small
+            class="error-message"
+            id="password-error"
+            *ngIf="isFieldInvalid('password')"
+            role="alert"
+          >
+            <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+            Senha é obrigatória
+          </small>
+        </div>
+
+        <!-- Remember Me Checkbox -->
+        <div class="remember-section">
+          <div class="checkbox-wrapper">
+            <p-checkbox
+              [(ngModel)]="rememberMe"
+              [ngModelOptions]="{standalone: true}"
+              [binary]="true"
+              inputId="rememberMe"
+              name="rememberMe"
+              aria-label="Lembrar de mim neste dispositivo"
+            ></p-checkbox>
+            <label for="rememberMe" class="remember-label">
+              Lembrar de mim
+            </label>
+          </div>
+          <a href="javascript:void(0)" class="forgot-password-link"
+             (click)="showForgotPasswordHelp($event)"
+             aria-label="Esqueci minha senha">
+            Esqueci minha senha
+          </a>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          pButton
+          type="submit"
+          label="Entrar"
+          [loading]="loading"
+          icon="pi pi-sign-in"
+          class="submit-button"
+          [disabled]="!loginForm.valid || loading"
+          aria-busy="loading"
+        ></button>
+      </form>
+
+      <!-- Footer / Demo Info -->
+      <div class="login-footer">
+        <p class="demo-hint">
+          <i class="pi pi-lightbulb" aria-hidden="true"></i>
+          <span><strong>Demo:</strong> Use qualquer credencial para testar</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
