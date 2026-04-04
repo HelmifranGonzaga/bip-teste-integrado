@@ -8,7 +8,7 @@ describe('JWT Interceptor', () => {
     let store: Record<string, string> = {};
 
     const mockLocalStorage = {
-      getItem: (key: string) =>store[key] || null,
+      getItem: (key: string) => store[key] || null,
       setItem: (key: string, value: string) => {
         store[key] = value.toString();
       },
@@ -27,7 +27,9 @@ describe('JWT Interceptor', () => {
   });
 
   describe('jwtInterceptor', () => {
-    const mockHandler: HttpHandlerFn = (req: HttpRequest<unknown>): Observable<HttpEvent<unknown>> => {
+    const mockHandler: HttpHandlerFn = (
+      req: HttpRequest<unknown>
+    ): Observable<HttpEvent<unknown>> => {
       return of({} as HttpEvent<unknown>);
     };
 

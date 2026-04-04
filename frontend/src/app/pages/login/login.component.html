@@ -66,7 +66,7 @@
             class="form-password"
             aria-describedby="password-error password-help"
             autocomplete="current-password"
-            [styleClass]="{ 'error': isFieldInvalid('password') }"
+            [styleClass]="{ error: isFieldInvalid('password') }"
           ></p-password>
           <small class="help-text" id="password-help" *ngIf="!isFieldInvalid('password')">
             <i class="pi pi-check-circle" aria-hidden="true"></i>
@@ -88,15 +88,13 @@
           <div class="checkbox-wrapper">
             <p-checkbox
               [(ngModel)]="rememberMe"
-              [ngModelOptions]="{standalone: true}"
+              [ngModelOptions]="{ standalone: true }"
               [binary]="true"
               inputId="rememberMe"
               name="rememberMe"
               aria-label="Lembrar de mim neste dispositivo"
             ></p-checkbox>
-            <label for="rememberMe" class="remember-label">
-              Lembrar de mim
-            </label>
+            <label for="rememberMe" class="remember-label"> Lembrar de mim </label>
           </div>
           <button
             type="button"

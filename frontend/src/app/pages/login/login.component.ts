@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -30,6 +30,7 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute, { optional: true });
   private readonly messageService = inject(MessageService);
   private readonly rememberedUsername = sessionStorage.getItem('remembered_username');
 
@@ -59,7 +60,7 @@ export class LoginComponent {
 
   onLogin(): void {
     if (!this.loginForm.valid) {
-      Object.keys(this.loginForm.controls).forEach(key => {
+      Object.keys(this.loginForm.controls).forEach((key) => {
         this.loginForm.get(key)?.markAsTouched();
       });
       return;
@@ -83,7 +84,7 @@ export class LoginComponent {
           detail: 'Bem-vindo! Você está sendo redirecionado...',
           life: 2000
         });
-        this.router.navigate(['/beneficios']);
+        this.navigateToRedirectUrl(this.getRedirectUrl());
       },
       error: (error) => {
         this.loading = false;
@@ -124,5 +125,24 @@ export class LoginComponent {
       summary: 'Erro na autenticação',
       detail: error?.message || 'Erro desconhecido. Tente novamente.'
     };
+  }
+
+  private getRedirectUrl(): string {
+    const returnUrl = this.route?.snapshot.queryParamMap.get('returnUrl');
+
+    if (returnUrl?.startsWith('/')) {
+      return returnUrl;
+    }
+
+    return '/beneficios';
+  }
+
+  private navigateToRedirectUrl(redirectUrl: string): void {
+    if (redirectUrl.includes('?')) {
+      void this.router.navigateByUrl(redirectUrl);
+      return;
+    }
+
+    void this.router.navigate([redirectUrl]);
   }
 }

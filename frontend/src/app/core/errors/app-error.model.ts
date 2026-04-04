@@ -50,12 +50,12 @@ export enum ErrorType {
  */
 export function getErrorType(code: string): ErrorType {
   const errorMap: Record<string, ErrorType> = {
-    'VALIDATION_ERROR': ErrorType.VALIDATION,
-    'NOT_FOUND': ErrorType.NOT_FOUND,
-    'CONFLICT': ErrorType.CONFLICT,
-    'UNAUTHORIZED': ErrorType.UNAUTHORIZED,
-    'FORBIDDEN': ErrorType.FORBIDDEN,
-    'INTERNAL_ERROR': ErrorType.SERVER
+    VALIDATION_ERROR: ErrorType.VALIDATION,
+    NOT_FOUND: ErrorType.NOT_FOUND,
+    CONFLICT: ErrorType.CONFLICT,
+    UNAUTHORIZED: ErrorType.UNAUTHORIZED,
+    FORBIDDEN: ErrorType.FORBIDDEN,
+    INTERNAL_ERROR: ErrorType.SERVER
   };
   return errorMap[code] || ErrorType.GENERIC;
 }

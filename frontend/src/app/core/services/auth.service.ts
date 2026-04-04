@@ -6,6 +6,7 @@ import { ConfigService } from '../config/config.service';
 
 export interface LoginRequest {
   username: string;
+  password: string;
 }
 
 export interface LoginResponse {
@@ -60,12 +61,12 @@ export class AuthService {
    */
   login(username: string, password: string): Observable<LoginResponse> {
     return this.configService.getConfig().pipe(
-      switchMap(config => {
-        const loginRequest: LoginRequest = { username };
+      switchMap((config) => {
+        const loginRequest: LoginRequest = { username, password };
         const loginUrl = `${config.apiUrl}/auth/login`;
         return this.http.post<LoginResponse>(loginUrl, loginRequest);
       }),
-      tap(response => {
+      tap((response) => {
         // Armazenar token
         setAuthToken(response.accessToken);
 

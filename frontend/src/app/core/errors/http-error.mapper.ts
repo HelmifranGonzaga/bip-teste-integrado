@@ -105,5 +105,3 @@ export interface MappedHttpError {
   detail: string;
   isConnectionError: boolean;
 }
-
-

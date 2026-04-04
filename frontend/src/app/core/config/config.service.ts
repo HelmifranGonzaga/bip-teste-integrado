@@ -48,7 +48,10 @@ export class ConfigService {
       }),
       catchError((error) => {
         if (!environment.production) {
-          console.warn('[ConfigService] Failed to load /assets/config.json, using defaults:', error);
+          console.warn(
+            '[ConfigService] Failed to load /assets/config.json, using defaults:',
+            error
+          );
         }
         // Retorna config padrão em caso de erro (arquivo não encontrado, sem conexão, etc)
         return of(DEFAULT_CONFIG);

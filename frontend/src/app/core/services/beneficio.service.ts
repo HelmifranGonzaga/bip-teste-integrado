@@ -61,9 +61,7 @@ export class BeneficioService {
    * Fallback para environment.apiUrl em desenvolvimento
    */
   private getApiUrl(): Observable<string> {
-    return this.configService.getConfig().pipe(
-      map((config) => this.resolveApiUrl(config.apiUrl))
-    );
+    return this.configService.getConfig().pipe(map((config) => this.resolveApiUrl(config.apiUrl)));
   }
 
   private resolveApiUrl(configApiUrl?: string): string {

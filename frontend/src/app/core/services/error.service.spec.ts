@@ -13,10 +13,7 @@ describe('ErrorService', () => {
     } as unknown as jest.Mocked<MessageService>;
 
     TestBed.configureTestingModule({
-      providers: [
-        ErrorService,
-        { provide: MessageService, useValue: messageServiceMock }
-      ]
+      providers: [ErrorService, { provide: MessageService, useValue: messageServiceMock }]
     });
 
     service = TestBed.inject(ErrorService);
@@ -108,4 +105,3 @@ describe('ErrorService', () => {
     });
   });
 });
-

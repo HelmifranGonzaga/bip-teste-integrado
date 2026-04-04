@@ -27,7 +27,7 @@ describe('ConfigService', () => {
   });
 
   it('should load config from /assets/config.json', (done) => {
-    service.getConfig().subscribe(config => {
+    service.getConfig().subscribe((config) => {
       expect(config).toEqual(mockConfig);
       expect(config.apiUrl).toBe('http://localhost:8082/api/v1');
       done();
@@ -78,7 +78,7 @@ describe('ConfigService', () => {
       environment: 'production'
     };
 
-    service.getConfig().subscribe(config => {
+    service.getConfig().subscribe((config) => {
       expect(config.apiBaseUrl).toBe('http://prod.example.com');
       expect(config.environment).toBe('production');
       done();
@@ -111,7 +111,6 @@ describe('ConfigService', () => {
     req.flush('Not Found', { status: 404, statusText: 'Not Found' });
   }, 10000); // Increase timeout for this test
 
-
   it('should correctly parse environment types', (done) => {
     const devConfig: AppConfig = {
       apiUrl: 'http://localhost:8082/api/v1',
@@ -119,7 +118,7 @@ describe('ConfigService', () => {
       environment: 'development'
     };
 
-    service.getConfig().subscribe(config => {
+    service.getConfig().subscribe((config) => {
       expect(config.environment).toMatch(/development|production/);
       done();
     });

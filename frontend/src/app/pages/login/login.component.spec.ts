@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,6 +11,7 @@ describe('LoginComponent - Lógica', () => {
   let authService: jest.Mocked<AuthService>;
   let router: jest.Mocked<Router>;
   let messageService: jest.Mocked<MessageService>;
+  let activatedRouteMock: { snapshot: { queryParamMap: { get: jest.Mock } } };
 
   beforeEach(() => {
     sessionStorage.clear();
@@ -19,17 +20,26 @@ describe('LoginComponent - Lógica', () => {
       login: jest.fn()
     } as unknown as jest.Mocked<AuthService>;
     router = {
-      navigate: jest.fn()
+      navigate: jest.fn(),
+      navigateByUrl: jest.fn()
     } as unknown as jest.Mocked<Router>;
     messageService = {
       add: jest.fn()
     } as unknown as jest.Mocked<MessageService>;
+    activatedRouteMock = {
+      snapshot: {
+        queryParamMap: {
+          get: jest.fn().mockReturnValue(null)
+        }
+      }
+    };
 
     TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: MessageService, useValue: messageService }
       ]
     });
@@ -231,6 +241,21 @@ describe('LoginComponent - Lógica', () => {
 
       setTimeout(() => {
         expect(router.navigate).toHaveBeenCalledWith(['/beneficios']);
+        done();
+      }, 50);
+    });
+
+    it('should navigate to returnUrl when provided', (done) => {
+      (authService.login as jest.Mock).mockReturnValue(
+        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
+      );
+
+      (activatedRouteMock.snapshot.queryParamMap.get as jest.Mock).mockReturnValue('/relatorio');
+
+      component.onLogin();
+
+      setTimeout(() => {
+        expect(router.navigate).toHaveBeenCalledWith(['/relatorio']);
         done();
       }, 50);
     });

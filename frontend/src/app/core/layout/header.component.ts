@@ -11,13 +11,7 @@ import { RippleModule } from 'primeng/ripple';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [
-    CommonModule,
-    ButtonModule,
-    MenuModule,
-    AvatarModule,
-    RippleModule
-  ],
+  imports: [CommonModule, ButtonModule, MenuModule, AvatarModule, RippleModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="app-header">
@@ -60,222 +54,224 @@ import { RippleModule } from 'primeng/ripple';
       </div>
     </header>
   `,
-  styles: [`
-    .app-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+  styles: [
+    `
+      .app-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
 
-    .header-container {
-      display: flex;
-      align-items: center;
-      padding: 1rem 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      gap: 1.5rem;
-    }
-
-    /* Logo */
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      flex-shrink: 0;
-    }
-
-    .header-logo:hover {
-      transform: scale(1.05);
-    }
-
-    .logo-icon {
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      color: white;
-      backdrop-filter: blur(10px);
-      flex-shrink: 0;
-    }
-
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
-      white-space: nowrap;
-    }
-
-    .logo-text h1 {
-      margin: 0;
-      color: white;
-      font-size: 1.3rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-    }
-
-    .logo-text span {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    /* Spacer */
-    .header-spacer {
-      flex: 1;
-    }
-
-    /* User Menu */
-    .header-user {
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .user-menu-toggle {
-      display: flex !important;
-      align-items: center;
-      gap: 0.75rem;
-      background: rgba(255, 255, 255, 0.15) !important;
-      border: 1px solid rgba(255, 255, 255, 0.25) !important;
-      color: white !important;
-      padding: 0.6rem 1.2rem !important;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    .user-menu-toggle:hover {
-      background: rgba(255, 255, 255, 0.25) !important;
-      border-color: rgba(255, 255, 255, 0.4) !important;
-      transform: translateY(-2px);
-    }
-
-    .user-menu-toggle:active {
-      transform: translateY(0) !important;
-    }
-
-    .user-name {
-      font-weight: 600;
-      font-size: 0.95rem;
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .user-menu-toggle i {
-      font-size: 0.75rem;
-      opacity: 0.8;
-    }
-
-    :host ::ng-deep .user-avatar {
-      width: 36px !important;
-      height: 36px !important;
-      background: rgba(255, 255, 255, 0.3) !important;
-      color: white !important;
-      font-weight: 600 !important;
-    }
-
-    /* Dropdown Menu */
-    :host ::ng-deep .p-menu {
-      border-radius: 8px;
-      border: none;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-
-    :host ::ng-deep .p-menu .p-menu-list {
-      padding: 0.5rem 0;
-    }
-
-    :host ::ng-deep .p-menuitem-content {
-      padding: 0.75rem 1rem !important;
-      border-radius: 0 !important;
-      transition: all 0.2s ease;
-    }
-
-    :host ::ng-deep .p-menuitem-content:hover {
-      background: #f3f4f6 !important;
-    }
-
-    :host ::ng-deep .p-menuitem-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      color: #333 !important;
-    }
-
-    :host ::ng-deep .p-menuitem-icon {
-      color: #667eea;
-      font-size: 1.1rem;
-    }
-
-    :host ::ng-deep .p-menuitem-text {
-      font-weight: 500;
-      color: #333 !important;
-    }
-
-    :host ::ng-deep .p-menuitem:last-child .p-menuitem-content {
-      border-top: 1px solid #e5e7eb;
-    }
-
-    :host ::ng-deep .p-menuitem:last-child .p-menuitem-link {
-      color: #ef4444 !important;
-    }
-
-    :host ::ng-deep .p-menuitem:last-child .p-menuitem-icon {
-      color: #ef4444 !important;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
       .header-container {
-        padding: 0.75rem 1rem;
-        gap: 1rem;
+        display: flex;
+        align-items: center;
+        padding: 1rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+        gap: 1.5rem;
+      }
+
+      /* Logo */
+      .header-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .header-logo:hover {
+        transform: scale(1.05);
       }
 
       .logo-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.4rem;
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+        white-space: nowrap;
       }
 
       .logo-text h1 {
-        font-size: 1.1rem;
+        margin: 0;
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
       }
 
       .logo-text span {
-        display: none;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      /* Spacer */
+      .header-spacer {
+        flex: 1;
+      }
+
+      /* User Menu */
+      .header-user {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
       }
 
       .user-menu-toggle {
-        padding: 0.5rem 0.75rem !important;
+        display: flex !important;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        color: white !important;
+        padding: 0.6rem 1.2rem !important;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .user-menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+        transform: translateY(-2px);
+      }
+
+      .user-menu-toggle:active {
+        transform: translateY(0) !important;
       }
 
       .user-name {
-        display: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .user-menu-toggle i {
-        margin-left: 0;
+        font-size: 0.75rem;
+        opacity: 0.8;
       }
-    }
-  `]
+
+      :host ::ng-deep .user-avatar {
+        width: 36px !important;
+        height: 36px !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+        font-weight: 600 !important;
+      }
+
+      /* Dropdown Menu */
+      :host ::ng-deep .p-menu {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      :host ::ng-deep .p-menu .p-menu-list {
+        padding: 0.5rem 0;
+      }
+
+      :host ::ng-deep .p-menuitem-content {
+        padding: 0.75rem 1rem !important;
+        border-radius: 0 !important;
+        transition: all 0.2s ease;
+      }
+
+      :host ::ng-deep .p-menuitem-content:hover {
+        background: #f3f4f6 !important;
+      }
+
+      :host ::ng-deep .p-menuitem-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #333 !important;
+      }
+
+      :host ::ng-deep .p-menuitem-icon {
+        color: #667eea;
+        font-size: 1.1rem;
+      }
+
+      :host ::ng-deep .p-menuitem-text {
+        font-weight: 500;
+        color: #333 !important;
+      }
+
+      :host ::ng-deep .p-menuitem:last-child .p-menuitem-content {
+        border-top: 1px solid #e5e7eb;
+      }
+
+      :host ::ng-deep .p-menuitem:last-child .p-menuitem-link {
+        color: #ef4444 !important;
+      }
+
+      :host ::ng-deep .p-menuitem:last-child .p-menuitem-icon {
+        color: #ef4444 !important;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-container {
+          padding: 0.75rem 1rem;
+          gap: 1rem;
+        }
+
+        .logo-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 1.4rem;
+        }
+
+        .logo-text h1 {
+          font-size: 1.1rem;
+        }
+
+        .logo-text span {
+          display: none;
+        }
+
+        .user-menu-toggle {
+          padding: 0.5rem 0.75rem !important;
+        }
+
+        .user-name {
+          display: none;
+        }
+
+        .user-menu-toggle i {
+          margin-left: 0;
+        }
+      }
+    `
+  ]
 })
 export class HeaderComponent {
   private readonly authService = inject(AuthService);

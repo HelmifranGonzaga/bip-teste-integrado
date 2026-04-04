@@ -97,6 +97,10 @@ describe('AuthService', () => {
 
       const req = httpMock.expectOne('http://localhost:8082/api/v1/auth/login');
       expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({
+        username: 'testuser',
+        password: 'password'
+      });
       req.flush(mockResponse);
     });
   });
@@ -145,12 +149,15 @@ describe('AuthService', () => {
     });
 
     it('should restore stored valid user', () => {
-      setupService({
-        auth_user: JSON.stringify({
-          username: 'remembered-user',
-          expiresAt: 1_700_000_001_000
-        })
-      }, 1_700_000_000_000);
+      setupService(
+        {
+          auth_user: JSON.stringify({
+            username: 'remembered-user',
+            expiresAt: 1_700_000_001_000
+          })
+        },
+        1_700_000_000_000
+      );
 
       expect(service.getAuthUser()).toEqual({
         username: 'remembered-user',

@@ -62,9 +62,7 @@ describe('BeneficioTransferComponent', () => {
   it('should format beneficio label with currency and id', () => {
     component.beneficios = beneficios;
 
-    expect(component.getBeneficioLabel(beneficios[0])).toBe(
-      'Alimentação (#1) - R$\u00a01.234,56'
-    );
+    expect(component.getBeneficioLabel(beneficios[0])).toBe('Alimentação (#1) - R$\u00a01.234,56');
   });
 
   it('should emit transfer event on valid submit', () => {

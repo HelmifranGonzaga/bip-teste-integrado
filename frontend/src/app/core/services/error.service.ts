@@ -1,6 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { AppError, DisplayError, ErrorType, getErrorType, isAppError } from '../errors/app-error.model';
+import {
+  AppError,
+  DisplayError,
+  ErrorType,
+  getErrorType,
+  isAppError
+} from '../errors/app-error.model';
 import { mapHttpError } from '../errors/http-error.mapper';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -130,12 +136,7 @@ export class ErrorService {
    * Indica se o erro deve permanecer visível (sticky)
    */
   private shouldStickError(code: string): boolean {
-    const stickyErrors = [
-      'UNAUTHORIZED',
-      'FORBIDDEN',
-      'INTERNAL_ERROR',
-      'CONNECTION_ERROR'
-    ];
+    const stickyErrors = ['UNAUTHORIZED', 'FORBIDDEN', 'INTERNAL_ERROR', 'CONNECTION_ERROR'];
     return stickyErrors.includes(code);
   }
 
@@ -144,13 +145,13 @@ export class ErrorService {
    */
   private getSummaryForCode(code: string): string {
     const summaryMap: Record<string, string> = {
-      'VALIDATION_ERROR': 'Dados inválidos',
-      'NOT_FOUND': 'Não encontrado',
-      'CONFLICT': 'Conflito',
-      'UNAUTHORIZED': 'Não autenticado',
-      'FORBIDDEN': 'Acesso negado',
-      'INTERNAL_ERROR': 'Erro no servidor',
-      'CONNECTION_ERROR': 'Sem conexão'
+      VALIDATION_ERROR: 'Dados inválidos',
+      NOT_FOUND: 'Não encontrado',
+      CONFLICT: 'Conflito',
+      UNAUTHORIZED: 'Não autenticado',
+      FORBIDDEN: 'Acesso negado',
+      INTERNAL_ERROR: 'Erro no servidor',
+      CONNECTION_ERROR: 'Sem conexão'
     };
     return summaryMap[code] || 'Erro';
   }
