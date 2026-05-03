@@ -16,7 +16,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Build módulos Java
-        run: mvn -B clean verify
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          if [ -z "$JWT_SECRET" ]; then
+            JWT_SECRET="$(openssl rand -base64 64)"
+          fi
+          export JWT_SECRET
+          mvn -B clean verify
 
   frontend:
     runs-on: ubuntu-latest
