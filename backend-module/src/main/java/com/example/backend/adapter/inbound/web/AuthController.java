@@ -33,7 +33,7 @@ public class AuthController {
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         // Por agora: aceita qualquer username e retorna um token
         String token = jwtProvider.generateToken(request.username());
-        return new LoginResponse(token, "Bearer", 3600);
+        return new LoginResponse(token, "Bearer", jwtProvider.getExpirationSeconds());
     }
 
     public record LoginRequest(@NotBlank(message = "Username é obrigatório") String username) {}

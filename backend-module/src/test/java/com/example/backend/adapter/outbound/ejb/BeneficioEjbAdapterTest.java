@@ -1,30 +1,33 @@
 package com.example.backend.adapter.outbound.ejb;
 
-import static org.mockito.Mockito.*;
-
 import com.example.ejb.BeneficioEjbService;
 import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(MockitoExtension.class)
 class BeneficioEjbAdapterTest {
-
-    @Mock
-    private BeneficioEjbService ejbService;
-
-    @InjectMocks
-    private BeneficioEjbAdapter adapter;
 
     @Test
     void shouldTransfer() {
-        doNothing().when(ejbService).transfer(1L, 2L, BigDecimal.TEN);
+        AtomicReference<Long> capturedFromId = new AtomicReference<>();
+        AtomicReference<Long> capturedToId = new AtomicReference<>();
+        AtomicReference<BigDecimal> capturedAmount = new AtomicReference<>();
 
+        BeneficioEjbService ejbService = new BeneficioEjbService() {
+            @Override
+            public void transfer(Long fromId, Long toId, BigDecimal amount) {
+                capturedFromId.set(fromId);
+                capturedToId.set(toId);
+                capturedAmount.set(amount);
+            }
+        };
+
+        BeneficioEjbAdapter adapter = new BeneficioEjbAdapter(ejbService);
         adapter.transfer(1L, 2L, BigDecimal.TEN);
 
-        verify(ejbService).transfer(1L, 2L, BigDecimal.TEN);
+        assertEquals(1L, capturedFromId.get());
+        assertEquals(2L, capturedToId.get());
+        assertEquals(BigDecimal.TEN, capturedAmount.get());
     }
 }
