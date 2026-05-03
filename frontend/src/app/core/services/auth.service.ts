@@ -71,7 +71,8 @@ export class AuthService {
         setAuthToken(response.accessToken);
 
         // Armazenar usuário
-        const expiresAt = Date.now() + response.expiresIn;
+        // Backend retorna expiresIn em segundos; Date.now() usa milissegundos.
+        const expiresAt = Date.now() + response.expiresIn * 1000;
         const authUser: AuthUser = { username, expiresAt };
         this.authUser$.next(authUser);
         this.storeUser(authUser);
