@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 /**
  * Spring Security Configuration.
  * Habilita JWT, CORS com environment strategy, e proteção de endpoints.
@@ -71,10 +73,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Permitir múltiplas origens separadas por vírgula em environment
-        String[] origins = allowedOrigins.split(",");
-        for (String origin : origins) {
-            configuration.addAllowedOrigin(origin.trim());
-        }
+        Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .forEach(configuration::addAllowedOrigin);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
