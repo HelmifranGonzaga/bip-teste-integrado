@@ -27,12 +27,15 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final String allowedOrigins;
+    private final boolean exposeDevEndpoints;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            @Value("${app.security.cors.allowed-origins:http://localhost:4200}") String allowedOrigins) {
+            @Value("${app.security.cors.allowed-origins:http://localhost:4200}") String allowedOrigins,
+            @Value("${app.security.expose-dev-endpoints:false}") boolean exposeDevEndpoints) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.allowedOrigins = allowedOrigins;
+        this.exposeDevEndpoints = exposeDevEndpoints;
     }
 
     @Bean
@@ -47,12 +50,19 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authz ->
-                                authz.requestMatchers("/api/v1/auth/**").permitAll()
-                                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**")
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
+                                {
+                                    authz.requestMatchers("/api/v1/auth/**").permitAll();
+                                    if (exposeDevEndpoints) {
+                                        authz.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**")
+                                                .permitAll();
+                                    }
+                                    authz.anyRequest().authenticated();
+                                })
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        if (exposeDevEndpoints) {
+            http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+        }
 
         return http.build();
     }
