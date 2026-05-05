@@ -58,23 +58,22 @@
     </div>
   </p-fluid>
 
-  <div class="flex gap-2 mt-4 justify-end">
-    <button
-      pButton
-      type="button"
-      label="Cancelar"
-      icon="pi pi-times"
-      severity="secondary"
-      [disabled]="submitting"
-      (click)="onCancel()"
-    ></button>
-    <button
-      pButton
-      type="submit"
-      label="Transferir"
-      icon="pi pi-arrow-right-arrow-left"
-      severity="info"
-      [disabled]="form.invalid || submitting"
-    ></button>
-  </div>
+<div class="flex gap-2 mt-4 justify-end">
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        [disabled]="submitting"
+        (click)="onCancel()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        label="Transferir"
+        icon="pi pi-arrow-right-arrow-left"
+        [disabled]="form.invalid || submitting"
+      ></button>
+    </div>
 </form>

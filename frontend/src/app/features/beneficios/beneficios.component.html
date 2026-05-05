@@ -6,7 +6,7 @@
       <h1 class="page-title m-0">Painel de Controle</h1>
       <p class="page-subtitle m-0">Gerencie seus benefícios e transfira saldos de forma segura.</p>
     </div>
-    <div class="page-actions">
+<div class="page-actions">
       <button
         pButton
         label="Novo Benefício"
@@ -19,7 +19,6 @@
         pButton
         label="Transferir Saldo"
         icon="pi pi-arrow-right-arrow-left"
-        severity="info"
         type="button"
         [disabled]="loading() || connectionError()"
         (click)="openTransfer()"

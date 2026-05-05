@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
@@ -11,13 +11,13 @@ import { RippleModule } from 'primeng/ripple';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, ButtonModule, MenuModule, AvatarModule, RippleModule],
+  imports: [CommonModule, RouterModule, ButtonModule, MenuModule, AvatarModule, RippleModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="app-header">
       <div class="header-container">
         <!-- Logo Section -->
-        <div class="header-logo">
+        <a class="header-logo" routerLink="/beneficios">
           <div class="logo-icon">
             <i class="pi pi-wallet"></i>
           </div>
@@ -25,7 +25,23 @@ import { RippleModule } from 'primeng/ripple';
             <h1>BIP</h1>
             <span>Benefícios</span>
           </div>
-        </div>
+        </a>
+
+        <!-- Main Navigation -->
+        <nav class="header-nav">
+          <a routerLink="/beneficios" routerLinkActive="active" class="nav-link" pRipple>
+            <i class="pi pi-home"></i>
+            <span>Início</span>
+          </a>
+          <a routerLink="/profile" routerLinkActive="active" class="nav-link" pRipple>
+            <i class="pi pi-user"></i>
+            <span>Perfil</span>
+          </a>
+          <a routerLink="/settings" routerLinkActive="active" class="nav-link" pRipple>
+            <i class="pi pi-cog"></i>
+            <span>Ajustes</span>
+          </a>
+        </nav>
 
         <!-- Spacer -->
         <div class="header-spacer"></div>
@@ -57,8 +73,8 @@ import { RippleModule } from 'primeng/ripple';
   styles: [
     `
       .app-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        background: #003641;
+        box-shadow: 0 4px 12px rgba(0, 54, 65, 0.2);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding: 0;
         position: sticky;
@@ -69,11 +85,11 @@ import { RippleModule } from 'primeng/ripple';
       .header-container {
         display: flex;
         align-items: center;
-        padding: 1rem 2rem;
+        padding: 0.75rem 2rem;
         max-width: 1400px;
         margin: 0 auto;
         width: 100%;
-        gap: 1.5rem;
+        gap: 2rem;
       }
 
       /* Logo */
@@ -92,14 +108,14 @@ import { RippleModule } from 'primeng/ripple';
       }
 
       .logo-icon {
-        width: 50px;
-        height: 50px;
+        width: 45px;
+        height: 45px;
         background: rgba(255, 255, 255, 0.2);
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         color: white;
         backdrop-filter: blur(10px);
         flex-shrink: 0;
@@ -122,10 +138,57 @@ import { RippleModule } from 'primeng/ripple';
 
       .logo-text span {
         color: rgba(255, 255, 255, 0.9);
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 500;
         letter-spacing: 2px;
         text-transform: uppercase;
+      }
+
+      /* Main Navigation */
+      .header-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.25rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-link i {
+        font-size: 1.1rem;
+      }
+
+      .nav-link:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .nav-link.active {
+        color: #003641;
+        background: white;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-link.active i {
+        color: #00ae9d;
       }
 
       /* Spacer */
@@ -144,24 +207,18 @@ import { RippleModule } from 'primeng/ripple';
         display: flex !important;
         align-items: center;
         gap: 0.75rem;
-        background: rgba(255, 255, 255, 0.15) !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        background: transparent !important;
+        border: 1px solid transparent !important;
         color: white !important;
-        padding: 0.6rem 1.2rem !important;
+        padding: 0.4rem 0.5rem !important;
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
       }
 
       .user-menu-toggle:hover {
-        background: rgba(255, 255, 255, 0.25) !important;
-        border-color: rgba(255, 255, 255, 0.4) !important;
-        transform: translateY(-2px);
-      }
-
-      .user-menu-toggle:active {
-        transform: translateY(0) !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
       }
 
       .user-name {
@@ -179,19 +236,22 @@ import { RippleModule } from 'primeng/ripple';
       }
 
       :host ::ng-deep .user-avatar {
-        width: 36px !important;
-        height: 36px !important;
-        background: rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
-        font-weight: 600 !important;
+        width: 38px !important;
+        height: 38px !important;
+        background: white !important;
+        color: #003641 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       }
 
       /* Dropdown Menu */
       :host ::ng-deep .p-menu {
-        border-radius: 8px;
+        border-radius: 12px;
         border: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         overflow: hidden;
+        min-width: 200px;
+        margin-top: 0.5rem;
       }
 
       :host ::ng-deep .p-menu .p-menu-list {
@@ -199,55 +259,69 @@ import { RippleModule } from 'primeng/ripple';
       }
 
       :host ::ng-deep .p-menuitem-content {
-        padding: 0.75rem 1rem !important;
+        padding: 0.75rem 1.25rem !important;
         border-radius: 0 !important;
         transition: all 0.2s ease;
       }
 
       :host ::ng-deep .p-menuitem-content:hover {
-        background: #f3f4f6 !important;
+        background: #f8f9fa !important;
       }
 
       :host ::ng-deep .p-menuitem-link {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        color: #333 !important;
+        color: #4b5563 !important;
       }
 
       :host ::ng-deep .p-menuitem-icon {
-        color: #667eea;
+        color: #00ae9d;
         font-size: 1.1rem;
       }
 
       :host ::ng-deep .p-menuitem-text {
         font-weight: 500;
-        color: #333 !important;
+        color: #374151 !important;
       }
 
-      :host ::ng-deep .p-menuitem:last-child .p-menuitem-content {
-        border-top: 1px solid #e5e7eb;
-      }
-
-      :host ::ng-deep .p-menuitem:last-child .p-menuitem-link {
-        color: #ef4444 !important;
-      }
-
-      :host ::ng-deep .p-menuitem:last-child .p-menuitem-icon {
+      :host ::ng-deep .p-menuitem .p-menuitem-link,
+      :host ::ng-deep .p-menuitem .p-menuitem-icon {
         color: #ef4444 !important;
       }
 
       /* Responsive */
+      @media (max-width: 992px) {
+        .header-container {
+          flex-wrap: wrap;
+          padding: 0.75rem 1.5rem;
+          gap: 1rem;
+        }
+
+        .header-spacer {
+          display: none;
+        }
+
+        .header-nav {
+          order: 3;
+          width: 100%;
+          justify-content: center;
+        }
+        
+        .header-user {
+          margin-left: auto;
+        }
+      }
+
       @media (max-width: 768px) {
         .header-container {
           padding: 0.75rem 1rem;
-          gap: 1rem;
         }
 
         .logo-icon {
           width: 40px;
           height: 40px;
-          font-size: 1.4rem;
+          font-size: 1.3rem;
         }
 
         .logo-text h1 {
@@ -258,8 +332,12 @@ import { RippleModule } from 'primeng/ripple';
           display: none;
         }
 
-        .user-menu-toggle {
-          padding: 0.5rem 0.75rem !important;
+        .nav-link span {
+          display: none; /* Hide text on small screens, show icons only */
+        }
+        
+        .nav-link {
+          padding: 0.6rem 1.5rem;
         }
 
         .user-name {
@@ -281,42 +359,11 @@ export class HeaderComponent {
   readonly authUser$ = this.authService.getAuthUser$();
   readonly userMenuItems: MenuItem[] = [
     {
-      label: 'Meu Perfil',
-      icon: 'pi pi-user',
-      command: () => this.viewProfile()
-    },
-    {
-      label: 'Configurações',
-      icon: 'pi pi-cog',
-      command: () => this.openSettings()
-    },
-    {
-      separator: true
-    },
-    {
       label: 'Sair',
       icon: 'pi pi-sign-out',
       command: () => this.onLogout()
     }
   ];
-
-  private viewProfile(): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Perfil',
-      detail: 'Funcionalidade em desenvolvimento',
-      life: 3000
-    });
-  }
-
-  private openSettings(): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Configurações',
-      detail: 'Funcionalidade em desenvolvimento',
-      life: 3000
-    });
-  }
 
   onLogout(): void {
     this.authService.logout();
