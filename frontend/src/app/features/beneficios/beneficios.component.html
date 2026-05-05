@@ -6,24 +6,6 @@
       <h1 class="page-title m-0">Painel de Controle</h1>
       <p class="page-subtitle m-0">Gerencie seus benefícios e transfira saldos de forma segura.</p>
     </div>
-<div class="page-actions">
-      <button
-        pButton
-        label="Novo Benefício"
-        icon="pi pi-plus"
-        type="button"
-        [disabled]="loading() || connectionError()"
-        (click)="openNew()"
-      ></button>
-      <button
-        pButton
-        label="Transferir Saldo"
-        icon="pi pi-arrow-right-arrow-left"
-        type="button"
-        [disabled]="loading() || connectionError()"
-        (click)="openTransfer()"
-      ></button>
-    </div>
   </section>
 
   @if (!connectionError()) {
@@ -137,6 +119,7 @@
   [header]="editingBeneficio() ? 'Editar Benefício' : 'Novo Benefício'"
   [visible]="showFormModal()"
   (visibleChange)="showFormModal.set($event)"
+  (onHide)="onFormModalHide()"
   [modal]="true"
   [style]="{ width: '450px' }"
   [draggable]="false"
@@ -158,6 +141,7 @@
   header="Transferência de Saldo"
   [visible]="showTransferModal()"
   (visibleChange)="showTransferModal.set($event)"
+  (onHide)="onTransferModalHide()"
   [modal]="true"
   [style]="{ width: '450px' }"
   [draggable]="false"

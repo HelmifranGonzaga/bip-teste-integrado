@@ -29,17 +29,17 @@ import { RippleModule } from 'primeng/ripple';
 
         <!-- Main Navigation -->
         <nav class="header-nav">
-          <a routerLink="/beneficios" routerLinkActive="active" class="nav-link" pRipple>
+          <a routerLink="/beneficios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" pRipple>
             <i class="pi pi-home"></i>
             <span>Início</span>
           </a>
-          <a routerLink="/profile" routerLinkActive="active" class="nav-link" pRipple>
-            <i class="pi pi-user"></i>
-            <span>Perfil</span>
+          <a routerLink="/beneficios" [queryParams]="{action: 'novo'}" routerLinkActive="active" class="nav-link" pRipple>
+            <i class="pi pi-plus-circle"></i>
+            <span>Novo Benefício</span>
           </a>
-          <a routerLink="/settings" routerLinkActive="active" class="nav-link" pRipple>
-            <i class="pi pi-cog"></i>
-            <span>Ajustes</span>
+          <a routerLink="/beneficios" [queryParams]="{action: 'transferir'}" routerLinkActive="active" class="nav-link" pRipple>
+            <i class="pi pi-arrow-right-arrow-left"></i>
+            <span>Transferir Saldo</span>
           </a>
         </nav>
 
@@ -285,8 +285,8 @@ import { RippleModule } from 'primeng/ripple';
         color: #374151 !important;
       }
 
-      :host ::ng-deep .p-menuitem .p-menuitem-link,
-      :host ::ng-deep .p-menuitem .p-menuitem-icon {
+      :host ::ng-deep .logout-item .p-menuitem-link .p-menuitem-text,
+      :host ::ng-deep .logout-item .p-menuitem-link .p-menuitem-icon {
         color: #ef4444 !important;
       }
 
@@ -359,8 +359,22 @@ export class HeaderComponent {
   readonly authUser$ = this.authService.getAuthUser$();
   readonly userMenuItems: MenuItem[] = [
     {
+      label: 'Perfil',
+      icon: 'pi pi-user',
+      routerLink: '/profile'
+    },
+    {
+      label: 'Ajustes',
+      icon: 'pi pi-cog',
+      routerLink: '/settings'
+    },
+    {
+      separator: true
+    },
+    {
       label: 'Sair',
       icon: 'pi pi-sign-out',
+      styleClass: 'logout-item',
       command: () => this.onLogout()
     }
   ];

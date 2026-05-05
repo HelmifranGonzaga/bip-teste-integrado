@@ -10,6 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -50,6 +51,8 @@ export class BeneficiosComponent {
   private readonly facade = inject(BeneficiosFacade);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly reconnectDelayMs = 5000;
   private readonly loadingShowDelayMs = 200;
@@ -107,6 +110,26 @@ export class BeneficiosComponent {
     });
 
     this.loadBeneficios();
+    
+    // Listen to query parameters for actions
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
+      const action = params['action'];
+      if (action === 'novo') {
+        setTimeout(() => this.openNew());
+      } else if (action === 'transferir') {
+        setTimeout(() => this.openTransfer());
+      }
+    });
+  }
+  
+  // Limpa o parametro da URL quando os modais sao fechados
+  private clearActionParam(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { action: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   loadBeneficios(): void {
@@ -166,8 +189,14 @@ export class BeneficiosComponent {
     this.execute(this.facade.save(event), () => {
       this.editingBeneficio.set(null);
       this.showFormModal.set(false);
+      this.clearActionParam();
       this.loadBeneficios();
     });
+  }
+
+  onFormModalHide(): void {
+    this.showFormModal.set(false);
+    this.clearActionParam();
   }
 
   openNew(): void {
@@ -189,6 +218,12 @@ export class BeneficiosComponent {
   onCancelEdit(): void {
     this.editingBeneficio.set(null);
     this.showFormModal.set(false);
+    this.clearActionParam();
+  }
+
+  onTransferModalHide(): void {
+    this.showTransferModal.set(false);
+    this.clearActionParam();
   }
 
   openTransfer(): void {
@@ -200,6 +235,7 @@ export class BeneficiosComponent {
 
   onCancelTransfer(): void {
     this.showTransferModal.set(false);
+    this.clearActionParam();
   }
 
   onRemove(id: number): void {
@@ -228,6 +264,7 @@ export class BeneficiosComponent {
   onTransfer(payload: TransferBeneficioEvent): void {
     this.execute(this.facade.transfer(payload), () => {
       this.showTransferModal.set(false);
+      this.clearActionParam();
       this.loadBeneficios();
     });
   }
