@@ -35,6 +35,17 @@ export function mapHttpError(
 ): DisplayError {
   // Verifica se é erro de conexão
   if (error.status === 0) {
+    // Se o backend enviar um JSON de erro mesmo com status 0
+    if (isAppError(error.error)) {
+      return {
+        summary: getSummaryForErrorCode(error.error.code) || 'Sem conexão',
+        detail: error.error.message,
+        code: error.error.code,
+        isConnectionError: true,
+        httpStatus: 0
+      };
+    }
+    
     return {
       summary: 'Sem conexão',
       detail: CONNECTION_ERROR_MESSAGE,

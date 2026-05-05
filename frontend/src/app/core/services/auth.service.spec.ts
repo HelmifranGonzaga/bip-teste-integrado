@@ -86,11 +86,11 @@ describe('AuthService', () => {
 
       service.login('testuser', 'password').subscribe(() => {
         expect(service.getAuthUser()?.username).toBe('testuser');
-        expect(service.getAuthUser()?.expiresAt).toBe(now + mockResponse.expiresIn);
+        expect(service.getAuthUser()?.expiresAt).toBe(now + mockResponse.expiresIn * 1000);
         expect(service.isAuthenticated()).toBe(true);
         expect(JSON.parse(store.auth_user)).toEqual({
           username: 'testuser',
-          expiresAt: now + mockResponse.expiresIn
+          expiresAt: now + mockResponse.expiresIn * 1000
         });
         done();
       });

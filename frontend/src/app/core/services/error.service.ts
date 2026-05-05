@@ -43,7 +43,7 @@ export class ErrorService {
       displayError = error as DisplayError;
     }
 
-    if (showToast && !displayError.isConnectionError) {
+    if (showToast) {
       this.showToast(displayError);
     }
 

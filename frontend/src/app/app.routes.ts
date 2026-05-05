@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { BeneficiosComponent } from './features/beneficios/beneficios.component';
+import { BeneficioCreateComponent } from './features/beneficios/pages/beneficio-create/beneficio-create.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -14,6 +15,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'beneficios/novo',
+    component: BeneficioCreateComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'beneficios',

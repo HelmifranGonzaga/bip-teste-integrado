@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { HeaderComponent } from './header.component';
@@ -17,9 +17,6 @@ describe('HeaderComponent - Logic', () => {
       getAuthUser$: jest.fn().mockReturnValue(of(null)),
       logout: jest.fn()
     };
-    const routerMock = {
-      navigate: jest.fn()
-    };
     const messageServiceMock = {
       add: jest.fn()
     };
@@ -27,14 +24,15 @@ describe('HeaderComponent - Logic', () => {
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
       providers: [
+        provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock },
         { provide: MessageService, useValue: messageServiceMock }
       ]
     }).compileComponents();
 
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
     messageService = TestBed.inject(MessageService);
 
     fixture = TestBed.createComponent(HeaderComponent);

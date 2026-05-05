@@ -6,6 +6,10 @@
       <h1 class="page-title m-0">Painel de Controle</h1>
       <p class="page-subtitle m-0">Gerencie seus benefícios e transfira saldos de forma segura.</p>
     </div>
+    <div class="page-actions">
+      <button pButton type="button" label="Transferir Saldo" icon="pi pi-arrow-right-arrow-left" severity="secondary" [outlined]="true" (click)="openTransfer()"></button>
+      <button pButton type="button" label="Novo Benefício" icon="pi pi-plus" (click)="openNew()"></button>
+    </div>
   </section>
 
   @if (!connectionError()) {
@@ -114,9 +118,9 @@
   }
 </div>
 
-<!-- Modal de Formulário (Criar/Editar) -->
+<!-- Modal de Formulário (Editar) -->
 <p-dialog
-  [header]="editingBeneficio() ? 'Editar Benefício' : 'Novo Benefício'"
+  header="Editar Benefício"
   [visible]="showFormModal()"
   (visibleChange)="showFormModal.set($event)"
   (onHide)="onFormModalHide()"

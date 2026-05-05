@@ -26,6 +26,7 @@ import { SaveBeneficioEvent, TransferBeneficioEvent } from './beneficios.types';
 import { BeneficioFormComponent } from './components/beneficio-form/beneficio-form.component';
 import { BeneficioListComponent } from './components/beneficio-list/beneficio-list.component';
 import { BeneficioTransferComponent } from './components/beneficio-transfer/beneficio-transfer.component';
+import { BeneficioStateService } from '../../core/services/beneficio-state.service';
 
 @Component({
   selector: 'app-beneficios',
@@ -53,6 +54,7 @@ export class BeneficiosComponent {
   private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly stateService = inject(BeneficioStateService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly reconnectDelayMs = 5000;
   private readonly loadingShowDelayMs = 200;
@@ -114,9 +116,7 @@ export class BeneficiosComponent {
     // Listen to query parameters for actions
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
       const action = params['action'];
-      if (action === 'novo') {
-        setTimeout(() => this.openNew());
-      } else if (action === 'transferir') {
+      if (action === 'transferir') {
         setTimeout(() => this.openTransfer());
       }
     });
@@ -133,10 +133,15 @@ export class BeneficiosComponent {
   }
 
   loadBeneficios(): void {
-    this.execute(this.facade.list(), (items) => {
-      this.beneficios.set(items);
-      this.clearConnectionError();
-    });
+    this.execute(
+      this.facade.list(),
+      (items) => {
+        this.beneficios.set(items);
+        this.stateService.updateCount(items.length);
+        this.clearConnectionError();
+      },
+      true // isInitialLoad
+    );
   }
 
   retryNow(): void {
@@ -203,8 +208,7 @@ export class BeneficiosComponent {
     if (this.loading() || this.connectionError()) {
       return;
     }
-    this.editingBeneficio.set(null);
-    this.showFormModal.set(true);
+    this.router.navigate(['/beneficios/novo']);
   }
 
   onEdit(item: Beneficio): void {
@@ -269,7 +273,11 @@ export class BeneficiosComponent {
     });
   }
 
-  private execute<T>(request$: Observable<T>, onSuccess: (result: T) => void): void {
+  private execute<T>(
+    request$: Observable<T>,
+    onSuccess: (result: T) => void,
+    isInitialLoad = false
+  ): void {
     this.beginRequestLoading();
 
     request$
@@ -280,31 +288,35 @@ export class BeneficiosComponent {
       .subscribe({
         next: onSuccess,
         error: (error) => {
-          this.handleRequestError(error);
+          this.handleRequestError(error, isInitialLoad);
         }
       });
   }
 
-  private handleRequestError(error: HttpErrorResponse): void {
+  private handleRequestError(error: HttpErrorResponse, isInitialLoad: boolean): void {
     if (error.status === 0) {
-      this.connectionError.set(true);
-      this.errorMessage.set('Não conseguimos conexão com o servidor no momento.');
-      this.updateDiagnosticCode();
-      this.focusConnectionErrorTitle();
+      if (isInitialLoad) {
+        this.connectionError.set(true);
+        this.errorMessage.set('Não conseguimos conexão com o servidor no momento.');
+        this.updateDiagnosticCode();
+        this.focusConnectionErrorTitle();
 
-      if (this.reconnectAttempts() >= this.maxReconnectAttempts) {
-        this.reconnectExhausted.set(true);
-        this.stopReconnectLoop();
-        this.trackConnectionEvent('reconnect_exhausted');
-        return;
+        if (this.reconnectAttempts() >= this.maxReconnectAttempts) {
+          this.reconnectExhausted.set(true);
+          this.stopReconnectLoop();
+          this.trackConnectionEvent('reconnect_exhausted');
+          return;
+        }
+
+        this.startReconnectLoop();
+        this.trackConnectionEvent('connection_error_shown');
       }
-
-      this.startReconnectLoop();
-      this.trackConnectionEvent('connection_error_shown');
       return;
     }
 
-    this.clearConnectionError();
+    if (isInitialLoad) {
+      this.clearConnectionError();
+    }
   }
 
   private clearConnectionError(): void {

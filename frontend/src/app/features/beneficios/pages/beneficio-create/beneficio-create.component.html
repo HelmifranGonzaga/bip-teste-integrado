@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="page-header mb-4">
+    <div class="page-title-group">
+      <h1 class="page-title m-0">Novo Benefício</h1>
+      <p class="page-subtitle m-0">Preencha os dados abaixo para criar um novo benefício.</p>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <app-beneficio-form
+      [submitting]="loading()"
+      (save)="onSave($event)"
+      (cancelOperation)="onCancel()"
+    ></app-beneficio-form>
+  </div>
+</div>

@@ -31,7 +31,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         });
       }
 
-      if (!displayError.isConnectionError && !isStaticAsset && !shouldSuppressToast) {
+      if (!isStaticAsset && !shouldSuppressToast) {
         messageService.add({
           severity: 'error',
           summary: displayError.summary,

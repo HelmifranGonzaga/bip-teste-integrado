@@ -33,14 +33,6 @@ import { RippleModule } from 'primeng/ripple';
             <i class="pi pi-home"></i>
             <span>Início</span>
           </a>
-          <a routerLink="/beneficios" [queryParams]="{action: 'novo'}" routerLinkActive="active" class="nav-link" pRipple>
-            <i class="pi pi-plus-circle"></i>
-            <span>Novo Benefício</span>
-          </a>
-          <a routerLink="/beneficios" [queryParams]="{action: 'transferir'}" routerLinkActive="active" class="nav-link" pRipple>
-            <i class="pi pi-arrow-right-arrow-left"></i>
-            <span>Transferir Saldo</span>
-          </a>
         </nav>
 
         <!-- Spacer -->

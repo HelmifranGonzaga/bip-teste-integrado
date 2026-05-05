@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 
@@ -7,6 +8,14 @@ import { BeneficioService } from '../../core/services/beneficio.service';
 import { BeneficiosComponent } from './beneficios.component';
 
 describe('BeneficiosComponent', () => {
+  let routeMock: any;
+
+  beforeEach(() => {
+    routeMock = {
+      queryParams: of({})
+    };
+  });
+
   afterEach(() => {
     jest.useRealTimers();
     jest.restoreAllMocks();
@@ -23,7 +32,11 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
+      providers: [
+        { provide: BeneficioService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        MessageService
+      ]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -43,7 +56,11 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
+      providers: [
+        { provide: BeneficioService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        MessageService
+      ]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -71,7 +88,11 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
+      providers: [
+        { provide: BeneficioService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        MessageService
+      ]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -100,7 +121,11 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
+      providers: [
+        { provide: BeneficioService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        MessageService
+      ]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -134,7 +159,11 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
+      providers: [
+        { provide: BeneficioService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        MessageService
+      ]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
@@ -165,7 +194,11 @@ describe('BeneficiosComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [BeneficiosComponent],
-      providers: [{ provide: BeneficioService, useValue: serviceMock }, MessageService]
+      providers: [
+        { provide: BeneficioService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: routeMock },
+        MessageService
+      ]
     });
 
     const fixture = TestBed.createComponent(BeneficiosComponent);
