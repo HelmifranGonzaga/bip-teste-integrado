@@ -14,14 +14,15 @@
 }
 
 .beneficio-list-global-search {
-  flex: 1 1 14rem;
-  max-width: 22rem;
+  flex: 0 1 auto;
+  max-width: 100%;
   min-width: 0;
   margin-left: auto;
 }
 
 .beneficio-list-global-search :is(input, .p-inputtext) {
-  width: 100%;
+  box-sizing: border-box;
+  width: min(100%, calc(41ch + 2rem));
 }
 
 @media (max-width: 900px) {

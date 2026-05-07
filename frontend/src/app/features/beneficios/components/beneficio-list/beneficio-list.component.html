@@ -8,7 +8,7 @@
       [rows]="5"
       [rowsPerPageOptions]="[5, 10, 20]"
       [loading]="loading"
-      [globalFilterFields]="['nome', 'descricao', 'valor', 'cnpjNormalizado', 'cnpjMascarado']"
+      [globalFilterFields]="['nome', 'descricao', 'valor', 'cnpjFiltro']"
       styleClass="p-datatable-sm p-datatable-striped"
     >
       <ng-template pTemplate="caption">
@@ -22,7 +22,7 @@
               pInputText
               (input)="onGlobalFilter(dt, $event)"
               placeholder="Buscar por nome, descrição, valor ou CNPJ"
-              aria-label="Buscar na tabela por nome, descrição, valor ou CNPJ"
+              aria-label="Buscar por nome, descrição, valor ou CNPJ"
             />
           </p-iconfield>
         </div>

@@ -51,7 +51,7 @@ describe('BeneficioListComponent', () => {
 
     expect(el).toBeTruthy();
     expect(el.placeholder).toBe('Buscar por nome, descrição, valor ou CNPJ');
-    expect(el.getAttribute('aria-label')).toBe('Buscar na tabela por nome, descrição, valor ou CNPJ');
+    expect(el.getAttribute('aria-label')).toBe('Buscar por nome, descrição, valor ou CNPJ');
   });
 
   it('should delegate global filter to table.filterGlobal', () => {
@@ -62,6 +62,26 @@ describe('BeneficioListComponent', () => {
     component.onGlobalFilter(table, { target: input } as unknown as Event);
 
     expect(table.filterGlobal).toHaveBeenCalledWith('acme', 'contains');
+  });
+
+  it('should normalize CNPJ-like global filter term (masked input)', () => {
+    const table = { filterGlobal: jest.fn() } as Pick<Table, 'filterGlobal'> as Table;
+    const input = document.createElement('input');
+    input.value = 'YK.4B6.MX4/0001-46';
+
+    component.onGlobalFilter(table, { target: input } as unknown as Event);
+
+    expect(table.filterGlobal).toHaveBeenCalledWith('YK4B6MX4000146', 'contains');
+  });
+
+  it('should strip invisible characters from global filter input', () => {
+    const table = { filterGlobal: jest.fn() } as Pick<Table, 'filterGlobal'> as Table;
+    const input = document.createElement('input');
+    input.value = 'YK4B6\u200BMX4000146';
+
+    component.onGlobalFilter(table, { target: input } as unknown as Event);
+
+    expect(table.filterGlobal).toHaveBeenCalledWith('YK4B6MX4000146', 'contains');
   });
 
   it('should derive cnpjNormalizado and cnpjMascarado from raw API value (stored without mask)', () => {
@@ -84,6 +104,7 @@ describe('BeneficioListComponent', () => {
     expect(rows[0].cnpj).toBe('12ABC34501DE35');
     expect(rows[0].cnpjNormalizado).toBe('12ABC34501DE35');
     expect(rows[0].cnpjMascarado).toBe('12.ABC.345/01DE-35');
+    expect(rows[0].cnpjFiltro).toBe('12ABC34501DE35 12.ABC.345/01DE-35');
   });
 
   it('should leave cnpjNormalizado and cnpjMascarado empty when cnpj is null', () => {
@@ -101,14 +122,15 @@ describe('BeneficioListComponent', () => {
 
     expect(component.beneficios[0].cnpjNormalizado).toBe('');
     expect(component.beneficios[0].cnpjMascarado).toBe('');
+    expect(component.beneficios[0].cnpjFiltro).toBe('');
   });
 
-  it('should declare cnpjNormalizado and cnpjMascarado as global filter fields (matches with or without mask)', () => {
+  it('should declare cnpjFiltro as global filter field (CNPJ com ou sem máscara)', () => {
     const tableInstance = fixture.debugElement.query(By.directive(Table))?.componentInstance as Table;
 
     expect(tableInstance).toBeTruthy();
     expect(tableInstance.globalFilterFields).toEqual(
-      expect.arrayContaining(['nome', 'descricao', 'valor', 'cnpjNormalizado', 'cnpjMascarado'])
+      expect.arrayContaining(['nome', 'descricao', 'valor', 'cnpjFiltro'])
     );
   });
 });
