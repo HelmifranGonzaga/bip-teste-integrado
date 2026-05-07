@@ -24,6 +24,9 @@ public class Beneficio {
     @Column(name = "DESCRICAO", length = 255)
     private String descricao;
 
+    @Column(name = "CNPJ", length = 32)
+    private String cnpj;
+
     @Column(name = "VALOR", nullable = false, precision = 15, scale = 2)
     private BigDecimal valor;
 
@@ -56,6 +59,14 @@ public class Beneficio {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public BigDecimal getValor() {

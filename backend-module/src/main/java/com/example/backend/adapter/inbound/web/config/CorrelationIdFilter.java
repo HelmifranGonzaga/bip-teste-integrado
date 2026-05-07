@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import org.slf4j.MDC;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,7 +24,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * - X-Correlation-ID (entrada) ou gera novo UUID
  * - X-Trace-ID (saída) para clientes rastrearem requisições
  */
+// Precisa rodar ANTES do FilterChainProxy do Spring Security (order = -100) para
+// que os logs DEBUG de "Securing/Secured ..." também tragam o correlationId no MDC.
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorrelationIdFilter extends OncePerRequestFilter {
 
     private static final String CORRELATION_ID = "correlationId";

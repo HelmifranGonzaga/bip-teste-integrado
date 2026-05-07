@@ -1,6 +1,7 @@
 package com.example.backend.domain.model;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public class Beneficio {
     private Long id;
@@ -9,6 +10,7 @@ public class Beneficio {
     private BigDecimal valor;
     private Boolean ativo = Boolean.TRUE;
     private Long version;
+    private String cnpj;
 
     public Long getId() {
         return id;
@@ -71,5 +73,30 @@ public class Beneficio {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        if (cnpj == null || cnpj.isBlank()) {
+            this.cnpj = null;
+            return;
+        }
+        // Requisitos EF/ET:
+        //   - Letras devem ser maiúsculas
+        //   - Persistir apenas alfanuméricos (a máscara . / - é estritamente de UI)
+        // Centralizamos a normalização aqui para garantir formato uniforme no banco
+        // independente do caminho de entrada (REST, EJB, batch).
+        String normalized = cnpj.replaceAll("[^0-9A-Za-z]", "").toUpperCase(Locale.ROOT);
+        if (normalized.isEmpty()) {
+            this.cnpj = null;
+            return;
+        }
+        if (normalized.length() > 32) {
+            throw new IllegalArgumentException("CNPJ deve ter no máximo 32 caracteres");
+        }
+        this.cnpj = normalized;
     }
 }

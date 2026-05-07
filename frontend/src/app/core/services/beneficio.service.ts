@@ -12,34 +12,37 @@ export class BeneficioService {
   private readonly configService = inject(ConfigService);
 
   /**
-   * Listar todos os beneficiários
+   * Lista todos os benefícios.
    */
   list(): Observable<Beneficio[]> {
     return this.getApiUrl().pipe(
-      switchMap((apiUrl) => this.http.get<Beneficio[]>(`${apiUrl}/beneficios`))
+      switchMap((apiUrl) => this.http.get<Beneficio[]>(`${apiUrl}/beneficios`)),
+      map((items) => items.map((b) => this.normalizeBeneficio(b)))
     );
   }
 
   /**
-   * Criar novo beneficiário
+   * Cria um novo benefício.
    */
   create(payload: BeneficioPayload): Observable<Beneficio> {
     return this.getApiUrl().pipe(
-      switchMap((apiUrl) => this.http.post<Beneficio>(`${apiUrl}/beneficios`, payload))
+      switchMap((apiUrl) => this.http.post<Beneficio>(`${apiUrl}/beneficios`, payload)),
+      map((b) => this.normalizeBeneficio(b))
     );
   }
 
   /**
-   * Atualizar beneficiário
+   * Atualiza um benefício existente.
    */
   update(id: number, payload: BeneficioPayload): Observable<Beneficio> {
     return this.getApiUrl().pipe(
-      switchMap((apiUrl) => this.http.put<Beneficio>(`${apiUrl}/beneficios/${id}`, payload))
+      switchMap((apiUrl) => this.http.put<Beneficio>(`${apiUrl}/beneficios/${id}`, payload)),
+      map((b) => this.normalizeBeneficio(b))
     );
   }
 
   /**
-   * Deletar beneficiário
+   * Remove um benefício pelo id.
    */
   delete(id: number): Observable<void> {
     return this.getApiUrl().pipe(
@@ -48,7 +51,7 @@ export class BeneficioService {
   }
 
   /**
-   * Transferir saldo entre beneficiários
+   * Transfere saldo entre dois benefícios.
    */
   transfer(payload: TransferPayload): Observable<void> {
     return this.getApiUrl().pipe(
@@ -70,5 +73,10 @@ export class BeneficioService {
     }
 
     return environment.apiUrl;
+  }
+
+  /** Garante `cnpj` quando a API omite o campo (JSON sem propriedade). */
+  private normalizeBeneficio(b: Beneficio): Beneficio {
+    return { ...b, cnpj: b.cnpj ?? null };
   }
 }

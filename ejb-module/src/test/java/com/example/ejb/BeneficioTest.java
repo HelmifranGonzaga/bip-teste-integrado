@@ -17,6 +17,7 @@ class BeneficioTest {
         beneficio.setValor(new BigDecimal("100.00"));
         beneficio.setAtivo(false);
         beneficio.setVersion(1L);
+        beneficio.setCnpj("12.ABC.345/01DE-35");
 
         assertEquals(1L, beneficio.getId());
         assertEquals("Teste", beneficio.getNome());
@@ -24,5 +25,6 @@ class BeneficioTest {
         assertEquals(new BigDecimal("100.00"), beneficio.getValor());
         assertFalse(beneficio.getAtivo());
         assertEquals(1L, beneficio.getVersion());
+        assertEquals("12.ABC.345/01DE-35", beneficio.getCnpj());
     }
 }

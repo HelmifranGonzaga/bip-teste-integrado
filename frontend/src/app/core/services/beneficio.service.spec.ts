@@ -60,7 +60,7 @@ describe('BeneficioService', () => {
 
   it('should list beneficios', () => {
     const mockBeneficios: Beneficio[] = [
-      { id: 1, nome: 'Teste', descricao: 'Desc', valor: 100, ativo: true, version: 0 }
+      { id: 1, nome: 'Teste', descricao: 'Desc', valor: 100, ativo: true, version: 0, cnpj: null }
     ];
 
     service.list().subscribe((beneficios) => {
@@ -74,7 +74,13 @@ describe('BeneficioService', () => {
   });
 
   it('should create beneficio', () => {
-    const payload: BeneficioPayload = { nome: 'Teste', descricao: 'Desc', valor: 100, ativo: true };
+    const payload: BeneficioPayload = {
+      nome: 'Teste',
+      descricao: 'Desc',
+      valor: 100,
+      ativo: true,
+      cnpj: null
+    };
     const mockResponse: Beneficio = { id: 1, version: 0, ...payload };
 
     service.create(payload).subscribe((beneficio) => {
@@ -92,7 +98,8 @@ describe('BeneficioService', () => {
       nome: 'Teste Atualizado',
       descricao: 'Desc',
       valor: 200,
-      ativo: true
+      ativo: true,
+      cnpj: '12.ABC.345/0001-90'
     };
     const mockResponse: Beneficio = { id: 1, version: 0, ...payload };
 
@@ -159,5 +166,23 @@ describe('BeneficioService', () => {
     const req = httpMock.expectOne('http://localhost:8082/api/v1/beneficios');
     expect(req.request.method).toBe('GET');
     req.flush([]);
+  });
+
+  it('should normalize beneficio when API omits cnpj', () => {
+    const rawFromApi = {
+      id: 1,
+      nome: 'Teste',
+      descricao: 'Desc',
+      valor: 100,
+      ativo: true,
+      version: 0
+    } as Beneficio;
+
+    service.list().subscribe((beneficios) => {
+      expect(beneficios[0].cnpj).toBeNull();
+    });
+
+    const req = httpMock.expectOne('http://localhost:8082/api/v1/beneficios');
+    req.flush([rawFromApi]);
   });
 });

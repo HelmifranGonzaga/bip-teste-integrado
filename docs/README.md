@@ -48,6 +48,8 @@ O repositório está organizado nos seguintes módulos:
 - `frontend/`: Aplicação SPA (Single Page Application) desenvolvida em Angular.
 - `docs/`: Documentação adicional do projeto.
 
+Na **raiz do repositório**, arquivos como `PROMPT_DEV_v4.md`, `PROMPT_EF_ET_v4.md`, `especificacao_funcional.html` e `especificacao_tecnica.html` estão no **`.gitignore`** (instruções ou especificações locais / internas). Para documentação oficial versionada, use `docs/` ou outro caminho acordado com o time.
+
 ---
 
 ## ✅ Solução Implementada
@@ -81,10 +83,12 @@ O serviço `BeneficioEjbService` possuía falhas graves na operação de transfe
 
 ### Pré-requisitos
 Certifique-se de ter as seguintes ferramentas instaladas em sua máquina:
-- [Java 17+](https://adoptium.net/)
+- [Java 17](https://adoptium.net/) — **versão oficial do build** (`<java.version>17</java.version>` no Maven). JDKs mais novos (21+) costumam funcionar, mas o módulo `ejb-module` fixa versões de **Byte Buddy** e **Mockito** para testes compatíveis com bytecode mais recente; qualquer upgrade dessas bibliotecas deve ser feito nas propriedades `byte-buddy.version` e `mockito.version` no `pom.xml` raiz.
 - [Maven 3.8+](https://maven.apache.org/)
-- [Node.js 18+](https://nodejs.org/) e npm
+- [Node.js 18+](https://nodejs.org/) e npm (ou [Bun](https://bun.sh/) — os scripts em `frontend/package.json` funcionam com `npm run` / `bun run`)
 - [Angular CLI](https://angular.io/cli) (Opcional, mas recomendado)
+
+**Reprodutibilidade:** em CI ou equipe, alinhe o JDK ao **17** salvo decisão explícita de suportar outra versão e validar `mvn verify` nela.
 
 ### Passo a Passo
 
@@ -162,3 +166,49 @@ Com o backend em execução, você pode acessar a documentação interativa da A
 - `PUT /api/v1/beneficios/{id}` - Atualiza um benefício existente.
 - `DELETE /api/v1/beneficios/{id}` - Remove um benefício.
 - `POST /api/v1/beneficios/transfer` - Realiza a transferência de saldo entre dois benefícios.
+
+#### Campo opcional `cnpj` (CNPJ alfanumérico)
+
+Nos payloads de **criação** e **atualização** e nas **respostas** JSON de benefício, o campo `cnpj` é **opcional**. Valores `null`, omitido ou apenas espaços em branco são aceitos no envio; quando preenchido, o backend valida com a anotação **`@ValidCnpjAlfanumerico`** (`ValidCnpjAlfanumericoValidator`), que delega a **`CnpjAlfanumerico`**: na entrada, só são permitidos alfanuméricos e os separadores da máscara (`.`, `/`, `-`) e espaços; em seguida remove separadores, normaliza para maiúsculas (`Locale.ROOT`), exige **14 caracteres** no padrão **`[A-Z0-9]{12}[0-9]{2}`** e confere os **dígitos verificadores módulo 11**, alinhado ao frontend (`frontend/src/app/core/utils/cnpj-alfanumerico.ts`).
+
+**Persistência:** o domínio grava o CNPJ **sem máscara**, apenas **14 caracteres alfanuméricos em maiúsculas** (ex.: `12ABC34501DE35`). A API pode receber com ou sem máscara; nas respostas JSON o valor segue o formato armazenado. O frontend formata na listagem para leitura humana e permite busca com ou sem máscara.
+
+**Exemplos mínimos** (`POST` ou `PUT`; demais campos conforme contrato da API):
+
+```json
+{
+  "nome": "Benefício Exemplo",
+  "descricao": "Descrição",
+  "valor": 100.0,
+  "ativo": true,
+  "cnpj": null
+}
+```
+
+```json
+{
+  "nome": "Benefício Exemplo",
+  "descricao": "Descrição",
+  "valor": 100.0,
+  "ativo": true,
+  "cnpj": "12.ABC.345/01DE-35"
+}
+```
+
+O mesmo CNPJ válido pode ser enviado já normalizado (equivalente ao que fica no banco):
+
+```json
+{
+  "nome": "Benefício Exemplo",
+  "descricao": "Descrição",
+  "valor": 100.0,
+  "ativo": true,
+  "cnpj": "12ABC34501DE35"
+}
+```
+
+Para **schemas**, parâmetros e testes interativos, use o **Swagger UI** indicado acima ou o documento **OpenAPI** exposto pelo SpringDoc (por exemplo `http://localhost:8082/v3/api-docs`), com o backend em execução.
+
+**Frontend:** na listagem de benefícios, a **busca global** da tabela considera nome, descrição, valor e CNPJ (incluindo variantes com e sem máscara via campos derivados).
+
+**Produção:** defina `JWT_SECRET` (e demais variáveis de segurança) no ambiente; não use segredos padrão de perfil `local` em produção.

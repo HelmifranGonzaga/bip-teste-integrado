@@ -8,18 +8,30 @@
       [rows]="5"
       [rowsPerPageOptions]="[5, 10, 20]"
       [loading]="loading"
-      [globalFilterFields]="['nome', 'descricao', 'valor']"
+      [globalFilterFields]="['nome', 'descricao', 'valor', 'cnpjNormalizado', 'cnpjMascarado']"
       styleClass="p-datatable-sm p-datatable-striped"
     >
       <ng-template pTemplate="caption">
-        <div class="flex items-center justify-content-between">
-          <h2 class="m-0 text-xl font-semibold">Lista de Benefícios</h2>
+        <div class="beneficio-list-caption flex flex-wrap items-center justify-between gap-4">
+          <h2 class="beneficio-list-title">Lista de Benefícios</h2>
+          <p-iconfield iconPosition="left" class="beneficio-list-global-search">
+            <p-inputicon class="pi pi-search" />
+            <input
+              id="beneficio-list-global-filter"
+              type="text"
+              pInputText
+              (input)="onGlobalFilter(dt, $event)"
+              placeholder="Buscar por nome, descrição, valor ou CNPJ"
+              aria-label="Buscar na tabela por nome, descrição, valor ou CNPJ"
+            />
+          </p-iconfield>
         </div>
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="id" scope="col">ID <p-sortIcon field="id"></p-sortIcon></th>
           <th pSortableColumn="nome" scope="col">Nome <p-sortIcon field="nome"></p-sortIcon></th>
+          <th pSortableColumn="cnpj" scope="col">CNPJ <p-sortIcon field="cnpj"></p-sortIcon></th>
           <th pSortableColumn="descricao" scope="col">Descrição <p-sortIcon field="descricao"></p-sortIcon></th>
           <th pSortableColumn="valor" scope="col">Valor <p-sortIcon field="valor"></p-sortIcon></th>
           <th pSortableColumn="ativo" scope="col">Ativo <p-sortIcon field="ativo"></p-sortIcon></th>
@@ -30,6 +42,7 @@
         <tr>
           <td>{{ item.id }}</td>
           <td class="font-medium">{{ item.nome }}</td>
+          <td class="text-color-secondary">{{ item.cnpjMascarado || '—' }}</td>
           <td class="text-color-secondary">{{ item.descricao }}</td>
           <td class="font-semibold">{{ item.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</td>
           <td>
@@ -42,7 +55,7 @@
             ></i>
           </td>
           <td>
-            <div class="flex justify-content-center gap-2">
+            <div class="flex justify-center gap-2">
               <button
                 pButton
                 type="button"
@@ -73,7 +86,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6" class="text-center p-4">Nenhum benefício encontrado.</td>
+          <td colspan="7" class="text-center p-4">Nenhum benefício encontrado.</td>
         </tr>
       </ng-template>
     </p-table>
