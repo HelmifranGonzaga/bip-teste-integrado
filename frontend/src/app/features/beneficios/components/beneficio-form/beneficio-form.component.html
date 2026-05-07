@@ -17,6 +17,32 @@
     </div>
 
     <div class="field mb-3">
+      <label for="cnpj" class="block mb-2">CNPJ</label>
+      <input
+        pInputText
+        id="cnpj"
+        formControlName="cnpj"
+        maxlength="18"
+        autocomplete="off"
+        placeholder="XX.XXX.XXX/XXXX-XX (opcional)"
+        (input)="onCnpjInput($event)"
+      />
+      @if (form.get('cnpj')!.invalid && form.get('cnpj')!.touched) {
+        <small class="text-red-500">
+          @if (form.get('cnpj')!.hasError('cnpjCaracteresInvalidos')) {
+            CNPJ aceita apenas letras, dígitos e os separadores . / -.
+          } @else if (form.get('cnpj')!.hasError('cnpjTamanho')) {
+            CNPJ deve ter 14 caracteres (após remover pontuação).
+          } @else if (form.get('cnpj')!.hasError('cnpjFormato')) {
+            CNPJ inválido: 12 posições alfanuméricas e 2 dígitos verificadores numéricos.
+          } @else if (form.get('cnpj')!.hasError('cnpjDv')) {
+            CNPJ com dígitos verificadores incorretos.
+          }
+        </small>
+      }
+    </div>
+
+    <div class="field mb-3">
       <label for="valor" class="block mb-2">Valor</label>
       <p-inputNumber
         inputId="valor"

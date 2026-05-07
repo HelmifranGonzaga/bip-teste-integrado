@@ -13,6 +13,9 @@ public record BeneficioResponse(
         
         @Schema(description = "Descrição detalhada do benefício", example = "Auxílio para compras em supermercados")
         String descricao,
+
+        @Schema(description = "CNPJ alfanumérico do titular/fornecedor (14 posições; persistido sem máscara em caixa alta)", example = "12ABC34501DE35")
+        String cnpj,
         
         @Schema(description = "Valor monetário do benefício", example = "850.00")
         BigDecimal valor,

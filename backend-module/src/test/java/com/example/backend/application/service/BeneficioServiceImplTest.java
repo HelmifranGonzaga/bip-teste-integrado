@@ -64,6 +64,7 @@ class BeneficioServiceImplTest {
             Beneficio target = invocation.getArgument(1);
             target.setNome(source.getNome());
             target.setDescricao(source.getDescricao());
+            target.setCnpj(source.getCnpj());
             target.setValor(source.getValor());
             target.setAtivo(source.getAtivo());
             return null;

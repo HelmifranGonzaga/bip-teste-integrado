@@ -2,8 +2,35 @@
   width: 100%;
 }
 
+.beneficio-list-caption {
+  width: 100%;
+}
+
+.beneficio-list-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.beneficio-list-global-search {
+  flex: 1 1 14rem;
+  max-width: 22rem;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.beneficio-list-global-search :is(input, .p-inputtext) {
+  width: 100%;
+}
+
 @media (max-width: 900px) {
   .table-wrapper {
     overflow-x: auto;
+  }
+
+  .beneficio-list-global-search {
+    margin-left: 0;
+    max-width: 100%;
   }
 }

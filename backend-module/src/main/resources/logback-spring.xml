@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}"/>
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <!--
+        LOG_PATH é populado pela propriedade Spring `logging.file.path` (application.yml).
+        Caso esteja ausente (ex.: testes), usamos `logs` como fallback para evitar
+        o appender criar a pasta literal "LOG_PATH_IS_UNDEFINED".
+    -->
+    <property name="LOG_DIR" value="${LOG_PATH:-logs}"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_DIR}/desafio-bip.log}"/>
 
     <!-- Console Appender (Development) -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <fieldNames>
-                <timestamp>timestamp</timestamp>
-                <level>level</level>
-                <message>message</message>
-                <loggerName>logger</loggerName>
-                <threadName>thread</threadName>
-            </fieldNames>
             <customFields>{"service":"desafio-bip","version":"0.0.1"}</customFields>
-            <mdcFieldNames>correlationId</mdcFieldNames>
         </encoder>
     </appender>
 
@@ -22,18 +19,10 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}</file>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <fieldNames>
-                <timestamp>timestamp</timestamp>
-                <level>level</level>
-                <message>message</message>
-                <loggerName>logger</loggerName>
-                <threadName>thread</threadName>
-            </fieldNames>
-            <customFields>{"service":"desafio-bip","version":"0.0.1","environment":"${ENVIRONMENT:development}"}</customFields>
-            <mdcFieldNames>correlationId</mdcFieldNames>
+            <customFields>{"service":"desafio-bip","version":"0.0.1","environment":"${ENVIRONMENT:-development}"}</customFields>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/spring-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/spring-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -50,4 +39,3 @@
         <appender-ref ref="FILE"/>
     </root>
 </configuration>
-

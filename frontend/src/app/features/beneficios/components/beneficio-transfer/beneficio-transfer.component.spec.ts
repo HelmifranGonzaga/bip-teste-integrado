@@ -13,7 +13,8 @@ describe('BeneficioTransferComponent', () => {
       descricao: 'Vale refeição',
       valor: 1234.56,
       ativo: true,
-      version: 1
+      version: 1,
+      cnpj: null
     },
     {
       id: 2,
@@ -21,7 +22,8 @@ describe('BeneficioTransferComponent', () => {
       descricao: 'Vale transporte',
       valor: 789.1,
       ativo: true,
-      version: 1
+      version: 1,
+      cnpj: null
     }
   ];
 

@@ -5,10 +5,13 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.retry.annotation.EnableRetry;
 
-@SpringBootApplication
+// A autenticação é stateless via JWT (ver SecurityConfig + JwtAuthenticationFilter);
+// excluímos UserDetailsServiceAutoConfiguration para não gerar a senha default em runtime.
+@SpringBootApplication(exclude = {UserDetailsServiceAutoConfiguration.class})
 @ComponentScan(basePackages = "com.example")
 @EntityScan(basePackages = "com.example.ejb")
 @EnableRetry

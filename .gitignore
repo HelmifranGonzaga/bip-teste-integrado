@@ -18,6 +18,13 @@ ejb-module/target/
 # Backend
 backend-module/target/
 backend-module/logs/
+backend-module/LOG_PATH_IS_UNDEFINED/
+
+# Instruções / especificações locais (não versionar no repositório)
+PROMPT_DEV_v4.md
+PROMPT_EF_ET_v4.md
+especificacao_funcional.html
+especificacao_tecnica.html
 
 # Test & Development
 test-jwt-flow.sh

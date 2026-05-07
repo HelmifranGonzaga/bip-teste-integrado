@@ -9,21 +9,23 @@ class DtoTest {
 
     @Test
     void shouldSetAndGetBeneficioRequest() {
-        BeneficioRequest request = new BeneficioRequest("Teste", "Desc", BigDecimal.TEN, true);
+        BeneficioRequest request = new BeneficioRequest("Teste", "Desc", null, BigDecimal.TEN, true);
 
         assertEquals("Teste", request.nome());
         assertEquals("Desc", request.descricao());
+        assertNull(request.cnpj());
         assertEquals(BigDecimal.TEN, request.valor());
         assertTrue(request.ativo());
     }
 
     @Test
     void shouldSetAndGetBeneficioResponse() {
-        BeneficioResponse response = new BeneficioResponse(1L, "Teste", "Desc", BigDecimal.TEN, true, 1L);
+        BeneficioResponse response = new BeneficioResponse(1L, "Teste", "Desc", "12.ABC.345/01DE-35", BigDecimal.TEN, true, 1L);
 
         assertEquals(1L, response.id());
         assertEquals("Teste", response.nome());
         assertEquals("Desc", response.descricao());
+        assertEquals("12.ABC.345/01DE-35", response.cnpj());
         assertEquals(BigDecimal.TEN, response.valor());
         assertTrue(response.ativo());
         assertEquals(1L, response.version());

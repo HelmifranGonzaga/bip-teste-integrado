@@ -5,6 +5,7 @@ export interface Beneficio {
   valor: number;
   ativo: boolean;
   version: number;
+  cnpj: string | null;
 }
 
 export interface BeneficioPayload {
@@ -12,6 +13,7 @@ export interface BeneficioPayload {
   descricao: string;
   valor: number;
   ativo: boolean;
+  cnpj: string | null;
 }
 
 export interface TransferPayload {

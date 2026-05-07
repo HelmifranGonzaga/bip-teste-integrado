@@ -1,5 +1,6 @@
 package com.example.backend.adapter.inbound.web.dto;
 
+import com.example.backend.validation.ValidCnpjAlfanumerico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,10 @@ public record BeneficioRequest(
         @Schema(description = "Descrição detalhada do benefício", example = "Auxílio para compras em supermercados")
         @Size(max = 255, message = "Descrição deve ter no máximo 255 caracteres")
         String descricao,
+
+        @Schema(description = "CNPJ alfanumérico do titular/fornecedor vinculado ao benefício (14 posições; aceita com ou sem máscara — armazenado sem máscara em caixa alta)", example = "12.ABC.345/01DE-35")
+        @ValidCnpjAlfanumerico
+        String cnpj,
 
         @Schema(description = "Valor monetário do benefício", example = "850.00")
         @NotNull(message = "Valor é obrigatório")
