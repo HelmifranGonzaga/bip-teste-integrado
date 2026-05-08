@@ -87,7 +87,7 @@ class BeneficioControllerTest {
                 42L,
                 "Vale Alimentação",
                 "Auxílio",
-                "12.ABC.345/01DE-35",
+                "12ABC34501DE35",
                 new BigDecimal("850.00"),
                 true,
                 0L);
@@ -103,7 +103,7 @@ class BeneficioControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(42))
                 .andExpect(jsonPath("$.nome").value("Vale Alimentação"))
-                .andExpect(jsonPath("$.cnpj").value("12.ABC.345/01DE-35"))
+                .andExpect(jsonPath("$.cnpj").value("12ABC34501DE35"))
                 .andExpect(jsonPath("$.valor").value(850.0))
                 .andExpect(jsonPath("$.ativo").value(true))
                 .andExpect(jsonPath("$.version").value(0));
