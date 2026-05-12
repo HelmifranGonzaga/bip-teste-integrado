@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Beneficio } from '../../../../core/models/beneficio.model';
 import {
@@ -40,10 +40,17 @@ interface BeneficioRow extends Beneficio {
 export class BeneficioListComponent {
   private static readonly INVISIBLE_CHARS = /[\u200B-\u200D\uFEFF]/g;
 
+  @ViewChild('dt') table!: Table;
+
   private _rows: ReadonlyArray<BeneficioRow> = [];
+  private _prevLength = 0;
 
   @Input()
   set beneficios(value: ReadonlyArray<Beneficio> | null | undefined) {
+    const newLength = value?.length ?? 0;
+    const dataChanged = newLength !== this._prevLength;
+    this._prevLength = newLength;
+
     this._rows = (value ?? []).map((b) => {
       const normalizado = b.cnpj ? normalizeCnpjAlfanumerico(b.cnpj) : '';
       const mascarado = normalizado ? formatCnpjMasked(normalizado) : '';
@@ -56,6 +63,10 @@ export class BeneficioListComponent {
         cnpjFiltro
       };
     });
+
+    if (dataChanged && this.table) {
+      setTimeout(() => this.table.sortSingle(), 0);
+    }
   }
   get beneficios(): ReadonlyArray<BeneficioRow> {
     return this._rows;
