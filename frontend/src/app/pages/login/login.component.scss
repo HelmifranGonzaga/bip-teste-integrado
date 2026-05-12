@@ -190,8 +190,15 @@
   border-radius: 14px;
   border: 1.5px solid #d7d3c5;
   background: #faf9f5;
+  color: #141413;
+  font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
   padding: 0 1rem;
+}
+
+:host ::ng-deep .p-inputtext::placeholder,
+:host ::ng-deep .p-password input::placeholder {
+  color: #b0aea5;
 }
 
 :host ::ng-deep .p-inputtext:hover,
