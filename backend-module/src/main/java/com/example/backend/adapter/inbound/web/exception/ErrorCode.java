@@ -15,4 +15,5 @@ public final class ErrorCode {
     public static final String CONFLICT = "CONFLICT";
     public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
     public static final String CONNECTION_ERROR = "CONNECTION_ERROR";
+    public static final String OPTIMISTIC_LOCK = "OPTIMISTIC_LOCK";
 }

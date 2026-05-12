@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.dao.QueryTimeoutException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,13 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
         List<Beneficio> beneficios = repositoryPort.findAll();
         log.debug("Found {} beneficios", beneficios.size());
         return beneficios;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Beneficio> listPaginated(Pageable pageable) {
+        log.debug("Listing beneficios paginated: page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
+        return repositoryPort.findAllPaginated(pageable);
     }
 
     @Override

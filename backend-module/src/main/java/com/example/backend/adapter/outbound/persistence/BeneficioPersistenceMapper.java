@@ -14,6 +14,10 @@ public interface BeneficioPersistenceMapper {
     @Mapping(target = "cnpj", source = "cnpj")
     @Mapping(target = "valor", source = "valor")
     @Mapping(target = "ativo", source = "ativo")
+    @Mapping(target = "createdBy", source = "createdBy")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedBy", source = "updatedBy")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     @Mapping(target = "version", source = "version")
     Beneficio toDomain(com.example.ejb.Beneficio entity);
 
@@ -23,6 +27,10 @@ public interface BeneficioPersistenceMapper {
     @Mapping(target = "cnpj", source = "cnpj")
     @Mapping(target = "valor", source = "valor")
     @Mapping(target = "ativo", source = "ativo")
+    @Mapping(target = "createdBy", source = "createdBy")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedBy", source = "updatedBy")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     @Mapping(target = "version", source = "version")
     com.example.ejb.Beneficio toEntity(Beneficio domain);
 }

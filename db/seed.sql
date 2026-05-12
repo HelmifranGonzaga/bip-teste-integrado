@@ -1,3 +1,6 @@
+INSERT INTO USUARIO (USERNAME, PASSWORD, NOME, ROLE, ATIVO, VERSION) VALUES
+('admin', '$2a$10$2SvYwjv.XXLL/pMp7jWvpuR58HkhjT.V4kJaN/9ZnA6T/V6PbbL6q', 'Administrador', 'ADMIN', TRUE, 0);
+
 INSERT INTO BENEFICIO (NOME, DESCRICAO, CNPJ, VALOR, ATIVO, VERSION) VALUES
 ('Vale Alimentação', 'Auxílio para compras em supermercados', '12ABC34501DE35', 850.00, TRUE, 0),
 ('Vale Refeição', 'Auxílio para refeições diárias', NULL, 900.00, TRUE, 0),

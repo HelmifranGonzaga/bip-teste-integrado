@@ -1,6 +1,6 @@
 package com.example.backend.adapter.inbound.web;
 
-import com.example.backend.adapter.inbound.web.security.JwtProvider;
+import com.example.backend.application.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,31 +12,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Auth Controller.
- * Fornece endpoints para autenticação JWT.
- */
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Autenticação", description = "Endpoints de autenticação JWT")
 public class AuthController {
 
-    private final JwtProvider jwtProvider;
+    private final AuthService authService;
 
-    public AuthController(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Login", description = "Gera JWT token para acesso aos endpoints protegidos")
+    @Operation(summary = "Login", description = "Autentica usuário e retorna JWT token")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        // Por agora: aceita qualquer username e retorna um token
-        String token = jwtProvider.generateToken(request.username());
-        return new LoginResponse(token, "Bearer", jwtProvider.getExpirationSeconds());
+        String token = authService.authenticate(request.username(), request.password());
+        return new LoginResponse(token, "Bearer", authService.getExpirationSeconds());
     }
 
-    public record LoginRequest(@NotBlank(message = "Username é obrigatório") String username) {}
+    public record LoginRequest(
+            @NotBlank(message = "Username é obrigatório") String username,
+            @NotBlank(message = "Password é obrigatório") String password
+    ) {}
 
     public record LoginResponse(String accessToken, String tokenType, long expiresIn) {}
 }

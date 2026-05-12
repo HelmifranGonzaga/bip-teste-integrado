@@ -20,7 +20,7 @@ class DtoTest {
 
     @Test
     void shouldSetAndGetBeneficioResponse() {
-        BeneficioResponse response = new BeneficioResponse(1L, "Teste", "Desc", "12ABC34501DE35", BigDecimal.TEN, true, 1L);
+        BeneficioResponse response = new BeneficioResponse(1L, "Teste", "Desc", "12ABC34501DE35", BigDecimal.TEN, true, null, null, null, null, 1L);
 
         assertEquals(1L, response.id());
         assertEquals("Teste", response.nome());

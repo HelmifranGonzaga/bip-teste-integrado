@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.backend.adapter.inbound.web.dto.BeneficioResponse;
 import com.example.backend.adapter.inbound.web.exception.ApiExceptionHandler;
 import com.example.backend.adapter.inbound.web.mapper.BeneficioMapper;
+import com.example.backend.domain.idempotency.IdempotencyStore;
 import com.example.backend.domain.model.Beneficio;
 import com.example.backend.domain.port.inbound.BeneficioUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +46,9 @@ class BeneficioControllerTest {
 
     @MockBean
     private BeneficioMapper beneficioMapper;
+
+    @MockBean
+    private IdempotencyStore idempotencyStore;
 
     @Test
     void postCreate_returns400_whenCnpjDvInvalid() throws Exception {
@@ -90,6 +94,10 @@ class BeneficioControllerTest {
                 "12ABC34501DE35",
                 new BigDecimal("850.00"),
                 true,
+                null,
+                null,
+                null,
+                null,
                 0L);
 
         when(beneficioMapper.toDomain(any())).thenReturn(domainIn);

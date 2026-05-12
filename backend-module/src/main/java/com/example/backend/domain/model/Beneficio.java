@@ -1,6 +1,7 @@
 package com.example.backend.domain.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 public class Beneficio {
@@ -11,6 +12,10 @@ public class Beneficio {
     private Boolean ativo = Boolean.TRUE;
     private Long version;
     private String cnpj;
+    private String createdBy;
+    private LocalDateTime createdAt;
+    private String updatedBy;
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -74,6 +79,15 @@ public class Beneficio {
     public void setVersion(Long version) {
         this.version = version;
     }
+
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getUpdatedBy() { return updatedBy; }
+    public void setUpdatedBy(String updatedBy) { this.updatedBy = updatedBy; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     public String getCnpj() {
         return cnpj;

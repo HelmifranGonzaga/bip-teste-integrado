@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "BENEFICIO")
@@ -32,6 +33,18 @@ public class Beneficio {
 
     @Column(name = "ATIVO", nullable = false)
     private Boolean ativo = true;
+
+    @Column(name = "CREATED_BY", length = 50)
+    private String createdBy;
+
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+
+    @Column(name = "UPDATED_BY", length = 50)
+    private String updatedBy;
+
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
 
     @Version
     @Column(name = "VERSION", nullable = false)
@@ -84,6 +97,15 @@ public class Beneficio {
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
     }
+
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getUpdatedBy() { return updatedBy; }
+    public void setUpdatedBy(String updatedBy) { this.updatedBy = updatedBy; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     public Long getVersion() {
         return version;

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -58,6 +59,16 @@ public class ApiExceptionHandler {
                 .map(error -> formatFieldError(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.joining("; "));
         return buildError(HttpStatus.BAD_REQUEST, ErrorCode.VALIDATION_ERROR, message);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ApiErrorResponse> handleOptimisticLock(ObjectOptimisticLockingFailureException ex) {
+        log.warn("Optimistic lock exception: {}", ex.getMessage());
+        String correlationId = MDC.get("correlationId");
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(ErrorCode.OPTIMISTIC_LOCK,
+                        "Registro foi alterado por outro usuário. Recarregue e tente novamente.", correlationId));
     }
 
     @ExceptionHandler(Exception.class)
