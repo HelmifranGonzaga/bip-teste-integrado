@@ -40,7 +40,7 @@ export class LoginComponent {
   private readonly rememberedUsername = sessionStorage.getItem('remembered_username');
 
   readonly loginModel = signal<LoginModel>({
-    username: this.rememberedUsername ?? '',
+    username: '',
     password: ''
   });
 
@@ -50,7 +50,7 @@ export class LoginComponent {
   });
 
   readonly loading = signal(false);
-  rememberMe = signal(this.rememberedUsername !== null);
+  rememberMe = signal(false);
 
   isFieldInvalid(fieldName: keyof LoginModel): boolean {
     const field = fieldName === 'username' ? this.loginForm.username : this.loginForm.password;
