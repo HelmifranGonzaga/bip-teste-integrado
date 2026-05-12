@@ -25,12 +25,13 @@
             type="text"
             pInputText
             [formField]="loginForm.username"
-            placeholder="Digite seu usuário ou email"
+            placeholder="Digite seu usuário"
             class="form-input"
             [class.has-error]="isFieldInvalid('username')"
             aria-describedby="username-error username-help"
             autocomplete="username"
             spellcheck="false"
+            autofocus
           />
           @if (isFieldInvalid('username')) {
             <small class="error-message" id="username-error" role="alert">
@@ -40,7 +41,7 @@
           } @else {
             <small class="help-text" id="username-help">
               <i class="pi pi-info-circle" aria-hidden="true"></i>
-              Use email ou nome de usuário
+              use nome de usuário ou email
             </small>
           }
         </div>
