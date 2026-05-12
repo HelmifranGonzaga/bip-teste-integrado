@@ -1,0 +1,165 @@
+<div class="container">
+  <section class="page-header mb-4" aria-label="Ações principais">
+    <div class="page-title-group">
+      <h1 class="page-title m-0">Usuários</h1>
+      <p class="page-subtitle m-0">Gerencie os usuários do sistema e seus perfis de acesso.</p>
+    </div>
+    <div class="page-actions">
+      @if (isAdmin()) {
+        <button
+          pButton
+          type="button"
+          label="Novo Usuário"
+          icon="pi pi-plus"
+          (click)="openNew()"
+          [disabled]="loading()"
+        ></button>
+      }
+    </div>
+  </section>
+
+  <p-card styleClass="p-0">
+    <div class="table-wrapper">
+      <p-table
+        #dt
+        [value]="users()"
+        [tableStyle]="{ 'min-width': '40rem' }"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [loading]="loading()"
+        [globalFilterFields]="['username', 'nome', 'role']"
+        styleClass="p-datatable-sm p-datatable-striped"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-caption flex flex-wrap items-center justify-between gap-4">
+            <h2 class="table-title">Lista de Usuários</h2>
+            <p-iconfield iconPosition="left">
+              <p-inputicon class="pi pi-search" />
+              <input
+                type="text"
+                pInputText
+                (input)="dt.filterGlobal($event, 'contains')"
+                placeholder="Buscar por nome, username ou perfil"
+                aria-label="Buscar usuários"
+              />
+            </p-iconfield>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id" scope="col">ID <p-sortIcon field="id"></p-sortIcon></th>
+            <th pSortableColumn="username" scope="col">Username <p-sortIcon field="username"></p-sortIcon></th>
+            <th pSortableColumn="nome" scope="col">Nome <p-sortIcon field="nome"></p-sortIcon></th>
+            <th pSortableColumn="role" scope="col">Perfil <p-sortIcon field="role"></p-sortIcon></th>
+            <th pSortableColumn="ativo" scope="col">Status <p-sortIcon field="ativo"></p-sortIcon></th>
+            <th scope="col" style="width: 10rem; text-align: center">Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+          <tr>
+            <td>{{ user.id }}</td>
+            <td class="font-medium">{{ user.username }}</td>
+            <td>{{ user.nome }}</td>
+            <td>
+              <p-tag
+                [value]="user.role === 'ADMIN' ? 'Administrador' : 'Usuário'"
+                [severity]="user.role === 'ADMIN' ? 'secondary' : 'info'"
+                [rounded]="true"
+              ></p-tag>
+            </td>
+            <td>
+              <p-tag
+                [value]="user.ativo ? 'Ativo' : 'Inativo'"
+                [severity]="user.ativo ? 'success' : 'danger'"
+                [rounded]="true"
+              ></p-tag>
+            </td>
+            <td>
+              <div class="flex justify-center gap-2">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  severity="info"
+                  [rounded]="true"
+                  [text]="true"
+                  [disabled]="loading()"
+                  (click)="onEdit(user)"
+                  pTooltip="Editar"
+                ></button>
+                @if (isAdmin()) {
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-key"
+                    severity="warn"
+                    [rounded]="true"
+                    [text]="true"
+                    [disabled]="loading() || generatingPassword()"
+                    (click)="onResetPassword(user)"
+                    pTooltip="Gerar nova senha"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [rounded]="true"
+                    [text]="true"
+                    [disabled]="loading()"
+                    (click)="onDelete(user)"
+                    pTooltip="Excluir"
+                  ></button>
+                }
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center p-6">
+              <div class="flex flex-column items-center justify-center gap-2">
+                <i class="pi pi-users text-4xl text-400"></i>
+                <span class="text-500">Nenhum usuário encontrado.</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </p-card>
+</div>
+
+<p-dialog
+  [header]="editingUser() ? 'Editar Usuário' : 'Novo Usuário'"
+  [visible]="showDialog()"
+  (visibleChange)="showDialog.set($event)"
+  (onHide)="onDialogHide()"
+  [modal]="true"
+  [style]="{ width: '480px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closeOnEscape]="!saving()"
+  [closable]="!saving()"
+>
+  @if (showDialog()) {
+    <app-user-form
+      [editingUser]="editingUser()"
+      [submitting]="saving()"
+      [isAdmin]="isAdmin()"
+      [toggling]="toggling()"
+      [generatingPassword]="generatingPassword()"
+      [generatedPassword]="generatedPassword()"
+      (save)="onSave($event)"
+      (cancel)="showDialog.set(false)"
+      (toggleActive)="onToggleActive($event)"
+      (generatePassword)="onGeneratePassword()"
+    />
+  }
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
