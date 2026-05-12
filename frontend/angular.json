@@ -59,19 +59,11 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular/build-angular:vitest",
           "options": {
-            "configPath": "jest.config.js",
             "tsConfig": "tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "styles": [
-              "node_modules/primeicons/primeicons.css",
-              "src/styles.css"
-            ],
-            "scripts": []
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "setupFiles": ["src/setup-vitest.ts"]
           }
         }
       }

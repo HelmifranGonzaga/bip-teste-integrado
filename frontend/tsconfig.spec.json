@@ -6,7 +6,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "types": [
-      "jest",
+      "vitest/globals",
       "node"
     ]
   },
@@ -15,6 +15,6 @@
     "src/**/*.d.ts"
   ],
   "files": [
-    "src/setup-jest.ts"
+    "src/setup-vitest.ts"
   ]
 }
