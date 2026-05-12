@@ -12,6 +12,8 @@
       [lazy]="lazy"
       (onLazyLoad)="onLazyLoad($event)"
       [globalFilterFields]="lazy ? undefined : ['nome', 'descricao', 'valor', 'cnpjFiltro']"
+      [sortField]="'id'"
+      [sortOrder]="-1"
       styleClass="p-datatable-sm p-datatable-striped"
     >
       <ng-template pTemplate="caption">

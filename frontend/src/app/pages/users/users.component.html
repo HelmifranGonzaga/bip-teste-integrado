@@ -39,6 +39,8 @@
         [rows]="10"
         [rowsPerPageOptions]="[5, 10, 20]"
         [globalFilterFields]="['username', 'nome', 'role']"
+        [sortField]="'id'"
+        [sortOrder]="-1"
         styleClass="p-datatable-sm p-datatable-striped"
       >
         <ng-template pTemplate="caption">
