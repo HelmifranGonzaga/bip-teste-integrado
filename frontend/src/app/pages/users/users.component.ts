@@ -51,7 +51,7 @@ export class UsersComponent {
   editingUser = signal<User | null>(null);
   showDialog = signal(false);
   saving = signal(false);
-  loading = signal(true);
+  loading = signal(false);
   toggling = signal(false);
   generatingPassword = signal(false);
   generatedPassword = signal('');

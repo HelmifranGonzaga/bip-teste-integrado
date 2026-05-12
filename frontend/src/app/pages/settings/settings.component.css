@@ -112,13 +112,6 @@
   min-width: 150px;
 }
 
-.security-options {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem 1rem;
-}
-
 .danger-card {
   border-left: 4px solid var(--p-red-500);
 }
@@ -154,12 +147,8 @@
   font-size: 0.9rem;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--p-surface-200);
+.settings-footer {
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -183,7 +172,4 @@
     align-items: flex-start;
   }
 
-  .action-buttons {
-    flex-direction: column;
-  }
 }

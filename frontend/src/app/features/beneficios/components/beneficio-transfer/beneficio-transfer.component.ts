@@ -18,6 +18,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FluidModule } from 'primeng/fluid';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
 import { Beneficio } from '../../../../core/models/beneficio.model';
 import { TransferBeneficioEvent } from '../../beneficios.types';
 
@@ -30,7 +31,8 @@ import { TransferBeneficioEvent } from '../../beneficios.types';
     ButtonModule,
     InputNumberModule,
     CardModule,
-    FluidModule
+    FluidModule,
+    SelectModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './beneficio-transfer.component.html'

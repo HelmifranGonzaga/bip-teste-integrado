@@ -109,3 +109,144 @@ p, li, span, label, input, textarea, button, a {
 .p-checkbox .p-checkbox-box {
   border-radius: 4px;
 }
+
+/* Shared action sections */
+.action-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 16px;
+  background: rgba(232, 230, 220, 0.5);
+  border: 1px solid rgba(215, 211, 197, 0.9);
+}
+
+.action-section__label {
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--anthropic-mid);
+}
+
+.action-section__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.required {
+  color: #d97757;
+  font-weight: 600;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.375rem;
+  color: #6b6a63;
+  font-size: 0.8125rem;
+}
+
+.field-optional {
+  color: #6b6a63;
+  font-weight: 400;
+}
+
+/* Shared modal shell */
+.app-modal.p-dialog {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 230, 220, 0.95);
+  box-shadow: 0 24px 80px rgba(20, 20, 19, 0.22);
+  background: rgba(250, 249, 245, 0.98);
+}
+
+.app-modal .p-dialog-header {
+  background: linear-gradient(135deg, #faf9f5 0%, #f2efe7 100%);
+  border-bottom: 1px solid rgba(232, 230, 220, 0.95);
+  padding: 1.15rem 1.5rem;
+}
+
+.app-modal .p-dialog-title {
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #141413;
+}
+
+.app-modal .p-dialog-content {
+  padding: 1.5rem;
+  background: transparent;
+}
+
+.app-modal .p-dialog-footer {
+  display: none;
+}
+
+.modal-intro {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.95rem 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(232, 230, 220, 0.95);
+  border-radius: 16px;
+  background: rgba(232, 230, 220, 0.35);
+}
+
+.modal-intro__icon {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(217, 119, 87, 0.12);
+  color: var(--anthropic-orange);
+}
+
+.modal-intro__title {
+  margin: 0 0 0.2rem;
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--p-surface-900);
+}
+
+.modal-intro__text {
+  margin: 0;
+  color: var(--p-surface-600);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.modal-actions {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .action-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .action-section__actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .app-modal.p-dialog {
+    border-radius: 20px;
+  }
+
+  .app-modal .p-dialog-content {
+    padding: 1rem;
+  }
+
+  .modal-intro {
+    padding: 0.85rem 0.9rem;
+  }
+}

@@ -105,8 +105,11 @@ export class LoginComponent {
           });
         });
 
+        this.loading.set(false);
+        await this.nextFrame();
         this.navigateToRedirectUrl(this.getRedirectUrl());
       } catch (error) {
+        this.loading.set(false);
         const errorMessage = this.getErrorMessage(error);
         this.messageService.add({
           severity: 'error',
@@ -114,8 +117,6 @@ export class LoginComponent {
           detail: errorMessage.detail,
           life: 5000
         });
-      } finally {
-        this.loading.set(false);
       }
     });
   }
@@ -166,5 +167,9 @@ export class LoginComponent {
     }
 
     void this.router.navigate([redirectUrl]);
+  }
+
+  private nextFrame(): Promise<void> {
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
   }
 }

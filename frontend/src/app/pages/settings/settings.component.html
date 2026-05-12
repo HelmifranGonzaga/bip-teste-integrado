@@ -83,34 +83,37 @@
           Privacidade e Segurança
         </div>
       </ng-template>
-      <div class="security-options">
-        <button
-          pButton
-          type="button"
-          label="Alterar Senha"
-          icon="pi pi-lock"
-          severity="secondary"
-          [outlined]="true"
-          (click)="changePassword()"
-        ></button>
-        <button
-          pButton
-          type="button"
-          label="Gerenciar Sessões"
-          icon="pi pi-sign-in"
-          severity="secondary"
-          [outlined]="true"
-          (click)="manageSessions()"
-        ></button>
-        <button
-          pButton
-          type="button"
-          label="Exportar Dados"
-          icon="pi pi-download"
-          severity="secondary"
-          [outlined]="true"
-          (click)="exportData()"
-        ></button>
+      <div class="action-section settings-section">
+        <span class="action-section__label">Ações de segurança</span>
+        <div class="action-section__actions">
+          <button
+            pButton
+            type="button"
+            label="Alterar Senha"
+            icon="pi pi-lock"
+            severity="secondary"
+            [outlined]="true"
+            (click)="changePassword()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Gerenciar Sessões"
+            icon="pi pi-sign-in"
+            severity="secondary"
+            [outlined]="true"
+            (click)="manageSessions()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Exportar Dados"
+            icon="pi pi-download"
+            severity="secondary"
+            [outlined]="true"
+            (click)="exportData()"
+          ></button>
+        </div>
       </div>
     </p-card>
 
@@ -124,13 +127,13 @@
       <div class="danger-options">
         <div class="danger-item">
           <div class="danger-info">
-            <h4>Deletar Conta</h4>
+            <h4>Excluir Conta</h4>
             <p>Esta ação não pode ser desfeita. Todos os seus dados serão removidos permanentemente.</p>
           </div>
           <button
             pButton
             type="button"
-            label="Deletar Conta"
+            label="Excluir Conta"
             icon="pi pi-trash"
             severity="danger"
             (click)="deleteAccount()"
@@ -139,23 +142,26 @@
       </div>
     </p-card>
 
-    <div class="action-buttons">
-      <button
-        pButton
-        type="button"
-        label="Salvar Alterações"
-        icon="pi pi-check"
-        (click)="saveSettings()"
-      ></button>
-      <button
-        pButton
-        type="button"
-        label="Restaurar Padrões"
-        icon="pi pi-refresh"
-        severity="secondary"
-        [outlined]="true"
-        (click)="resetSettings()"
-      ></button>
+    <div class="action-section settings-footer">
+      <span class="action-section__label">Aplicar alterações</span>
+      <div class="action-section__actions">
+        <button
+          pButton
+          type="button"
+          label="Salvar alterações"
+          icon="pi pi-check"
+          (click)="saveSettings()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Restaurar padrões"
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          (click)="resetSettings()"
+        ></button>
+      </div>
     </div>
   </div>
 </div>

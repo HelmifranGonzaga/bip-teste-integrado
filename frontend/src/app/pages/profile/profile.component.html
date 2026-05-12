@@ -50,23 +50,28 @@
 
           <p-divider></p-divider>
 
-          <div class="action-buttons">
-            <button
-              pButton
-              type="button"
-              label="Editar Perfil"
-              icon="pi pi-pencil"
-              (click)="editProfile()"
-            ></button>
-            <button
-              pButton
-              type="button"
-              label="Alterar Senha"
-              icon="pi pi-lock"
-              severity="secondary"
-              [outlined]="true"
-              (click)="changePassword()"
-            ></button>
+          <div class="action-section">
+            <span class="action-section__label">Ações do perfil</span>
+            <div class="action-section__actions">
+              <button
+                pButton
+                type="button"
+                label="Editar perfil"
+                icon="pi pi-pencil"
+                severity="secondary"
+                [outlined]="true"
+                (click)="editProfile()"
+              ></button>
+              <button
+                pButton
+                type="button"
+                label="Alterar senha"
+                icon="pi pi-lock"
+                severity="secondary"
+                [outlined]="true"
+                (click)="changePassword()"
+              ></button>
+            </div>
           </div>
         </div>
       </p-card>

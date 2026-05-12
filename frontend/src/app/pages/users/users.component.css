@@ -51,6 +51,35 @@
   flex-shrink: 0;
 }
 
+.page-status-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(106, 155, 204, 0.25);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(106, 155, 204, 0.12), rgba(232, 230, 220, 0.5));
+}
+
+.page-status-card__icon {
+  font-size: 1.25rem;
+  color: var(--anthropic-blue);
+}
+
+.page-status-card strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--p-surface-900);
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.page-status-card p {
+  margin: 0;
+  color: var(--p-surface-600);
+  font-size: 0.9rem;
+}
+
 .table-wrapper {
   overflow-x: auto;
 }
@@ -99,10 +128,64 @@
   cursor: not-allowed;
 }
 
+.empty-state-cell {
+  padding: 2rem !important;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--p-surface-600);
+}
+
+.empty-state__icon {
+  font-size: 1.5rem;
+  color: var(--anthropic-orange);
+}
+
+.empty-state__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.empty-state__content strong {
+  color: var(--p-surface-800);
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
 :host ::ng-deep .p-dialog .p-dialog-header {
   background: var(--p-surface-50);
   border-bottom: 1px solid var(--p-surface-200);
   padding: 1.25rem 1.5rem;
+}
+
+:host ::ng-deep .users-dialog.p-dialog {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 230, 220, 0.9);
+  box-shadow: 0 24px 80px rgba(20, 20, 19, 0.22);
+  background: rgba(250, 249, 245, 0.98);
+}
+
+:host ::ng-deep .users-dialog .p-dialog-header {
+  background: linear-gradient(135deg, #faf9f5 0%, #f2efe7 100%);
+  border-bottom: 1px solid rgba(232, 230, 220, 0.9);
+  padding: 1.25rem 1.5rem;
+}
+
+:host ::ng-deep .users-dialog .p-dialog-title {
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #141413;
+}
+
+:host ::ng-deep .users-dialog .p-dialog-content {
+  padding: 1.5rem;
+  background: transparent;
 }
 
 :host ::ng-deep .p-dialog .p-dialog-title {
@@ -145,6 +228,10 @@
     align-items: stretch;
     gap: 1rem;
   }
+
+  .page-status-card {
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 768px) {
@@ -159,5 +246,10 @@
   .p-datatable-sm .p-datatable-thead > tr > th,
   .p-datatable-sm .p-datatable-tbody > tr > td {
     padding: 0.5rem;
+  }
+
+  .empty-state {
+    flex-direction: column;
+    text-align: center;
   }
 }

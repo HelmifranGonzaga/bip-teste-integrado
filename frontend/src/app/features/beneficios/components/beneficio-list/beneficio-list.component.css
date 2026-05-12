@@ -25,6 +25,34 @@
   width: min(100%, calc(41ch + 2rem));
 }
 
+.empty-state-cell {
+  padding: 2rem !important;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--p-surface-600);
+}
+
+.empty-state__icon {
+  font-size: 1.5rem;
+  color: var(--anthropic-orange);
+}
+
+.empty-state__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.empty-state__content strong {
+  color: var(--p-surface-800);
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
 @media (max-width: 900px) {
   .table-wrapper {
     overflow-x: auto;
@@ -33,5 +61,10 @@
   .beneficio-list-global-search {
     margin-left: 0;
     max-width: 100%;
+  }
+
+  .empty-state {
+    flex-direction: column;
+    text-align: center;
   }
 }

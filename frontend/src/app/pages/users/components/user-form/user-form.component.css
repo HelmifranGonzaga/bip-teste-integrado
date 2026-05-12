@@ -4,9 +4,9 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--p-surface-50);
-  border: 1px solid var(--p-surface-200);
-  border-radius: 8px;
+  background: linear-gradient(135deg, #faf9f5 0%, #f2efe7 100%);
+  border: 1px solid rgba(216, 214, 204, 0.9);
+  border-radius: 16px;
 }
 
 .user-info-bar__identity {
@@ -18,13 +18,18 @@
 .user-info-bar__username {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--p-surface-800);
+  color: var(--anthropic-dark);
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
 .user-form__fields {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
+}
+
+.field {
+  margin-bottom: 0.5rem;
 }
 
 .field-label-row {
@@ -32,6 +37,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--anthropic-dark);
+  font-family: 'Poppins', Arial, sans-serif;
   margin-bottom: 0.5rem;
 }
 
@@ -47,40 +61,85 @@
   color: var(--p-red-500);
 }
 
-.field-hint {
-  display: block;
-  margin-top: 0.375rem;
-  font-size: 0.8125rem;
-  color: var(--p-surface-500);
+.readonly-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #f5f4f0 0%, #f0efe8 100%);
+  border: 1px solid rgba(215, 211, 197, 0.8);
+  border-radius: 12px;
 }
 
-.field-generated {
-  display: block;
-  margin-top: 0.375rem;
-  font-size: 0.8125rem;
-  color: var(--p-surface-700);
-}
-
-.field-generated code {
-  padding: 2px 6px;
-  background: var(--p-surface-100);
-  border: 1px solid var(--p-surface-200);
-  border-radius: 4px;
+.readonly-field > span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--anthropic-dark);
   font-family: 'Poppins', Arial, sans-serif;
-  font-size: 0.8rem;
-  color: var(--p-surface-900);
-  user-select: all;
 }
 
-.user-form__actions {
+.readonly-field small {
+  font-size: 0.75rem;
+  color: var(--p-surface-500);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.readonly-field i {
+  font-size: 0.7rem;
+}
+
+.generated-password {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(120, 140, 93, 0.1);
+  border: 1px solid rgba(120, 140, 93, 0.25);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.generated-password span {
+  font-family: monospace;
+  color: var(--anthropic-dark);
+}
+
+.generated-password i {
+  color: var(--anthropic-green);
+  margin-right: 0.5rem;
+}
+
+.form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
-  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(215, 211, 197, 0.6);
 }
 
-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--p-surface-600);
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-password,
+:host ::ng-deep .p-select {
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-password input,
+:host ::ng-deep .p-select .p-select-label {
+  border-radius: 12px;
+  background: #faf9f5;
+}
+
+@media (max-width: 640px) {
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
 }

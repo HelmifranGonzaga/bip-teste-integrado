@@ -102,6 +102,8 @@
           label="Entrar"
           [loading]="loading()"
           icon="pi pi-sign-in"
+          severity="secondary"
+          [outlined]="true"
           class="submit-button"
           [disabled]="loginForm().invalid() || loading()"
           [attr.aria-busy]="loading()"

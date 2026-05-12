@@ -45,10 +45,6 @@
 }
 
 .page-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.75rem;
   flex-shrink: 0;
 }
 
@@ -211,11 +207,11 @@
 
 /* Connection Actions */
 .connection-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
   margin-top: 1.5rem;
+}
+
+.connection-actions__buttons {
+  justify-content: center;
 }
 
 .connection-btn-primary,
@@ -240,17 +236,8 @@
     font-size: 1.5rem;
   }
 
-  .page-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
   .connection-error-content {
     padding: 2rem 1rem;
-  }
-
-  .connection-actions {
-    flex-direction: column;
   }
 
   .connection-btn-primary,

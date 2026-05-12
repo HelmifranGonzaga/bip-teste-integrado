@@ -18,6 +18,16 @@
     </div>
   </section>
 
+  @if (loading()) {
+    <div class="page-status-card">
+      <i class="pi pi-spin pi-spinner page-status-card__icon" aria-hidden="true"></i>
+      <div>
+        <strong>Carregando usuários</strong>
+        <p>Aguarde um instante enquanto buscamos a lista mais recente.</p>
+      </div>
+    </div>
+  }
+
   <p-card styleClass="p-0">
     <div class="table-wrapper">
       <p-table
@@ -27,7 +37,6 @@
         [paginator]="true"
         [rows]="10"
         [rowsPerPageOptions]="[5, 10, 20]"
-        [loading]="loading()"
         [globalFilterFields]="['username', 'nome', 'role']"
         styleClass="p-datatable-sm p-datatable-striped"
       >
@@ -83,9 +92,9 @@
                   pButton
                   type="button"
                   icon="pi pi-pencil"
-                  severity="info"
+                  severity="secondary"
+                  [outlined]="true"
                   [rounded]="true"
-                  [text]="true"
                   [disabled]="loading()"
                   (click)="onEdit(user)"
                   pTooltip="Editar"
@@ -95,9 +104,9 @@
                     pButton
                     type="button"
                     icon="pi pi-key"
-                    severity="warn"
+                    severity="secondary"
+                    [outlined]="true"
                     [rounded]="true"
-                    [text]="true"
                     [disabled]="loading() || generatingPassword()"
                     (click)="onResetPassword(user)"
                     pTooltip="Gerar nova senha"
@@ -106,9 +115,9 @@
                     pButton
                     type="button"
                     icon="pi pi-trash"
-                    severity="danger"
+                    severity="secondary"
+                    [outlined]="true"
                     [rounded]="true"
-                    [text]="true"
                     [disabled]="loading()"
                     (click)="onDelete(user)"
                     pTooltip="Excluir"
@@ -121,10 +130,13 @@
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6" class="text-center p-6">
-              <div class="flex flex-column items-center justify-center gap-2">
-                <i class="pi pi-users text-4xl text-400"></i>
-                <span class="text-500">Nenhum usuário encontrado.</span>
+            <td colspan="6" class="empty-state-cell">
+              <div class="empty-state">
+                <i class="pi pi-users empty-state__icon" aria-hidden="true"></i>
+                <div class="empty-state__content">
+                  <strong>Nenhum usuário encontrado</strong>
+                  <span>Use outro filtro ou crie um novo usuário.</span>
+                </div>
               </div>
             </td>
           </tr>
@@ -140,9 +152,12 @@
   (visibleChange)="showDialog.set($event)"
   (onHide)="onDialogHide()"
   [modal]="true"
-  [style]="{ width: '480px' }"
+  [style]="{ width: '520px' }"
+  [breakpoints]="{ '960px': '90vw', '640px': '96vw' }"
+  styleClass="users-dialog app-modal"
   [draggable]="false"
   [resizable]="false"
+  [dismissableMask]="!saving()"
   [closeOnEscape]="!saving()"
   [closable]="!saving()"
 >

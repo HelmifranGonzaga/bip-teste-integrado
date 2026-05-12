@@ -133,4 +133,10 @@ export class UserFormComponent {
   onGeneratePassword(): void {
     this.generatePassword.emit();
   }
+
+  copyPassword(): void {
+    if (this.generatedPassword) {
+      navigator.clipboard.writeText(this.generatedPassword);
+    }
+  }
 }

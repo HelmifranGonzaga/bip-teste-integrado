@@ -26,7 +26,9 @@ export class BeneficioCreateComponent {
     this.facade.save(event)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: () => {
+        next: async () => {
+          this.loading.set(false);
+          await this.nextFrame();
           this.router.navigate(['/beneficios']);
         },
         error: () => {
@@ -37,5 +39,9 @@ export class BeneficioCreateComponent {
 
   onCancel(): void {
     this.router.navigate(['/beneficios']);
+  }
+
+  private nextFrame(): Promise<void> {
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
   }
 }

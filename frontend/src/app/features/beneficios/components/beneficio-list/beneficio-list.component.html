@@ -63,9 +63,9 @@
                 pButton
                 type="button"
                 icon="pi pi-pencil"
-                severity="info"
+                severity="secondary"
+                [outlined]="true"
                 [rounded]="true"
-                [text]="true"
                 [disabled]="loading"
                 [attr.aria-label]="getEditLabel(item)"
                 (click)="edit.emit(item)"
@@ -75,9 +75,9 @@
                 pButton
                 type="button"
                 icon="pi pi-trash"
-                severity="danger"
+                severity="secondary"
+                [outlined]="true"
                 [rounded]="true"
-                [text]="true"
                 [disabled]="loading"
                 [attr.aria-label]="getRemoveLabel(item)"
                 (click)="remove.emit(item.id)"
@@ -89,7 +89,15 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="7" class="text-center p-4">Nenhum benefício encontrado.</td>
+          <td colspan="7" class="empty-state-cell">
+            <div class="empty-state">
+              <i class="pi pi-box empty-state__icon" aria-hidden="true"></i>
+              <div class="empty-state__content">
+                <strong>Nenhum benefício encontrado</strong>
+                <span>Tente outro filtro ou crie o primeiro benefício.</span>
+              </div>
+            </div>
+          </td>
         </tr>
       </ng-template>
     </p-table>

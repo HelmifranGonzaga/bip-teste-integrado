@@ -1,8 +1,8 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="beneficio-modal-form flex flex-col gap-4">
   <p-fluid>
     <div class="field mb-3">
-      <label for="nome" class="block mb-2">Nome</label>
-      <input pInputText id="nome" formControlName="nome" placeholder="Nome" />
+      <label for="nome" class="block mb-2">Nome <span class="required">*</span></label>
+      <input pInputText id="nome" formControlName="nome" placeholder="Ex: Auxílio Transporte" />
       @if (form.get('nome')!.invalid && form.get('nome')!.touched) {
         <small class="text-red-500">
           @if (form.get('nome')!.hasError('required')) {
@@ -17,7 +17,7 @@
     </div>
 
     <div class="field mb-3">
-      <label for="cnpj" class="block mb-2">CNPJ</label>
+      <label for="cnpj" class="block mb-2">CNPJ <span class="field-optional">(opcional)</span></label>
       <input
         pInputText
         id="cnpj"
@@ -43,7 +43,7 @@
     </div>
 
     <div class="field mb-3">
-      <label for="valor" class="block mb-2">Valor</label>
+      <label for="valor" class="block mb-2">Valor <span class="required">*</span></label>
       <p-inputNumber
         inputId="valor"
         formControlName="valor"
@@ -72,32 +72,37 @@
         id="descricao"
         formControlName="descricao"
         rows="3"
-        placeholder="Descrição"
+        placeholder="Explique o benefício em poucas palavras"
       ></textarea>
+      <small class="field-hint">Ajuda a identificar o benefício na lista.</small>
     </div>
 
     <div class="field-checkbox mb-4 flex items-center gap-2">
       <p-checkbox inputId="ativo" formControlName="ativo" [binary]="true"></p-checkbox>
-      <label for="ativo">Ativo</label>
+      <label for="ativo">Benefício ativo</label>
     </div>
   </p-fluid>
 
-  <div class="flex gap-2 mt-4 justify-end">
-    <button
-      pButton
-      type="button"
-      label="Cancelar"
-      icon="pi pi-times"
-      severity="secondary"
-      [disabled]="submitting"
-      (click)="onCancel()"
-    ></button>
-    <button
-      pButton
-      type="submit"
-      [label]="editingBeneficio ? 'Atualizar' : 'Criar'"
-      icon="pi pi-check"
-      [disabled]="form.invalid || submitting"
-    ></button>
+  <div class="action-section modal-actions">
+    <span class="action-section__label">Ações</span>
+    <div class="action-section__actions">
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        icon="pi pi-times"
+        severity="secondary"
+        [outlined]="true"
+        [disabled]="submitting"
+        (click)="onCancel()"
+      ></button>
+      <button
+        pButton
+        type="submit"
+        [label]="editingBeneficio ? 'Atualizar' : 'Criar'"
+        icon="pi pi-check"
+        [disabled]="form.invalid || submitting"
+      ></button>
+    </div>
   </div>
 </form>

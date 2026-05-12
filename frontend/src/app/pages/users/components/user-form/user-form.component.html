@@ -13,14 +13,15 @@
         <button
           pButton
           type="button"
-          [icon]="editingUser.ativo ? 'pi pi-times-circle' : 'pi pi-check-circle'"
+          [icon]="editingUser.ativo ? 'pi pi-power-off' : 'pi pi-power-on'"
           [label]="editingUser.ativo ? 'Desativar' : 'Ativar'"
-          [severity]="editingUser.ativo ? 'danger' : 'success'"
+          severity="secondary"
           [outlined]="true"
           size="small"
           [loading]="toggling"
           (click)="onToggleActive()"
-          [pTooltip]="editingUser.ativo ? 'Clique para desativar este usuário' : 'Clique para ativar este usuário'"
+          [pTooltip]="editingUser.ativo ? 'Desativar acesso deste usuário' : 'Ativar acesso deste usuário'"
+          tooltipPosition="left"
         ></button>
       }
     </div>
@@ -30,8 +31,8 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="user-form__fields">
     <p-fluid>
       @if (!editingUser) {
-        <div class="field mb-3">
-          <label for="username" class="block mb-2">Username <span class="required">*</span></label>
+        <div class="field">
+          <label for="username">Nome de usuário <span class="required">*</span></label>
           <input
             id="username"
             type="text"
@@ -44,71 +45,76 @@
           @if (form.get('username')!.invalid && form.get('username')!.touched) {
             <small class="field-error">
               @if (form.get('username')!.hasError('required')) {
-                Username é obrigatório.
-              } @else if (form.get('username')!.hasError('minlength')) {
-                Username deve ter ao menos 3 caracteres.
-              } @else if (form.get('username')!.hasError('maxlength')) {
-                Username deve ter no máximo 50 caracteres.
+                Obrigatório.
+              } @else {
+                Mín 3 / Máx 50 caracteres.
               }
             </small>
           }
         </div>
+      } @else {
+        <div class="field">
+          <label for="username">Nome de usuário</label>
+          <div class="readonly-field">
+            <span>{{ editingUser.username }}</span>
+            <small><i class="pi pi-lock" aria-hidden="true"></i> fixo</small>
+          </div>
+        </div>
       }
 
-      <div class="field mb-3">
-        <label for="nome" class="block mb-2">Nome Completo <span class="required">*</span></label>
+      <div class="field">
+        <label for="nome">Nome Completo <span class="required">*</span></label>
         <input
           id="nome"
           type="text"
           pInputText
           formControlName="nome"
-          placeholder="ex: João Silva"
+          placeholder="Ex: João Silva Santos"
           [disabled]="submitting"
         />
         @if (form.get('nome')!.invalid && form.get('nome')!.touched) {
           <small class="field-error">
             @if (form.get('nome')!.hasError('required')) {
-              Nome é obrigatório.
-            } @else if (form.get('nome')!.hasError('minlength')) {
-              Nome deve ter ao menos 3 caracteres.
-            } @else if (form.get('nome')!.hasError('maxlength')) {
-              Nome deve ter no máximo 100 caracteres.
+              Obrigatório.
+            } @else {
+              Mín 3 / Máx 100 caracteres.
             }
           </small>
         }
       </div>
 
-      <div class="field mb-3">
-        <label for="role" class="block mb-2">Perfil de Acesso</label>
+      <div class="field">
+        <label for="role">Perfil de Acesso</label>
         <p-select
           id="role"
           formControlName="role"
           [options]="roles"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full"
+          placeholder="Selecione"
           [disabled]="submitting"
         ></p-select>
       </div>
 
       <p-divider />
 
-      <div class="field mb-3">
+      <div class="field">
         <div class="field-label-row">
-          <label for="password" class="mb-0">
+          <label for="password">
             @if (editingUser) { Nova Senha } @else { Senha <span class="required">*</span> }
           </label>
           @if (editingUser && isAdmin) {
             <button
               pButton
               type="button"
-              label="Gerar aleatória"
+              label="Gerar"
               icon="pi pi-refresh"
               severity="secondary"
               [outlined]="true"
               size="small"
               [loading]="generatingPassword"
               (click)="onGeneratePassword()"
+              pTooltip="Gerar senha aleatória"
             ></button>
           }
         </div>
@@ -117,33 +123,40 @@
           formControlName="password"
           [feedback]="false"
           [toggleMask]="true"
-          [placeholder]="editingUser ? 'Deixe em branco para manter a atual' : 'Mínimo 6 caracteres'"
+          [placeholder]="editingUser ? 'Em branco mantém a atual' : 'Mínimo 6 caracteres'"
           [disabled]="submitting"
-        ></p-password>
+        />
         @if (form.get('password')!.invalid && form.get('password')!.touched) {
           <small class="field-error">
             @if (form.get('password')!.hasError('required')) {
-              Senha é obrigatória para novos usuários.
-            } @else if (form.get('password')!.hasError('minlength')) {
-              Senha deve ter ao menos 6 caracteres.
+              Obrigatória.
+            } @else {
+              Mínimo 6 caracteres.
             }
           </small>
         }
-        @if (editingUser) {
-          <small class="field-hint">Se vazio, a senha atual será mantida.</small>
-        }
         @if (generatedPassword) {
-          <small class="field-generated">Senha gerada: <code>{{ generatedPassword }}</code></small>
+          <div class="generated-password">
+            <span><i class="pi pi-check" aria-hidden="true"></i> {{ generatedPassword }}</span>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-copy"
+              [text]="true"
+              size="small"
+              (click)="copyPassword()"
+              pTooltip="Copiar"
+            ></button>
+          </div>
         }
       </div>
     </p-fluid>
 
-    <div class="user-form__actions">
+    <div class="form-actions">
       <button
         pButton
         type="button"
         label="Cancelar"
-        icon="pi pi-times"
         severity="secondary"
         [outlined]="true"
         [disabled]="submitting"
@@ -152,8 +165,7 @@
       <button
         pButton
         type="submit"
-        [label]="editingUser ? 'Atualizar' : 'Criar Usuário'"
-        icon="pi pi-check"
+        [label]="editingUser ? 'Salvar' : 'Criar'"
         [disabled]="form.invalid || submitting"
         [loading]="submitting"
       ></button>

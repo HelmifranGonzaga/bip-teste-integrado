@@ -75,11 +75,10 @@ export class SettingsComponent {
   }
 
   deleteAccount(): void {
-    this.messageService.add({
+this.messageService.add({
       severity: 'warn',
-      summary: 'Deletar Conta',
+      summary: 'Excluir Conta',
       detail: 'Funcionalidade em desenvolvimento',
-      life: 3000
     });
   }
 

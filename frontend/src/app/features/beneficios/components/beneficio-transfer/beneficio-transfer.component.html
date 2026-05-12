@@ -1,53 +1,84 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="beneficio-modal-form flex flex-col gap-4">
   <p-fluid>
     <div class="field mb-3">
-      <label for="fromId" class="block mb-2">Benefício de origem</label>
-      <select id="fromId" class="p-inputtext w-full" formControlName="fromId">
-        <option [ngValue]="null">Selecione o benefício de origem</option>
-        @for (beneficio of beneficios; track beneficio.id) {
-          <option [ngValue]="beneficio.id">{{ getBeneficioLabel(beneficio) }}</option>
-        }
-      </select>
+      <label for="fromId" class="block mb-2">Benefício de origem <span class="required">*</span></label>
+      <p-select
+        id="fromId"
+        formControlName="fromId"
+        [options]="beneficios"
+        optionLabel="nome"
+        optionValue="id"
+        placeholder="Selecione o benefício de origem"
+        [filter]="true"
+        filterPlaceholder="Buscar benefício..."
+        aria-label="Selecione o benefício de origem"
+        styleClass="w-full"
+      >
+        <ng-template let-beneficio pTemplate="item">
+          <div class="flex align-items-center gap-2">
+            <span>{{ beneficio.nome }}</span>
+            <span class="text-color-secondary text-sm">({{ beneficio.id }})</span>
+            <span class="font-semibold text-green-500 ml-auto">{{ beneficio.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          </div>
+        </ng-template>
+      </p-select>
+      <small class="field-hint">Saldo disponível será transferido para o benefício de destino.</small>
       @if (form.get('fromId')!.invalid && form.get('fromId')!.touched) {
-        <small class="text-red-500">Benefício de origem é obrigatório.</small>
+        <small class="field-error">Benefício de origem é obrigatório.</small>
       }
     </div>
 
     <div class="field mb-3">
-      <label for="toId" class="block mb-2">Benefício de destino</label>
-      <select id="toId" class="p-inputtext w-full" formControlName="toId">
-        <option [ngValue]="null">Selecione o benefício de destino</option>
-        @for (beneficio of beneficios; track beneficio.id) {
-          <option [ngValue]="beneficio.id">{{ getBeneficioLabel(beneficio) }}</option>
-        }
-      </select>
+      <label for="toId" class="block mb-2">Benefício de destino <span class="required">*</span></label>
+      <p-select
+        id="toId"
+        formControlName="toId"
+        [options]="beneficios"
+        optionLabel="nome"
+        optionValue="id"
+        placeholder="Selecione o benefício de destino"
+        [filter]="true"
+        filterPlaceholder="Buscar benefício..."
+        aria-label="Selecione o benefício de destino"
+        styleClass="w-full"
+      >
+        <ng-template let-beneficio pTemplate="item">
+          <div class="flex align-items-center gap-2">
+            <span>{{ beneficio.nome }}</span>
+            <span class="text-color-secondary text-sm">({{ beneficio.id }})</span>
+            <span class="font-semibold text-green-500 ml-auto">{{ beneficio.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+          </div>
+        </ng-template>
+      </p-select>
       @if (form.get('toId')!.invalid && form.get('toId')!.touched) {
-        <small class="text-red-500">Benefício de destino é obrigatório.</small>
+        <small class="field-error">Benefício de destino é obrigatório.</small>
       }
     </div>
 
     @if (
       form.hasError('sameBeneficio') && (form.get('fromId')!.touched || form.get('toId')!.touched)
     ) {
-      <small class="text-red-500 mb-3 block"
+      <small class="field-error mb-3 block"
         >Origem e destino devem ser benefícios diferentes.</small
       >
     }
 
     <div class="field mb-4">
-      <label for="amount" class="block mb-2">Valor</label>
+      <label for="amount" class="block mb-2">Valor <span class="required">*</span></label>
       <p-inputNumber
         inputId="amount"
         formControlName="amount"
         mode="currency"
         currency="BRL"
         locale="pt-BR"
-        placeholder="R$ 0,00"
+        placeholder="Digite o valor a transferir"
         [minFractionDigits]="2"
         [maxFractionDigits]="2"
+        aria-label="Valor a transferir"
       ></p-inputNumber>
+      <small class="field-hint">Informe o valor que deseja transferir entre benefícios.</small>
       @if (form.get('amount')!.invalid && form.get('amount')!.touched) {
-        <small class="text-red-500">
+        <small class="field-error">
           @if (form.get('amount')!.hasError('required')) {
             Valor é obrigatório.
           } @else if (form.get('amount')!.hasError('min')) {
@@ -58,13 +89,16 @@
     </div>
   </p-fluid>
 
-<div class="flex gap-2 mt-4 justify-end">
+  <div class="action-section modal-actions">
+    <span class="action-section__label">Ações</span>
+    <div class="action-section__actions">
       <button
         pButton
         type="button"
         label="Cancelar"
         icon="pi pi-times"
         severity="secondary"
+        [outlined]="true"
         [disabled]="submitting"
         (click)="onCancel()"
       ></button>
@@ -74,6 +108,8 @@
         label="Transferir"
         icon="pi pi-arrow-right-arrow-left"
         [disabled]="form.invalid || submitting"
+        [loading]="submitting"
       ></button>
     </div>
+  </div>
 </form>

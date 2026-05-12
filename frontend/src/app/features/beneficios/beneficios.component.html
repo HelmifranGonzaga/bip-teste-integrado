@@ -6,10 +6,13 @@
       <h1 class="page-title m-0">Painel de Controle</h1>
       <p class="page-subtitle m-0">Gerencie seus benefícios e transfira saldos de forma segura.</p>
     </div>
-    <div class="page-actions">
+    <div class="action-section page-actions">
+      <span class="action-section__label">Ações principais</span>
+      <div class="action-section__actions">
       <button pButton type="button" label="Exportar CSV" icon="pi pi-download" severity="secondary" [outlined]="true" (click)="exportCsv()"></button>
       <button pButton type="button" label="Transferir Saldo" icon="pi pi-arrow-right-arrow-left" severity="secondary" [outlined]="true" (click)="openTransfer()"></button>
       <button pButton type="button" label="Novo Benefício" icon="pi pi-plus" (click)="openNew()"></button>
+      </div>
     </div>
   </section>
 
@@ -87,35 +90,40 @@
           </div>
         }
 
-        <div class="connection-actions">
-          <button
-            pButton
-            type="button"
-            label="Tentar novamente agora"
-            icon="pi pi-refresh"
-            styleClass="connection-btn-primary"
-            (click)="retryNow()"
-          ></button>
-          <button
-            pButton
-            type="button"
-            label="Recarregar página"
-            icon="pi pi-replay"
-            severity="secondary"
-            [outlined]="true"
-            styleClass="connection-btn-secondary"
-            (click)="reloadPage()"
-          ></button>
-          <button
-            pButton
-            type="button"
-            label="Contatar suporte"
-            icon="pi pi-envelope"
-            severity="secondary"
-            [outlined]="true"
-            styleClass="connection-btn-secondary"
-            (click)="openSupportContact()"
-          ></button>
+        <div class="action-section connection-actions">
+          <span class="action-section__label">Próximas ações</span>
+          <div class="action-section__actions connection-actions__buttons">
+<button
+              pButton
+              type="button"
+              label="Tentar novamente agora"
+              icon="pi pi-refresh"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="connection-btn-primary"
+              (click)="retryNow()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              label="Recarregar página"
+              icon="pi pi-replay"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="connection-btn-secondary"
+              (click)="reloadPage()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              label="Contatar suporte"
+              icon="pi pi-envelope"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="connection-btn-secondary"
+              (click)="openSupportContact()"
+            ></button>
+          </div>
         </div>
       </div>
     </div>
@@ -129,11 +137,21 @@
   (visibleChange)="showFormModal.set($event)"
   (onHide)="onFormModalHide()"
   [modal]="true"
-  [style]="{ width: '450px' }"
+  [style]="{ width: '520px' }"
+  [breakpoints]="{ '960px': '90vw', '640px': '96vw' }"
+  styleClass="beneficio-dialog app-modal"
   [draggable]="false"
   [resizable]="false"
+  [dismissableMask]="!loading()"
 >
   @if (showFormModal()) {
+    <div class="modal-intro">
+      <div class="modal-intro__icon"><i class="pi pi-pencil" aria-hidden="true"></i></div>
+      <div>
+        <p class="modal-intro__title">Revise antes de salvar</p>
+        <p class="modal-intro__text">Mantenha os dados consistentes. Campos obrigatórios são destacados automaticamente.</p>
+      </div>
+    </div>
     <app-beneficio-form
       [editingBeneficio]="editingBeneficio()"
       [submitting]="loading()"
@@ -151,11 +169,21 @@
   (visibleChange)="showTransferModal.set($event)"
   (onHide)="onTransferModalHide()"
   [modal]="true"
-  [style]="{ width: '450px' }"
+  [style]="{ width: '520px' }"
+  [breakpoints]="{ '960px': '90vw', '640px': '96vw' }"
+  styleClass="beneficio-dialog app-modal"
   [draggable]="false"
   [resizable]="false"
+  [dismissableMask]="!loading()"
 >
   @if (showTransferModal()) {
+    <div class="modal-intro">
+      <div class="modal-intro__icon"><i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i></div>
+      <div>
+        <p class="modal-intro__title">Confirme a movimentação</p>
+        <p class="modal-intro__text">Selecione origem e destino com atenção para evitar transferências incorretas.</p>
+      </div>
+    </div>
     <app-beneficio-transfer
       [beneficios]="beneficios()"
       [submitting]="loading()"
