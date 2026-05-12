@@ -1,10 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+
+:root {
+  --anthropic-dark: #141413;
+  --anthropic-light: #faf9f5;
+  --anthropic-mid: #b0aea5;
+  --anthropic-surface: #e8e6dc;
+  --anthropic-orange: #d97757;
+  --anthropic-blue: #6a9bcc;
+  --anthropic-green: #788c5d;
+}
 
 body {
   margin: 0;
-  font-family: 'Montserrat', var(--font-family, Arial, sans-serif);
-  background: #f4f4f5;
-  color: #003641; /* BIP Dark Blue */
+  font-family: 'Lora', Georgia, serif;
+  background: linear-gradient(180deg, #faf9f5 0%, #f2efe7 100%);
+  color: #141413;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', Arial, sans-serif;
+  color: #141413;
+  letter-spacing: -0.02em;
+}
+
+p, li, span, label, input, textarea, button, a {
+  font-family: inherit;
 }
 
 /* PrimeFlex utility classes (minimal subset used in app.component.html) */
@@ -26,39 +46,65 @@ body {
 .block { display: block; }
 .text-center { text-align: center; }
 .p-4 { padding: 1rem; }
-.text-green-500 { color: #00ae9d; } /* BIP Green */
-.text-red-500 { color: #ef4444; }
+.text-green-500 { color: #788c5d; }
+.text-red-500 { color: #d97757; }
 
 /* BIP Design System - Typography */
-h1, h2 { color: #003641; font-weight: 700; }
+.p-button {
+  border-radius: 999px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.p-button.p-button-primary,
+.p-button:not(.p-button-text):not(.p-button-secondary) {
+  background: #d97757;
+  border-color: #d97757;
+}
+
+.p-button.p-button-primary:hover,
+.p-button:not(.p-button-text):not(.p-button-secondary):hover {
+  background: #c86948;
+  border-color: #c86948;
+}
+
+.p-button.p-button-secondary {
+  background: #e8e6dc;
+  border-color: #b0aea5;
+  color: #141413;
+}
 
 /* BIP Design System - Cards */
 .p-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 54, 65, 0.08);
-  border: none;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(20, 20, 19, 0.08);
+  border: 1px solid rgba(232, 230, 220, 0.9);
+  background: rgba(250, 249, 245, 0.92);
+  backdrop-filter: blur(10px);
 }
 .p-card-header {
-  color: #00ae9d;
+  color: #d97757;
+  font-family: 'Poppins', Arial, sans-serif;
   font-weight: 600;
   padding: 1.5rem 1.5rem 0 1.5rem;
 }
 
 /* BIP Design System - Tables */
 .p-datatable .p-datatable-thead > tr > th {
-  background: #f8fafc;
-  color: #003641;
+  background: #e8e6dc;
+  color: #141413;
+  font-family: 'Poppins', Arial, sans-serif;
   font-weight: 600;
 }
 
 /* BIP Design System - Inputs */
 .p-inputtext, .p-inputnumber-input {
-  border-radius: 8px;
-  border-color: #cbd5e1;
+  border-radius: 12px;
+  border-color: #d7d3c5;
+  background: #faf9f5;
 }
 .p-inputtext:enabled:focus, .p-inputnumber-input:enabled:focus {
-  border-color: #00ae9d;
-  box-shadow: 0 0 0 1px #00ae9d;
+  border-color: #d97757;
+  box-shadow: 0 0 0 1px #d97757;
 }
 .p-checkbox .p-checkbox-box {
   border-radius: 4px;

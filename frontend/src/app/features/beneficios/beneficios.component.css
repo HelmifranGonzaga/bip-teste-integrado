@@ -203,9 +203,9 @@
   background: white;
   border: 1px dashed var(--p-surface-300);
   border-radius: 6px;
-  font-family: 'Courier New', monospace;
+  font-family: 'Poppins', Arial, sans-serif;
   font-size: 0.8rem;
-  color: var(--p-primary-600);
+  color: var(--anthropic-orange);
   word-break: break-all;
 }
 
