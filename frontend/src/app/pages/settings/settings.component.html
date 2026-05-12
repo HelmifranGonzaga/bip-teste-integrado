@@ -135,7 +135,8 @@
             type="button"
             label="Excluir Conta"
             icon="pi pi-trash"
-            severity="danger"
+            severity="secondary"
+            [outlined]="true"
             (click)="deleteAccount()"
           ></button>
         </div>
@@ -150,6 +151,8 @@
           type="button"
           label="Salvar alterações"
           icon="pi pi-check"
+          severity="secondary"
+          [outlined]="true"
           (click)="saveSettings()"
         ></button>
         <button
