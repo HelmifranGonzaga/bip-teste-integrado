@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import { Component, signal, ChangeDetectionStrategy, inject } from '@angular/core';
+import { FormField, form, required, submit } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -10,12 +10,16 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
 import { AuthService } from '../../core/services/auth.service';
 
+interface LoginModel {
+  username: string;
+  password: string;
+}
+
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
+    FormField,
     FormsModule,
     ButtonModule,
     InputTextModule,
@@ -23,28 +27,34 @@ import { AuthService } from '../../core/services/auth.service';
     CheckboxModule,
     DividerModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute, { optional: true });
   private readonly messageService = inject(MessageService);
+
   private readonly rememberedUsername = sessionStorage.getItem('remembered_username');
 
-  readonly loginForm = this.fb.nonNullable.group({
-    username: [this.rememberedUsername ?? '', Validators.required],
-    password: ['', Validators.required]
+  readonly loginModel = signal<LoginModel>({
+    username: this.rememberedUsername ?? '',
+    password: ''
   });
 
-  loading = false;
-  rememberMe = this.rememberedUsername !== null;
+  readonly loginForm = form(this.loginModel, (s) => {
+    required(s.username, { message: 'Usuário é obrigatório' });
+    required(s.password, { message: 'Senha é obrigatória' });
+  });
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.loginForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+  readonly loading = signal(false);
+  rememberMe = signal(this.rememberedUsername !== null);
+
+  isFieldInvalid(fieldName: keyof LoginModel): boolean {
+    const field = fieldName === 'username' ? this.loginForm.username : this.loginForm.password;
+    return field().touched() && field().errors().length > 0;
   }
 
   showForgotPasswordHelp(event: Event): void {
@@ -58,36 +68,45 @@ export class LoginComponent {
     });
   }
 
-  onLogin(): void {
-    if (!this.loginForm.valid) {
-      Object.keys(this.loginForm.controls).forEach((key) => {
-        this.loginForm.get(key)?.markAsTouched();
-      });
-      return;
-    }
-
-    this.loading = true;
-    const { username, password } = this.loginForm.getRawValue();
-
-    if (this.rememberMe) {
-      sessionStorage.setItem('remembered_username', username);
+  onRememberMeChange(event: { checked: boolean }): void {
+    this.rememberMe.set(event.checked);
+    if (event.checked) {
+      sessionStorage.setItem('remembered_username', this.loginModel().username);
     } else {
       sessionStorage.removeItem('remembered_username');
     }
+  }
 
-    this.authService.login(username, password).subscribe({
-      next: () => {
-        this.loading = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Login bem-sucedido',
-          detail: 'Bem-vindo! Você está sendo redirecionado...',
-          life: 2000
+  onLogin(): void {
+    submit(this.loginForm, async () => {
+      const { username, password } = this.loginModel();
+
+      if (this.rememberMe()) {
+        sessionStorage.setItem('remembered_username', username);
+      }
+
+      this.loading.set(true);
+
+      try {
+        await new Promise<void>((resolve, reject) => {
+          this.authService.login(username, password).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Login bem-sucedido',
+                detail: 'Bem-vindo! Você está sendo redirecionado...',
+                life: 2000
+              });
+              resolve();
+            },
+            error: (error) => {
+              reject(error);
+            }
+          });
         });
+
         this.navigateToRedirectUrl(this.getRedirectUrl());
-      },
-      error: (error) => {
-        this.loading = false;
+      } catch (error) {
         const errorMessage = this.getErrorMessage(error);
         this.messageService.add({
           severity: 'error',
@@ -95,26 +114,29 @@ export class LoginComponent {
           detail: errorMessage.detail,
           life: 5000
         });
+      } finally {
+        this.loading.set(false);
       }
     });
   }
 
-  private getErrorMessage(error: any): { summary: string; detail: string } {
-    if (error?.status === 0) {
+  private getErrorMessage(error: unknown): { summary: string; detail: string } {
+    const err = error as { status?: number; code?: string; message?: string };
+    if (err?.status === 0) {
       return {
         summary: 'Servidor indisponível',
         detail: 'Não foi possível conectar ao servidor. Verifique se ele está ativo.'
       };
     }
 
-    if (error?.status === 401 || error?.code === 'UNAUTHORIZED') {
+    if (err?.status === 401 || err?.code === 'UNAUTHORIZED') {
       return {
         summary: 'Erro na autenticação',
         detail: 'Verifique suas credenciais e tente novamente.'
       };
     }
 
-    if (error?.status >= 500) {
+    if (err?.status && err.status >= 500) {
       return {
         summary: 'Erro no servidor',
         detail: 'O servidor encontrou um erro. Tente novamente mais tarde.'
@@ -123,7 +145,7 @@ export class LoginComponent {
 
     return {
       summary: 'Erro na autenticação',
-      detail: error?.message || 'Erro desconhecido. Tente novamente.'
+      detail: err?.message || 'Erro desconhecido. Tente novamente.'
     };
   }
 

@@ -13,7 +13,7 @@
       <div class="divider"></div>
 
       <!-- Form -->
-      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+      <form (submit)="onLogin(); $event.preventDefault()" class="login-form">
         <!-- Username Field -->
         <div class="field">
           <label for="username" class="label-text">
@@ -24,7 +24,7 @@
             id="username"
             type="text"
             pInputText
-            formControlName="username"
+            [formField]="loginForm.username"
             placeholder="texto@exemplo.com ou nome_de_usuário"
             class="form-input"
             [class.error]="isFieldInvalid('username')"
@@ -32,19 +32,16 @@
             autocomplete="username"
             spellcheck="false"
           />
-          <small class="help-text" id="username-help" *ngIf="!isFieldInvalid('username')">
+          <small class="help-text" id="username-help" [hidden]="isFieldInvalid('username')">
             <i class="pi pi-info-circle" aria-hidden="true"></i>
             Use email ou nome de usuário
           </small>
-          <small
-            class="error-message"
-            id="username-error"
-            *ngIf="isFieldInvalid('username')"
-            role="alert"
-          >
+          @if (isFieldInvalid('username')) {
+          <small class="error-message" id="username-error" role="alert">
             <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
             Usuário é obrigatório
           </small>
+          }
         </div>
 
         <!-- Password Field -->
@@ -55,36 +52,32 @@
           </label>
           <p-password
             id="password"
-            formControlName="password"
+            [formField]="loginForm.password"
             placeholder="••••••••"
             [toggleMask]="true"
             [feedback]="false"
             class="form-password"
             aria-describedby="password-error password-help"
             autocomplete="current-password"
-            [styleClass]="{ error: isFieldInvalid('password') }"
           ></p-password>
-          <small class="help-text" id="password-help" *ngIf="!isFieldInvalid('password')">
+          <small class="help-text" id="password-help" [hidden]="isFieldInvalid('password')">
             <i class="pi pi-check-circle" aria-hidden="true"></i>
             Mínimo 6 caracteres
           </small>
-          <small
-            class="error-message"
-            id="password-error"
-            *ngIf="isFieldInvalid('password')"
-            role="alert"
-          >
+          @if (isFieldInvalid('password')) {
+          <small class="error-message" id="password-error" role="alert">
             <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
             Senha é obrigatória
           </small>
+          }
         </div>
 
         <!-- Remember Me Checkbox -->
         <div class="remember-section">
           <div class="checkbox-wrapper">
             <p-checkbox
-              [(ngModel)]="rememberMe"
-              [ngModelOptions]="{ standalone: true }"
+              [ngModel]="rememberMe()"
+              (onChange)="onRememberMeChange($event)"
               [binary]="true"
               inputId="rememberMe"
               name="rememberMe"
@@ -107,11 +100,11 @@
           pButton
           type="submit"
           label="Entrar"
-          [loading]="loading"
+          [loading]="loading()"
           icon="pi pi-sign-in"
           class="submit-button"
-          [disabled]="!loginForm.valid || loading"
-          [attr.aria-busy]="loading"
+          [disabled]="loginForm().invalid() || loading()"
+          [attr.aria-busy]="loading()"
         ></button>
       </form>
 
@@ -119,7 +112,7 @@
       <div class="login-footer">
         <p class="demo-hint">
           <i class="pi pi-lightbulb" aria-hidden="true"></i>
-          <span><strong>Demo:</strong> Use qualquer credencial para testar</span>
+          <span><strong>Demo:</strong> Use admin / admin123</span>
         </p>
       </div>
     </div>
