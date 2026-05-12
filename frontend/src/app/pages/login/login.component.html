@@ -25,22 +25,23 @@
             type="text"
             pInputText
             [formField]="loginForm.username"
-            placeholder="texto@exemplo.com ou nome_de_usuário"
+            placeholder="Digite seu usuário ou email"
             class="form-input"
-            [class.error]="isFieldInvalid('username')"
+            [class.has-error]="isFieldInvalid('username')"
             aria-describedby="username-error username-help"
             autocomplete="username"
             spellcheck="false"
           />
-          <small class="help-text" id="username-help" [hidden]="isFieldInvalid('username')">
-            <i class="pi pi-info-circle" aria-hidden="true"></i>
-            Use email ou nome de usuário
-          </small>
           @if (isFieldInvalid('username')) {
-          <small class="error-message" id="username-error" role="alert">
-            <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
-            Usuário é obrigatório
-          </small>
+            <small class="error-message" id="username-error" role="alert">
+              <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+              Usuário é obrigatório
+            </small>
+          } @else {
+            <small class="help-text" id="username-help">
+              <i class="pi pi-info-circle" aria-hidden="true"></i>
+              Use email ou nome de usuário
+            </small>
           }
         </div>
 
@@ -53,22 +54,24 @@
           <p-password
             id="password"
             [formField]="loginForm.password"
-            placeholder="••••••••"
+            placeholder="Digite sua senha"
             [toggleMask]="true"
             [feedback]="false"
-            class="form-password"
+            styleClass="form-password"
+            [inputStyleClass]="isFieldInvalid('password') ? 'has-error' : ''"
             aria-describedby="password-error password-help"
             autocomplete="current-password"
           ></p-password>
-          <small class="help-text" id="password-help" [hidden]="isFieldInvalid('password')">
-            <i class="pi pi-check-circle" aria-hidden="true"></i>
-            Mínimo 6 caracteres
-          </small>
           @if (isFieldInvalid('password')) {
-          <small class="error-message" id="password-error" role="alert">
-            <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
-            Senha é obrigatória
-          </small>
+            <small class="error-message" id="password-error" role="alert">
+              <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+              Senha é obrigatória
+            </small>
+          } @else {
+            <small class="help-text" id="password-help">
+              <i class="pi pi-check-circle" aria-hidden="true"></i>
+              Mínimo 6 caracteres
+            </small>
           }
         </div>
 
@@ -83,7 +86,7 @@
               name="rememberMe"
               aria-label="Lembrar de mim neste dispositivo"
             ></p-checkbox>
-            <label for="rememberMe" class="remember-label"> Lembrar de mim </label>
+            <label for="rememberMe" class="remember-label">Lembrar de mim</label>
           </div>
           <button
             type="button"
@@ -91,6 +94,7 @@
             (click)="showForgotPasswordHelp($event)"
             aria-label="Esqueci minha senha"
           >
+            <i class="pi pi-question-circle" aria-hidden="true"></i>
             Esqueci minha senha
           </button>
         </div>
@@ -112,10 +116,15 @@
 
       <!-- Footer / Demo Info -->
       <div class="login-footer">
-        <p class="demo-hint">
-          <i class="pi pi-lightbulb" aria-hidden="true"></i>
-          <span><strong>Demo:</strong> Use admin / admin123</span>
-        </p>
+        <div class="demo-card">
+          <div class="demo-card__icon">
+            <i class="pi pi-info-circle" aria-hidden="true"></i>
+          </div>
+          <div class="demo-card__content">
+            <span class="demo-card__label">Ambiente de demonstração</span>
+            <span class="demo-card__credentials">Credenciais: <code>admin</code> / <code>admin123</code></span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
