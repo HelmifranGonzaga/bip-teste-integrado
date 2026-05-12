@@ -1,0 +1,51 @@
+<header class="app-header">
+  <div class="header-container">
+    <a class="header-logo" routerLink="/beneficios">
+      <div class="logo-icon">
+        <i class="pi pi-wallet"></i>
+      </div>
+      <div class="logo-text">
+        <h1>BIP</h1>
+        <span>Benefícios</span>
+      </div>
+    </a>
+
+    <nav class="header-nav">
+      <a routerLink="/beneficios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" pRipple>
+        <i class="pi pi-home"></i>
+        <span>Início</span>
+      </a>
+      @if (currentUser()?.role === 'ADMIN') {
+        <a routerLink="/usuarios" routerLinkActive="active" class="nav-link" pRipple>
+          <i class="pi pi-users"></i>
+          <span>Usuários</span>
+        </a>
+      }
+    </nav>
+
+    <div class="header-spacer"></div>
+
+    @if (currentUser(); as user) {
+      <div class="header-user">
+        <button
+          pButton
+          type="button"
+          pRipple
+          class="user-menu-toggle"
+          (click)="userMenuRef.toggle($event)"
+        >
+          <p-avatar
+            [label]="(user.username || 'U').charAt(0).toUpperCase()"
+            shape="circle"
+            size="large"
+            styleClass="user-avatar"
+          ></p-avatar>
+          <span class="user-name">{{ user.username }}</span>
+          <i class="pi pi-chevron-down"></i>
+        </button>
+
+         <p-menu #userMenuRef [popup]="true" [model]="userMenuItems()"></p-menu>
+      </div>
+    }
+  </div>
+</header>
