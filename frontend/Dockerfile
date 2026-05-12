@@ -8,7 +8,7 @@ ENV CI=true
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --ignore-scripts
+RUN npm install --ignore-scripts --legacy-peer-deps
 
 # Copy source code
 COPY . .
