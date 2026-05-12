@@ -166,6 +166,7 @@
         pButton
         type="submit"
         [label]="editingUser ? 'Salvar' : 'Criar'"
+        severity="primary"
         [disabled]="form.invalid || submitting"
         [loading]="submitting"
       ></button>
