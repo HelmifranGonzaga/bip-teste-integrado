@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
-import { clearAuthToken, setAuthToken } from '../interceptors/jwt.interceptor';
+import { clearAuthToken, getRoleFromToken, setAuthToken } from '../interceptors/jwt.interceptor';
 import { ConfigService } from '../config/config.service';
 
 export interface LoginRequest {
@@ -17,6 +17,7 @@ export interface LoginResponse {
 
 export interface AuthUser {
   username: string;
+  role: string;
   expiresAt: number;
 }
 
@@ -73,7 +74,7 @@ export class AuthService {
         // Armazenar usuário
         // Backend retorna expiresIn em segundos; Date.now() usa milissegundos.
         const expiresAt = Date.now() + response.expiresIn * 1000;
-        const authUser: AuthUser = { username, expiresAt };
+        const authUser: AuthUser = { username, role: getRoleFromToken() ?? 'USER', expiresAt };
         this.authUser$.next(authUser);
         this.storeUser(authUser);
       })
@@ -111,6 +112,8 @@ export class AuthService {
         const user: AuthUser = JSON.parse(stored);
         // Verificar se não expirou
         if (user.expiresAt > Date.now()) {
+          // Garante que o role vem do JWT (sempre atualizado)
+          user.role = getRoleFromToken() ?? user.role ?? 'USER';
           this.authUser$.next(user);
         } else {
           this.clearStoredUser();

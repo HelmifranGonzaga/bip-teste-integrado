@@ -7,6 +7,7 @@
       <p class="page-subtitle m-0">Gerencie seus benefícios e transfira saldos de forma segura.</p>
     </div>
     <div class="page-actions">
+      <button pButton type="button" label="Exportar CSV" icon="pi pi-download" severity="secondary" [outlined]="true" (click)="exportCsv()"></button>
       <button pButton type="button" label="Transferir Saldo" icon="pi pi-arrow-right-arrow-left" severity="secondary" [outlined]="true" (click)="openTransfer()"></button>
       <button pButton type="button" label="Novo Benefício" icon="pi pi-plus" (click)="openNew()"></button>
     </div>
@@ -16,8 +17,11 @@
     <app-beneficio-list
       [beneficios]="beneficios()"
       [loading]="uiLoading()"
+      [lazy]="lazyMode()"
+      [totalRecords]="totalRecords()"
       (edit)="onEdit($event)"
       (remove)="onRemove($event)"
+      (lazyLoad)="onLazyLoad($event)"
     >
     </app-beneficio-list>
   } @else {

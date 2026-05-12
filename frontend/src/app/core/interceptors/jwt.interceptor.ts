@@ -62,3 +62,31 @@ export function clearAuthToken(): void {
     localStorage.removeItem('jwt_token');
   }
 }
+
+/**
+ * Decodifica o payload do JWT (base64url) e retorna os claims.
+ * Não faz verificação de assinatura — assume token válido (interceptador já validou).
+ */
+export function parseJwtPayload(token: string): { sub?: string; role?: string } | null {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) {
+      return null;
+    }
+    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(decoded);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extrai o role do JWT armazenado, ou null se indisponível.
+ */
+export function getRoleFromToken(): string | null {
+  const token = getToken();
+  if (!token) {
+    return null;
+  }
+  return parseJwtPayload(token)?.role ?? null;
+}

@@ -19,7 +19,7 @@ import { MessageModule } from 'primeng/message';
 import { finalize, Observable } from 'rxjs';
 
 import { CONNECTION_ERROR_MESSAGE } from '../../core/errors/error-messages';
-import { Beneficio } from '../../core/models/beneficio.model';
+import { Beneficio, Page } from '../../core/models/beneficio.model';
 import { environment } from '../../../environments/environment';
 import { BeneficiosFacade } from './beneficios.facade';
 import { SaveBeneficioEvent, TransferBeneficioEvent } from './beneficios.types';
@@ -93,6 +93,11 @@ export class BeneficiosComponent {
   showFormModal = signal<boolean>(false);
   showTransferModal = signal<boolean>(false);
 
+  totalRecords = signal<number>(0);
+  currentPage = signal<number>(0);
+  pageSize = signal<number>(10);
+  lazyMode = signal<boolean>(true);
+
   readonly isProduction = environment.production;
 
   constructor() {
@@ -111,8 +116,8 @@ export class BeneficiosComponent {
       }
     });
 
-    this.loadBeneficios();
-    
+    this.loadBeneficiosPaginated(0, 10);
+
     // Listen to query parameters for actions
     this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
       const action = params['action'];
@@ -140,8 +145,44 @@ export class BeneficiosComponent {
         this.stateService.updateCount(items.length);
         this.clearConnectionError();
       },
-      true // isInitialLoad
+      true
     );
+  }
+
+  loadBeneficiosPaginated(page: number, size: number): void {
+    this.currentPage.set(page);
+    this.pageSize.set(size);
+    this.execute(
+      this.facade.listPaginated(page, size),
+      (result: Page<Beneficio>) => {
+        this.beneficios.set(result.content);
+        this.totalRecords.set(result.totalElements);
+        this.stateService.updateCount(result.totalElements);
+        this.clearConnectionError();
+      },
+      true
+    );
+  }
+
+  onLazyLoad(event: { page: number; size: number }): void {
+    this.loadBeneficiosPaginated(event.page, event.size);
+  }
+
+  exportCsv(): void {
+    this.execute(this.facade.exportCsv(), (csv) => {
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `beneficios-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Exportado',
+        detail: 'CSV exportado com sucesso!'
+      });
+    });
   }
 
   retryNow(): void {

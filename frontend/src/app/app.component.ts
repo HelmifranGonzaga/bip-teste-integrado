@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
@@ -13,13 +13,10 @@ import { AppToastComponent } from './core/layout/app-toast.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="app-wrapper">
-      <!-- Global Toast Component -->
       <app-toast></app-toast>
-
-      <!-- Header (nunca mostrar em login) -->
-      <app-header *ngIf="!isLoginPage()"></app-header>
-
-      <!-- Main Content -->
+      @if (!isLoginPage()) {
+        <app-header></app-header>
+      }
       <main class="app-main" [class.full-height]="isLoginPage()">
         <router-outlet></router-outlet>
       </main>
@@ -54,13 +51,15 @@ export class AppComponent {
   readonly isLoginPage = signal(false);
 
   constructor() {
+    this.isLoginPage.set(this.router.url.includes('/login'));
+
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event) => {
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((event: NavigationEnd) => {
         this.isLoginPage.set(event.urlAfterRedirects.includes('/login'));
       });
-
-    this.isLoginPage.set(this.router.url.includes('/login'));
   }
 }

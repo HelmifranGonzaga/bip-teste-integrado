@@ -15,11 +15,6 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 
 interface BeneficioRow extends Beneficio {
-  // Campos virtuais para o filtro global da tabela:
-  //   cnpjNormalizado — alfanumérico puro (formato persistido); casa quando o usuário digita sem máscara
-  //   cnpjMascarado   — formato XX.XXX.XXX/XXXX-XX; casa quando o usuário digita com máscara
-  //   cnpjFiltro      — concatenação deduplicada (normalizado + mascarado + bruto da API) para contains
-  //                     encontrar tanto termo sem máscara quanto fragmentos com máscara
   cnpjNormalizado: string;
   cnpjMascarado: string;
   cnpjFiltro: string;
@@ -67,8 +62,14 @@ export class BeneficioListComponent {
   }
 
   @Input() readonly loading = false;
+  @Input() totalRecords = 0;
+  @Input() lazy = false;
   @Output() readonly edit = new EventEmitter<Beneficio>();
   @Output() readonly remove = new EventEmitter<number>();
+  @Output() readonly lazyLoad = new EventEmitter<{ page: number; size: number }>();
+
+  first = 0;
+  rows = 10;
 
   getEditLabel(item: Beneficio): string {
     return `Editar beneficio ${item.nome}`;
@@ -78,7 +79,16 @@ export class BeneficioListComponent {
     return `Excluir beneficio ${item.nome}`;
   }
 
+  onLazyLoad(event: { first?: number; rows?: number }): void {
+    if (!this.lazy) return;
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
+    const page = Math.floor(this.first / this.rows);
+    this.lazyLoad.emit({ page, size: this.rows });
+  }
+
   onGlobalFilter(table: Table, event: Event): void {
+    if (this.lazy) return;
     const raw = (event.target as HTMLInputElement | null)?.value ?? '';
     const cleaned = raw.replace(BeneficioListComponent.INVISIBLE_CHARS, '');
     const trimmed = cleaned.trim();

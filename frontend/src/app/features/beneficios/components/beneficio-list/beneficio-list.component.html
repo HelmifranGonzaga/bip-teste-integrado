@@ -5,10 +5,13 @@
       [value]="beneficios"
       [tableStyle]="{ 'min-width': '40rem' }"
       [paginator]="true"
-      [rows]="5"
-      [rowsPerPageOptions]="[5, 10, 20]"
+      [rows]="rows"
+      [rowsPerPageOptions]="[5, 10, 20, 50]"
+      [totalRecords]="totalRecords"
       [loading]="loading"
-      [globalFilterFields]="['nome', 'descricao', 'valor', 'cnpjFiltro']"
+      [lazy]="lazy"
+      (onLazyLoad)="onLazyLoad($event)"
+      [globalFilterFields]="lazy ? undefined : ['nome', 'descricao', 'valor', 'cnpjFiltro']"
       styleClass="p-datatable-sm p-datatable-striped"
     >
       <ng-template pTemplate="caption">

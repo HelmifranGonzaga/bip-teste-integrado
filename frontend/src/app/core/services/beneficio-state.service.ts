@@ -1,14 +1,13 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, linkedSignal, computed } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BeneficioStateService {
-  readonly hasBeneficios = signal<boolean>(true);
-  readonly beneficioCount = signal<number>(0);
-  
+  readonly count = linkedSignal(() => 0);
+  readonly hasBeneficios = computed(() => this.count() > 0);
+
   updateCount(count: number): void {
-    this.beneficioCount.set(count);
-    this.hasBeneficios.set(count > 0);
+    this.count.set(count);
   }
 }

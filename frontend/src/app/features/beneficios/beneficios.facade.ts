@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Observable, tap } from 'rxjs';
 
-import { Beneficio } from '../../core/models/beneficio.model';
+import { Beneficio, Page } from '../../core/models/beneficio.model';
 import { BeneficioService } from '../../core/services/beneficio.service';
 import { SaveBeneficioEvent, TransferBeneficioEvent } from './beneficios.types';
 
@@ -13,6 +13,14 @@ export class BeneficiosFacade {
 
   list(): Observable<Beneficio[]> {
     return this.service.list();
+  }
+
+  listPaginated(page: number, size: number): Observable<Page<Beneficio>> {
+    return this.service.listPaginated(page, size);
+  }
+
+  exportCsv(): Observable<string> {
+    return this.service.exportCsv();
   }
 
   save(event: SaveBeneficioEvent): Observable<Beneficio> {
