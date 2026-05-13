@@ -107,10 +107,7 @@
 }
 
 .table-caption {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 1.5rem 1rem;
+  width: 100%;
 }
 
 .table-title {
@@ -268,12 +265,6 @@
   .page-actions {
     width: 100%;
     justify-content: flex-start;
-  }
-
-  .table-caption {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
   }
 
   .page-status-card {
