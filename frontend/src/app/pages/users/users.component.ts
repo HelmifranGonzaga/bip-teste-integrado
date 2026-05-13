@@ -61,7 +61,7 @@ export class UsersComponent {
       if (this.users().length > 0) {
         this.table().sortSingle();
       }
-    }, { allowSignalWrites: true });
+    });
     this.loadUsers();
   }
 
