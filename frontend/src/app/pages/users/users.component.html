@@ -40,29 +40,32 @@
         [rowsPerPageOptions]="[5, 10, 20]"
         [globalFilterFields]="['username', 'nome', 'role']"
         [sortField]="'id'"
-        [sortOrder]="-1"
+        [sortOrder]="1"
         styleClass="p-datatable-sm p-datatable-striped"
       >
         <ng-template pTemplate="caption">
           <div class="table-caption flex flex-wrap items-center justify-between gap-4">
             <h2 class="table-title">Lista de Usuários</h2>
-            <p-iconfield iconPosition="left">
-              <p-inputicon class="pi pi-search" />
-              <input
-                type="text"
-                pInputText
-                (input)="dt.filterGlobal($event, 'contains')"
-                placeholder="Buscar por nome, username ou perfil"
-                aria-label="Buscar usuários"
-              />
-            </p-iconfield>
+            <div class="search-container">
+              <p-iconfield iconPosition="left">
+                <p-inputicon class="pi pi-search" />
+                <input
+                  type="text"
+                  pInputText
+                  (input)="dt.filterGlobal($event, 'contains')"
+                  placeholder="Buscar usuários..."
+                  aria-label="Buscar usuários"
+                />
+              </p-iconfield>
+              <small class="search-hint">Digite nome, usuário ou perfil</small>
+            </div>
           </div>
         </ng-template>
 
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="id" scope="col">ID <p-sortIcon field="id"></p-sortIcon></th>
-            <th pSortableColumn="username" scope="col">Username <p-sortIcon field="username"></p-sortIcon></th>
+            <th pSortableColumn="id" scope="col" style="width: 5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+            <th pSortableColumn="username" scope="col">Usuário <p-sortIcon field="username"></p-sortIcon></th>
             <th pSortableColumn="nome" scope="col">Nome <p-sortIcon field="nome"></p-sortIcon></th>
             <th pSortableColumn="role" scope="col">Perfil <p-sortIcon field="role"></p-sortIcon></th>
             <th pSortableColumn="ativo" scope="col">Status <p-sortIcon field="ativo"></p-sortIcon></th>
@@ -106,17 +109,6 @@
                   <button
                     pButton
                     type="button"
-                    icon="pi pi-key"
-                    severity="secondary"
-                    [outlined]="true"
-                    [rounded]="true"
-                    [disabled]="loading() || generatingPassword()"
-                    (click)="onResetPassword(user)"
-                    pTooltip="Gerar nova senha"
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
                     icon="pi pi-trash"
                     severity="secondary"
                     [outlined]="true"
@@ -151,8 +143,8 @@
 
 <p-dialog
   [header]="editingUser() ? 'Editar Usuário' : 'Novo Usuário'"
-  [visible]="showDialog()"
-  (visibleChange)="showDialog.set($event)"
+  [(visible)]="showDialog"
+  (visibleChange)="onVisibleChange($event)"
   (onHide)="onDialogHide()"
   [modal]="true"
   [style]="{ width: '520px' }"
@@ -164,20 +156,18 @@
   [closeOnEscape]="!saving()"
   [closable]="!saving()"
 >
-  @if (showDialog()) {
-    <app-user-form
-      [editingUser]="editingUser()"
-      [submitting]="saving()"
-      [isAdmin]="isAdmin()"
-      [toggling]="toggling()"
-      [generatingPassword]="generatingPassword()"
-      [generatedPassword]="generatedPassword()"
-      (save)="onSave($event)"
-      (cancel)="showDialog.set(false)"
-      (toggleActive)="onToggleActive($event)"
-      (generatePassword)="onGeneratePassword()"
-    />
-  }
+  <app-user-form
+    [editingUser]="editingUser()"
+    [submitting]="saving()"
+    [isAdmin]="isAdmin()"
+    [toggling]="toggling()"
+    [generatingPassword]="generatingPassword()"
+    [generatedPassword]="generatedPassword()"
+    (save)="onSave($event)"
+    (cancel)="onCloseDialog()"
+    (toggleActive)="onToggleActive($event)"
+    (generatePassword)="onGeneratePassword()"
+  />
 </p-dialog>
 
 <p-confirmDialog></p-confirmDialog>

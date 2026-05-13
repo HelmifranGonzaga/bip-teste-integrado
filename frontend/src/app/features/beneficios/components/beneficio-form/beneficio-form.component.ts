@@ -45,6 +45,10 @@ export class BeneficioFormComponent {
   @Input() readonly submitting = false;
 
   @Input() set editingBeneficio(val: Beneficio | null) {
+    const isSameBeneficio = val && this._editingBeneficio?.id === val.id;
+    if (isSameBeneficio) {
+      return;
+    }
     this._editingBeneficio = val;
     if (val) {
       const cnpjDisplay = val.cnpj

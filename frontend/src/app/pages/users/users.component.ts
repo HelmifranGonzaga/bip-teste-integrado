@@ -49,7 +49,7 @@ export class UsersComponent {
 
   users = signal<User[]>([]);
   editingUser = signal<User | null>(null);
-  showDialog = signal(false);
+  showDialog = false;
   saving = signal(false);
   loading = signal(false);
   toggling = signal(false);
@@ -82,6 +82,7 @@ export class UsersComponent {
   }
 
   onDialogHide(): void {
+    this.showDialog = false;
     this.editingUser.set(null);
     this.generatedPassword.set('');
   }
@@ -89,13 +90,23 @@ export class UsersComponent {
   openNew(): void {
     this.editingUser.set(null);
     this.generatedPassword.set('');
-    this.showDialog.set(true);
+    this.showDialog = true;
+  }
+
+  onVisibleChange(visible: boolean): void {
+    if (!visible) {
+      this.onDialogHide();
+    }
+  }
+
+  onCloseDialog(): void {
+    this.showDialog = false;
   }
 
   onEdit(user: User): void {
     this.editingUser.set(user);
     this.generatedPassword.set('');
-    this.showDialog.set(true);
+    this.showDialog = true;
   }
 
   onToggleActive(user: User): void {
@@ -226,7 +237,7 @@ export class UsersComponent {
           summary: 'Salvo',
           detail: `Usuário ${event.id ? 'atualizado' : 'criado'} com sucesso.`
         });
-        this.showDialog.set(false);
+        this.showDialog = false;
         this.saving.set(false);
         this.loadUsers();
       },

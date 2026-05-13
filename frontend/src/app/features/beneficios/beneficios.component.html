@@ -144,22 +144,20 @@
   [resizable]="false"
   [dismissableMask]="!loading()"
 >
-  @if (showFormModal()) {
-    <div class="modal-intro">
-      <div class="modal-intro__icon"><i class="pi pi-pencil" aria-hidden="true"></i></div>
-      <div>
-        <p class="modal-intro__title">Revise antes de salvar</p>
-        <p class="modal-intro__text">Mantenha os dados consistentes. Campos obrigatórios são destacados automaticamente.</p>
-      </div>
+  <div class="modal-intro">
+    <div class="modal-intro__icon"><i class="pi pi-pencil" aria-hidden="true"></i></div>
+    <div>
+      <p class="modal-intro__title">Revise antes de salvar</p>
+      <p class="modal-intro__text">Mantenha os dados consistentes. Campos obrigatórios são destacados automaticamente.</p>
     </div>
-    <app-beneficio-form
-      [editingBeneficio]="editingBeneficio()"
-      [submitting]="loading()"
-      (save)="onSave($event)"
-      (cancelOperation)="onCancelEdit()"
-    >
-    </app-beneficio-form>
-  }
+  </div>
+  <app-beneficio-form
+    [editingBeneficio]="editingBeneficio()"
+    [submitting]="loading()"
+    (save)="onSave($event)"
+    (cancelOperation)="onCancelEdit()"
+  >
+  </app-beneficio-form>
 </p-dialog>
 
 <!-- Modal de Transferência -->
@@ -176,20 +174,18 @@
   [resizable]="false"
   [dismissableMask]="!loading()"
 >
-  @if (showTransferModal()) {
-    <div class="modal-intro">
-      <div class="modal-intro__icon"><i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i></div>
-      <div>
-        <p class="modal-intro__title">Confirme a movimentação</p>
-        <p class="modal-intro__text">Selecione origem e destino com atenção para evitar transferências incorretas.</p>
-      </div>
+  <div class="modal-intro">
+    <div class="modal-intro__icon"><i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i></div>
+    <div>
+      <p class="modal-intro__title">Confirme a movimentação</p>
+      <p class="modal-intro__text">Selecione origem e destino com atenção para evitar transferências incorretas.</p>
     </div>
-    <app-beneficio-transfer
-      [beneficios]="beneficios()"
-      [submitting]="loading()"
-      (transfer)="onTransfer($event)"
-      (cancelTransfer)="onCancelTransfer()"
-    >
-    </app-beneficio-transfer>
-  }
+  </div>
+  <app-beneficio-transfer
+    [beneficios]="beneficios()"
+    [submitting]="loading()"
+    (transfer)="onTransfer($event)"
+    (cancelTransfer)="onCancelTransfer()"
+  >
+  </app-beneficio-transfer>
 </p-dialog>

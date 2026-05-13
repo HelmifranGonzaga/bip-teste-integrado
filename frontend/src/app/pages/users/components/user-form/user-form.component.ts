@@ -63,9 +63,22 @@ export class UserFormComponent {
   @Input() isAdmin = false;
   @Input() toggling = false;
   @Input() generatingPassword = false;
-  @Input() generatedPassword = '';
+  private _generatedPassword = '';
+  @Input() set generatedPassword(val: string) {
+    if (val && val !== this._generatedPassword) {
+      this._generatedPassword = val;
+      this.form.patchValue({ password: val });
+    }
+  }
+  get generatedPassword(): string {
+    return this._generatedPassword;
+  }
 
   @Input() set editingUser(val: User | null) {
+    const isSameUser = val && this._editingUser?.id === val.id;
+    if (isSameUser) {
+      return;
+    }
     this._editingUser = val;
     if (val) {
       this.form.patchValue({
@@ -135,8 +148,9 @@ export class UserFormComponent {
   }
 
   copyPassword(): void {
-    if (this.generatedPassword) {
-      navigator.clipboard.writeText(this.generatedPassword);
+    const pw = this.form.value.password;
+    if (pw) {
+      navigator.clipboard.writeText(pw);
     }
   }
 }

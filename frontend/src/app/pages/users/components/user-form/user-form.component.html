@@ -32,13 +32,13 @@
     <p-fluid>
       @if (!editingUser) {
         <div class="field">
-          <label for="username">Nome de usuário <span class="required">*</span></label>
+          <label for="username">Usuário <span class="required">*</span></label>
           <input
             id="username"
             type="text"
             pInputText
             formControlName="username"
-            placeholder="ex: joao.silva"
+            placeholder="ex: joao.silva@empresa"
             autocomplete="off"
             [disabled]="submitting"
           />
@@ -54,7 +54,7 @@
         </div>
       } @else {
         <div class="field">
-          <label for="username">Nome de usuário</label>
+          <label for="username">Usuário</label>
           <div class="readonly-field">
             <span>{{ editingUser.username }}</span>
             <small><i class="pi pi-lock" aria-hidden="true"></i> fixo</small>
@@ -118,14 +118,30 @@
             ></button>
           }
         </div>
-        <p-password
-          id="password"
-          formControlName="password"
-          [feedback]="false"
-          [toggleMask]="true"
-          [placeholder]="editingUser ? 'Em branco mantém a atual' : 'Mínimo 6 caracteres'"
-          [disabled]="submitting"
-        />
+        <div class="flex gap-2">
+          <p-password
+            id="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            [placeholder]="editingUser ? 'Em branco mantém a atual' : 'Mínimo 6 caracteres'"
+            [disabled]="submitting"
+            styleClass="flex-1"
+          />
+          @if (form.get('password')?.value) {
+            <button
+              pButton
+              type="button"
+              icon="pi pi-copy"
+              severity="secondary"
+              [outlined]="true"
+              size="large"
+              (click)="copyPassword()"
+              pTooltip="Copiar senha"
+              [disabled]="submitting"
+            ></button>
+          }
+        </div>
         @if (form.get('password')!.invalid && form.get('password')!.touched) {
           <small class="field-error">
             @if (form.get('password')!.hasError('required')) {
@@ -134,20 +150,6 @@
               Mínimo 6 caracteres.
             }
           </small>
-        }
-        @if (generatedPassword) {
-          <div class="generated-password">
-            <span><i class="pi pi-check" aria-hidden="true"></i> {{ generatedPassword }}</span>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-copy"
-              [text]="true"
-              size="small"
-              (click)="copyPassword()"
-              pTooltip="Copiar"
-            ></button>
-          </div>
         }
       </div>
     </p-fluid>

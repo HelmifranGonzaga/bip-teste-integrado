@@ -19,17 +19,20 @@
       <ng-template pTemplate="caption">
         <div class="beneficio-list-caption flex flex-wrap items-center justify-between gap-4">
           <h2 class="beneficio-list-title">Lista de Benefícios</h2>
-          <p-iconfield iconPosition="left" class="beneficio-list-global-search">
-            <p-inputicon class="pi pi-search" />
-            <input
-              id="beneficio-list-global-filter"
-              type="text"
-              pInputText
-              (input)="onGlobalFilter(dt, $event)"
-              placeholder="Buscar por nome, descrição, valor ou CNPJ"
-              aria-label="Buscar por nome, descrição, valor ou CNPJ"
-            />
-          </p-iconfield>
+          <div class="search-container">
+            <p-iconfield iconPosition="left" class="beneficio-list-global-search">
+              <p-inputicon class="pi pi-search" />
+              <input
+                id="beneficio-list-global-filter"
+                type="text"
+                pInputText
+                (input)="onGlobalFilter(dt, $event)"
+                placeholder="Buscar benefícios..."
+                aria-label="Buscar benefícios"
+              />
+            </p-iconfield>
+            <small class="search-hint">Digite nome, descrição, valor ou CNPJ</small>
+          </div>
         </div>
       </ng-template>
       <ng-template pTemplate="header">
