@@ -1,18 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, signal, computed, viewChild, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import type { Table } from 'primeng/table';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { User, UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -22,12 +20,9 @@ import { UserFormComponent, SaveUserEvent } from './components/user-form/user-fo
   selector: 'app-users',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
     TableModule,
     ButtonModule,
     DialogModule,
-    InputTextModule,
     ConfirmDialogModule,
     CardModule,
     TagModule,
@@ -47,19 +42,26 @@ export class UsersComponent {
   private readonly messageService = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
 
-  users = signal<User[]>([]);
-  editingUser = signal<User | null>(null);
-  showDialog = false;
-  saving = signal(false);
-  loading = signal(false);
-  toggling = signal(false);
-  generatingPassword = signal(false);
-  generatedPassword = signal('');
+  readonly table = viewChild.required<Table>('dt');
+
+  readonly users = signal<User[]>([]);
+  readonly editingUser = signal<User | null>(null);
+  readonly showDialog = signal(false);
+  readonly saving = signal(false);
+  readonly loading = signal(false);
+  readonly toggling = signal(false);
+  readonly generatingPassword = signal(false);
+  readonly generatedPassword = signal('');
 
   readonly currentUser = toSignal(this.authService.getAuthUser$());
   readonly isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
 
   constructor() {
+    effect(() => {
+      if (this.users().length > 0) {
+        this.table().sortSingle();
+      }
+    }, { allowSignalWrites: true });
     this.loadUsers();
   }
 
@@ -82,31 +84,29 @@ export class UsersComponent {
   }
 
   onDialogHide(): void {
-    this.showDialog = false;
+    this.showDialog.set(false);
     this.editingUser.set(null);
     this.generatedPassword.set('');
+  }
+
+  onCloseDialog(): void {
+    this.showDialog.set(false);
   }
 
   openNew(): void {
     this.editingUser.set(null);
     this.generatedPassword.set('');
-    this.showDialog = true;
+    this.showDialog.set(true);
   }
 
   onVisibleChange(visible: boolean): void {
-    if (!visible) {
-      this.onDialogHide();
-    }
-  }
-
-  onCloseDialog(): void {
-    this.showDialog = false;
+    if (!visible) this.onDialogHide();
   }
 
   onEdit(user: User): void {
     this.editingUser.set(user);
     this.generatedPassword.set('');
-    this.showDialog = true;
+    this.showDialog.set(true);
   }
 
   onToggleActive(user: User): void {
@@ -118,9 +118,7 @@ export class UsersComponent {
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: user.ativo ? 'p-button-danger' : 'p-button-success',
       rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => {
-        this.executeToggle(user);
-      }
+      accept: () => this.executeToggle(user)
     });
   }
 
@@ -169,13 +167,7 @@ export class UsersComponent {
             });
             this.loadUsers();
           },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Não foi possível excluir o usuário.'
-            });
-          }
+          error: () => this.showError('excluir o usuário')
         });
       }
     });
@@ -188,40 +180,6 @@ export class UsersComponent {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     this.generatedPassword.set(password);
-  }
-
-  onResetPassword(user: User): void {
-    this.generatingPassword.set(true);
-    this.userService.resetPassword(user.id).subscribe({
-      next: (resp) => {
-        this.generatingPassword.set(false);
-        this.confirmationService.confirm({
-          message: `Nova senha gerada para "${user.nome}":\n\n${resp.novaSenha}\n\nCopie a senha e envie ao usuário. Após o primeiro login, ele deverá alterá-la.`,
-          header: 'Senha Gerada',
-          icon: 'pi pi-key',
-          acceptLabel: 'Copiar senha',
-          rejectLabel: 'Fechar',
-          acceptButtonStyleClass: 'p-button-success',
-          rejectButtonStyleClass: 'p-button-secondary',
-          accept: () => {
-            navigator.clipboard.writeText(resp.novaSenha).catch(() => {});
-            this.messageService.add({
-              severity: 'info',
-              summary: 'Copiada',
-              detail: 'Senha copiada para a área de transferência.'
-            });
-          }
-        });
-      },
-      error: () => {
-        this.generatingPassword.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Não foi possível gerar nova senha.'
-        });
-      }
-    });
   }
 
   onSave(event: SaveUserEvent): void {
@@ -237,7 +195,7 @@ export class UsersComponent {
           summary: 'Salvo',
           detail: `Usuário ${event.id ? 'atualizado' : 'criado'} com sucesso.`
         });
-        this.showDialog = false;
+        this.showDialog.set(false);
         this.saving.set(false);
         this.loadUsers();
       },
@@ -249,6 +207,14 @@ export class UsersComponent {
           detail: err.error?.message || 'Não foi possível salvar o usuário.'
         });
       }
+    });
+  }
+
+  private showError(action: string): void {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Erro',
+      detail: `Não foi possível ${action}.`
     });
   }
 }

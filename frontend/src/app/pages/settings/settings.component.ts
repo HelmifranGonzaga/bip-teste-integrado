@@ -1,31 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
 import { DividerModule } from 'primeng/divider';
-import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-
-interface SettingsForm {
-  notifications: boolean;
-  emailNotifications: boolean;
-  darkMode: boolean;
-  language: string;
-}
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [
-    CommonModule,
+    FormsModule,
     ButtonModule,
     CardModule,
     CheckboxModule,
     SelectModule,
-    DividerModule,
-    FormsModule
+    DividerModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './settings.component.html',
@@ -34,75 +25,62 @@ interface SettingsForm {
 export class SettingsComponent {
   private readonly messageService = inject(MessageService);
 
-  settings: SettingsForm = {
+  readonly settings = signal({
     notifications: true,
     emailNotifications: true,
     darkMode: false,
     language: 'pt-BR'
-  };
+  });
 
-  languageOptions = [
+  readonly languageOptions = [
     { label: 'Português (Brasil)', value: 'pt-BR' },
     { label: 'English', value: 'en-US' },
     { label: 'Español', value: 'es-ES' }
   ];
 
   changePassword(): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Alterar Senha',
-      detail: 'Funcionalidade em desenvolvimento',
-      life: 3000
-    });
+    this.showInfo('Alterar Senha', 'Funcionalidade em desenvolvimento');
   }
 
   manageSessions(): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Gerenciar Sessões',
-      detail: 'Funcionalidade em desenvolvimento',
-      life: 3000
-    });
+    this.showInfo('Gerenciar Sessões', 'Funcionalidade em desenvolvimento');
   }
 
   exportData(): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Exportar Dados',
-      detail: 'Funcionalidade em desenvolvimento',
-      life: 3000
-    });
+    this.showInfo('Exportar Dados', 'Funcionalidade em desenvolvimento');
   }
 
   deleteAccount(): void {
-this.messageService.add({
-      severity: 'warn',
-      summary: 'Excluir Conta',
-      detail: 'Funcionalidade em desenvolvimento',
-    });
+    this.showWarn('Excluir Conta', 'Funcionalidade em desenvolvimento');
   }
 
   saveSettings(): void {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Sucesso',
-      detail: 'Configurações salvas com sucesso',
-      life: 3000
-    });
+    this.showSuccess('Sucesso', 'Configurações salvas com sucesso');
   }
 
   resetSettings(): void {
-    this.settings = {
+    this.settings.set({
       notifications: true,
       emailNotifications: true,
       darkMode: false,
       language: 'pt-BR'
-    };
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Restaurado',
-      detail: 'Configurações restauradas para os padrões',
-      life: 3000
     });
+    this.showInfo('Restaurado', 'Configurações restauradas para os padrões');
+  }
+
+  getSettings() {
+    return this.settings();
+  }
+
+  private showInfo(summary: string, detail: string): void {
+    this.messageService.add({ severity: 'info', summary, detail, life: 3000 });
+  }
+
+  private showWarn(summary: string, detail: string): void {
+    this.messageService.add({ severity: 'warn', summary, detail });
+  }
+
+  private showSuccess(summary: string, detail: string): void {
+    this.messageService.add({ severity: 'success', summary, detail, life: 3000 });
   }
 }

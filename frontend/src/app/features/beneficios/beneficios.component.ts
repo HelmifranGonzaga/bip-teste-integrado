@@ -7,7 +7,7 @@ import {
   ElementRef,
   inject,
   signal,
-  ViewChild
+  viewChild
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -47,7 +47,7 @@ import { BeneficioStateService } from '../../core/services/beneficio-state.servi
   styleUrl: './beneficios.component.css'
 })
 export class BeneficiosComponent {
-  @ViewChild('connectionErrorTitle') connectionErrorTitle?: ElementRef<HTMLHeadingElement>;
+  readonly connectionErrorTitle = viewChild<ElementRef<HTMLHeadingElement>>('connectionErrorTitle');
 
   private readonly facade = inject(BeneficiosFacade);
   private readonly confirmationService = inject(ConfirmationService);
@@ -445,7 +445,7 @@ export class BeneficiosComponent {
 
     this.hasFocusedConnectionError = true;
     setTimeout(() => {
-      this.connectionErrorTitle?.nativeElement.focus();
+      this.connectionErrorTitle()?.nativeElement.focus();
     });
   }
 

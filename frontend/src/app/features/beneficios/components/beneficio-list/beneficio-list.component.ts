@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Beneficio } from '../../../../core/models/beneficio.model';
 import {
@@ -40,7 +40,7 @@ interface BeneficioRow extends Beneficio {
 export class BeneficioListComponent {
   private static readonly INVISIBLE_CHARS = /[\u200B-\u200D\uFEFF]/g;
 
-  @ViewChild('dt') table!: Table;
+  readonly table = viewChild.required<Table>('dt');
 
   private _rows: ReadonlyArray<BeneficioRow> = [];
   private _prevLength = 0;
@@ -64,8 +64,8 @@ export class BeneficioListComponent {
       };
     });
 
-    if (dataChanged && this.table) {
-      setTimeout(() => this.table.sortSingle(), 0);
+    if (dataChanged && this.table()) {
+      setTimeout(() => this.table()?.sortSingle(), 0);
     }
   }
   get beneficios(): ReadonlyArray<BeneficioRow> {
@@ -98,7 +98,8 @@ export class BeneficioListComponent {
     this.lazyLoad.emit({ page, size: this.rows });
   }
 
-  onGlobalFilter(table: Table, event: Event): void {
+  onGlobalFilter(_table: Table, event: Event): void {
+    const table = this.table();
     if (this.lazy) return;
     const raw = (event.target as HTMLInputElement | null)?.value ?? '';
     const cleaned = raw.replace(BeneficioListComponent.INVISIBLE_CHARS, '');

@@ -9,7 +9,7 @@
       [rowsPerPageOptions]="[5, 10, 20, 50]"
       [totalRecords]="totalRecords"
       [loading]="loading"
-      [lazy]="lazy"
+      [lazy]="false"
       (onLazyLoad)="onLazyLoad($event)"
       [globalFilterFields]="lazy ? undefined : ['nome', 'descricao', 'valor', 'cnpjFiltro']"
       [sortField]="'id'"
