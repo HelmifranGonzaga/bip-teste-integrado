@@ -9,7 +9,7 @@
           [rounded]="true"
         ></p-tag>
       </div>
-      @if (isAdmin) {
+      @if (isAdmin()) {
         <button
           pButton
           type="button"
@@ -18,8 +18,8 @@
           severity="secondary"
           [outlined]="true"
           size="small"
-          [loading]="toggling"
-          (click)="onToggleActive()"
+[loading]="submitting()"
+         (click)="onToggleActive()"
           [pTooltip]="editingUser.ativo ? 'Desativar acesso deste usuário' : 'Ativar acesso deste usuário'"
           tooltipPosition="left"
         ></button>
@@ -38,9 +38,8 @@
             type="text"
             pInputText
             formControlName="username"
-            placeholder="ex: joao.silva@empresa"
-            autocomplete="off"
-            [disabled]="submitting"
+placeholder="ex: joao.silva@empresa"
+             autocomplete="off"
           />
           @if (form.get('username')!.invalid && form.get('username')!.touched) {
             <small class="field-error">
@@ -70,7 +69,6 @@
           pInputText
           formControlName="nome"
           placeholder="Ex: João Silva Santos"
-          [disabled]="submitting"
         />
         @if (form.get('nome')!.invalid && form.get('nome')!.touched) {
           <small class="field-error">
@@ -92,7 +90,6 @@
           optionLabel="label"
           optionValue="value"
           placeholder="Selecione"
-          [disabled]="submitting"
         ></p-select>
       </div>
 
@@ -103,7 +100,7 @@
           <label for="password">
             @if (editingUser) { Nova Senha } @else { Senha <span class="required">*</span> }
           </label>
-          @if (editingUser && isAdmin) {
+          @if (editingUser && isAdmin()) {
             <button
               pButton
               type="button"
@@ -112,7 +109,7 @@
               severity="secondary"
               [outlined]="true"
               size="small"
-              [loading]="generatingPassword"
+              [loading]="generatingPassword()"
               (click)="onGeneratePassword()"
               pTooltip="Gerar senha aleatória"
             ></button>
@@ -124,9 +121,8 @@
             formControlName="password"
             [feedback]="false"
             [toggleMask]="true"
-            [placeholder]="editingUser ? 'Em branco mantém a atual' : 'Mínimo 6 caracteres'"
-            [disabled]="submitting"
-            styleClass="flex-1"
+[placeholder]="editingUser ? 'Em branco mantém a atual' : 'Mínimo 6 caracteres'"
+             styleClass="flex-1"
           />
           @if (form.get('password')?.value) {
             <button
@@ -136,9 +132,8 @@
               severity="secondary"
               [outlined]="true"
               size="large"
-              (click)="copyPassword()"
-              pTooltip="Copiar senha"
-              [disabled]="submitting"
+(click)="copyPassword()"
+               pTooltip="Copiar senha"
             ></button>
           }
         </div>
@@ -157,20 +152,19 @@
     <div class="form-actions">
       <button
         pButton
-        type="button"
-        label="Cancelar"
-        severity="secondary"
-        [outlined]="true"
-        [disabled]="submitting"
-        (click)="onCancel()"
+type="button"
+         label="Cancelar"
+         severity="secondary"
+         [outlined]="true"
+         (click)="onCancel()"
       ></button>
       <button
         pButton
         type="submit"
         [label]="editingUser ? 'Salvar' : 'Criar'"
         severity="primary"
-        [disabled]="form.invalid || submitting"
-        [loading]="submitting"
+[disabled]="form.invalid || submitting()"
+         [loading]="submitting()"
       ></button>
     </div>
   </form>

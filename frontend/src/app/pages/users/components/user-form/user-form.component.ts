@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   Input,
   Output,
+  input,
   EventEmitter
 } from '@angular/core';
 import {
@@ -52,18 +54,18 @@ export interface SaveUserEvent {
   styleUrls: ['./user-form.component.css']
 })
 export class UserFormComponent {
-  private readonly fb = inject(NonNullableFormBuilder);
+   private readonly fb = inject(NonNullableFormBuilder);
 
-  readonly roles = [
-    { label: 'Usuário', value: 'USER' },
-    { label: 'Administrador', value: 'ADMIN' }
-  ];
+   readonly roles = [
+     { label: 'Usuário', value: 'USER' },
+     { label: 'Administrador', value: 'ADMIN' }
+   ];
 
-  @Input() submitting = false;
-  @Input() isAdmin = false;
-  @Input() toggling = false;
-  @Input() generatingPassword = false;
-  private _generatedPassword = '';
+   readonly submitting = input(false);
+   readonly isAdmin = input(false);
+   readonly toggling = input(false);
+   readonly generatingPassword = input(false);
+   private _generatedPassword = '';
   @Input() set generatedPassword(val: string) {
     if (val && val !== this._generatedPassword) {
       this._generatedPassword = val;
@@ -114,9 +116,26 @@ export class UserFormComponent {
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+  private updateFormDisabledState(): void {
+    if (this.submitting()) {
+      this.form.disable({ emitEvent: false });
+    } else {
+      this.form.enable({ emitEvent: false });
+      if (this.editingUser) {
+        this.form.get('username')?.disable({ emitEvent: false });
+      }
+    }
+  }
+
+  constructor() {
+    effect(() => {
+      this.updateFormDisabledState();
+    });
+  }
+
   onSubmit(): void {
     this.form.markAllAsTouched();
-    if (this.form.valid && !this.submitting) {
+    if (this.form.valid && !this.submitting()) {
       const payload: Partial<UserPayload> = {
         username: this.form.getRawValue().username,
         nome: this.form.value.nome!,
