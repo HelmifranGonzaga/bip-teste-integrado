@@ -44,22 +44,20 @@
         styleClass="p-datatable-sm p-datatable-striped"
       >
         <ng-template pTemplate="caption">
-          <div class="table-caption flex flex-wrap items-center justify-between gap-4">
-            <h2 class="table-title">Lista de Usuários</h2>
-            <div class="search-container">
-              <p-iconfield iconPosition="left" class="table-global-search">
-                <p-inputicon class="pi pi-search" />
-                <input
-                  id="table-global-filter"
-                  type="text"
-                  pInputText
-                  (input)="onGlobalFilter(dt, $event)"
-                  placeholder="Buscar usuários..."
-                  aria-label="Buscar usuários"
-                />
-              </p-iconfield>
-              <small class="search-hint">Digite nome, usuário ou perfil</small>
-            </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #141413; font-family: 'Poppins', sans-serif;">Lista de Usuários</h2>
+            <p-iconfield iconPosition="left" style="margin-left: auto;">
+              <p-inputicon>
+                <i class="pi pi-search"></i>
+              </p-inputicon>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar usuários..."
+                style="width: min(100%, 350px);"
+              />
+            </p-iconfield>
           </div>
         </ng-template>
 

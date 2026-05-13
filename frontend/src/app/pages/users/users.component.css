@@ -106,42 +106,6 @@
   overflow-x: auto;
 }
 
-.table-caption {
-  width: 100%;
-}
-
-.table-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--p-surface-800);
-  margin: 0;
-}
-
-.search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.25rem;
-}
-
-.search-hint {
-  font-size: 0.75rem;
-  color: var(--anthropic-mid);
-  font-style: italic;
-}
-
-.table-global-search {
-  flex: 0 1 auto;
-  max-width: 100%;
-  min-width: 0;
-  margin-left: auto;
-}
-
-.table-global-search :is(input, .p-inputtext) {
-  box-sizing: border-box;
-  width: min(100%, calc(41ch + 2rem));
-}
-
 .p-datatable-sm .p-datatable-thead > tr > th {
   padding: 0.75rem 1rem;
   font-weight: 600;
