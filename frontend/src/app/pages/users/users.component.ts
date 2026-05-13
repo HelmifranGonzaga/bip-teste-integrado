@@ -217,4 +217,9 @@ export class UsersComponent {
       detail: `Não foi possível ${action}.`
     });
   }
+
+  onGlobalFilter(table: Table, event: Event): void {
+    const raw = (event.target as HTMLInputElement | null)?.value ?? '';
+    table.filterGlobal(raw, 'contains');
+  }
 }

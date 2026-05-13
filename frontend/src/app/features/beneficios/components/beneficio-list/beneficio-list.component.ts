@@ -13,6 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { TagModule } from 'primeng/tag';
 
 interface BeneficioRow extends Beneficio {
   cnpjNormalizado: string;
@@ -31,7 +32,8 @@ interface BeneficioRow extends Beneficio {
     TooltipModule,
     InputTextModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    TagModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './beneficio-list.component.html',
@@ -98,25 +100,24 @@ export class BeneficioListComponent {
     this.lazyLoad.emit({ page, size: this.rows });
   }
 
-  onGlobalFilter(_table: Table, event: Event): void {
-    const table = this.table();
-    if (this.lazy) return;
-    const raw = (event.target as HTMLInputElement | null)?.value ?? '';
-    const cleaned = raw.replace(BeneficioListComponent.INVISIBLE_CHARS, '');
-    const trimmed = cleaned.trim();
-    let term = cleaned;
-    if (trimmed && CNPJ_ALLOWED_INPUT_PATTERN.test(trimmed)) {
-      const n = normalizeCnpjAlfanumerico(trimmed);
-      if (n.length >= 3) {
-        const hasDigit = /\d/.test(n);
-        const hasLetter = /[A-Z]/i.test(n);
-        if ((hasDigit && hasLetter) || (/^\d+$/.test(n) && n.length >= 8)) {
-          term = n;
-        }
-      }
-    }
-    table.filterGlobal(term, 'contains');
-  }
+onGlobalFilter(table: Table, event: Event): void {
+     if (this.lazy) return;
+     const raw = (event.target as HTMLInputElement | null)?.value ?? '';
+     const cleaned = raw.replace(BeneficioListComponent.INVISIBLE_CHARS, '');
+     const trimmed = cleaned.trim();
+     let term = cleaned;
+     if (trimmed && CNPJ_ALLOWED_INPUT_PATTERN.test(trimmed)) {
+       const n = normalizeCnpjAlfanumerico(trimmed);
+       if (n.length >= 3) {
+         const hasDigit = /\d/.test(n);
+         const hasLetter = /[A-Z]/i.test(n);
+         if ((hasDigit && hasLetter) || (/^\d+$/.test(n) && n.length >= 8)) {
+           term = n;
+         }
+       }
+     }
+     table.filterGlobal(term, 'contains');
+   }
 
   private static buildCnpjFiltro(normalizado: string, mascarado: string, bruto: string): string {
     const parts = new Set<string>();

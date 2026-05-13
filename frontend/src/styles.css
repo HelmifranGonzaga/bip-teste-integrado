@@ -96,6 +96,34 @@ p, li, span, label, input, textarea, button, a {
   font-weight: 600;
 }
 
+/* Search bar - shared */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.search-hint {
+  font-size: 0.75rem;
+  color: var(--anthropic-mid);
+  font-style: italic;
+}
+
+.table-global-search,
+.beneficio-list-global-search {
+  flex: 0 1 auto;
+  max-width: 100%;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.table-global-search :is(input, .p-inputtext),
+.beneficio-list-global-search :is(input, .p-inputtext) {
+  box-sizing: border-box;
+  width: min(100%, calc(41ch + 2rem));
+}
+
 /* BIP Design System - Inputs */
 .p-inputtext, .p-inputnumber-input {
   border-radius: 12px;

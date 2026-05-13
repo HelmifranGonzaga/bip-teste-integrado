@@ -20,17 +20,6 @@
   margin-bottom: 2rem;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .m-0 {
   margin: 0;
 }
@@ -118,19 +107,6 @@
   font-weight: 600;
   color: var(--p-surface-800);
   margin: 0;
-}
-
-.table-caption .search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.25rem;
-}
-
-.table-caption .search-hint {
-  font-size: 0.75rem;
-  color: var(--anthropic-mid);
-  font-style: italic;
 }
 
 .p-datatable-sm .p-datatable-thead > tr > th {
