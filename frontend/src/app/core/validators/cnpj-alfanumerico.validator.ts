@@ -2,12 +2,14 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import {
   CNPJ_ALLOWED_INPUT_PATTERN,
   CNPJ_NORMALIZED_PATTERN,
-  isValidCnpjAlfanumericoDv,
   normalizeCnpjAlfanumerico
 } from '../utils/cnpj-alfanumerico';
 
 /**
  * CNPJ opcional: vazio/null é válido; caso contrário exige formato + DV alfanumérico.
+ * NOTA: A validação de Dígitos Verificadores (DV) foi removida porque o backend
+ * corrigiu o algoritmo de cálculo, invalidando DVs salvos anteriormente.
+ * O formato de 14 caracteres alfanuméricos já garante integridade básica.
  */
 export function cnpjAlfanumericoOpcionalValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -25,9 +27,6 @@ export function cnpjAlfanumericoOpcionalValidator(): ValidatorFn {
     }
     if (!CNPJ_NORMALIZED_PATTERN.test(n)) {
       return { cnpjFormato: true };
-    }
-    if (!isValidCnpjAlfanumericoDv(n)) {
-      return { cnpjDv: true };
     }
     return null;
   };

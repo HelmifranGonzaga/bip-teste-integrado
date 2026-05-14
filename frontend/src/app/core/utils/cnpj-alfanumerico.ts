@@ -45,7 +45,7 @@ export function cnpjCharValue(char: string): number {
     return code - 48;
   }
   if (code >= 65 && code <= 90) {
-    return code - 48;
+    return code - 55;
   }
   return -1;
 }

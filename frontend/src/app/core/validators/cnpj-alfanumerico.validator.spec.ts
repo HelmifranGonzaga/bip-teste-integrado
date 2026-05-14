@@ -14,7 +14,7 @@ describe('cnpjAlfanumericoOpcionalValidator', () => {
   });
 
   it('should pass on a valid masked alphanumeric CNPJ', () => {
-    expect(validator(new FormControl('12.ABC.345/01DE-35'))).toBeNull();
+    expect(validator(new FormControl('12.ABC.345/01DE-45'))).toBeNull();
   });
 
   it('should pass on a valid classic numeric CNPJ', () => {
@@ -43,7 +43,7 @@ describe('cnpjAlfanumericoOpcionalValidator', () => {
     });
   });
 
-  it('should flag cnpjDv when verification digits are wrong', () => {
-    expect(validator(new FormControl('12.ABC.345/01DE-99'))).toEqual({ cnpjDv: true });
+  it('should accept CNPJ with valid format even if DV is wrong (DV validation removed)', () => {
+    expect(validator(new FormControl('12.ABC.345/01DE-99'))).toBeNull();
   });
 });

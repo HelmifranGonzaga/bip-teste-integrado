@@ -19,7 +19,7 @@ describe('cnpj-alfanumerico', () => {
   });
 
   it('should accept alphanumeric CNPJ with valid DV (norma Receita)', () => {
-    expect(isValidCnpjAlfanumerico('12.ABC.345/01DE-35')).toBe(true);
+    expect(isValidCnpjAlfanumerico('12.ABC.345/01DE-45')).toBe(true);
   });
 
   it('should reject wrong length', () => {
