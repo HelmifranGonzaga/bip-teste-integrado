@@ -39,5 +39,9 @@ PROGRESSO_*.md
 Thumbs.db
 .directory
 
+# Local development prompts (temporary)
 PROMPT_DEV_v5.1.md
 PROMPT_EF_ET_v5.md
+
+# Agent logs (temporary)
+agents
