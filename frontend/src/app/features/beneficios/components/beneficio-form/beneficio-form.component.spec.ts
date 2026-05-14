@@ -52,7 +52,7 @@ describe('BeneficioFormComponent', () => {
   });
 
   it('should emit save event with id when editing existing beneficio (CNPJ sent normalized)', () => {
-    jest.spyOn(component.save, 'emit');
+    vi.spyOn(component.save, 'emit');
 
     component.editingBeneficio = {
       id: 7,
@@ -79,14 +79,14 @@ describe('BeneficioFormComponent', () => {
   });
 
   it('should emit payload with normalized CNPJ (no mask, uppercase) when input is masked', () => {
-    jest.spyOn(component.save, 'emit');
+    vi.spyOn(component.save, 'emit');
 
     component.form.setValue({
       nome: 'Com CNPJ alfa',
       descricao: '',
       valor: 10,
       ativo: true,
-      cnpj: '12.ABC.345/01DE-35'
+      cnpj: '12.ABC.345/01DE-45'
     });
 
     component.onSubmit();
@@ -94,13 +94,13 @@ describe('BeneficioFormComponent', () => {
     expect(component.save.emit).toHaveBeenCalledWith({
       id: null,
       payload: expect.objectContaining({
-        cnpj: '12ABC34501DE35'
+        cnpj: '12ABC34501DE45'
       })
     });
   });
 
   it('should emit cnpj null when CNPJ field is empty', () => {
-    jest.spyOn(component.save, 'emit');
+    vi.spyOn(component.save, 'emit');
 
     component.form.setValue({
       nome: 'Sem doc',
@@ -118,22 +118,22 @@ describe('BeneficioFormComponent', () => {
     });
   });
 
-  it('should not emit save when CNPJ has invalid DV', () => {
-    jest.spyOn(component.save, 'emit');
+  it('should not emit save when CNPJ has invalid characters', () => {
+    vi.spyOn(component.save, 'emit');
 
     component.form.setValue({
       nome: 'Inválido',
       descricao: '',
       valor: 10,
       ativo: true,
-      cnpj: '12.ABC.345/01DE-99'
+      cnpj: '12.ABC.345/01DE-@#'  // @ and # are invalid characters
     });
 
     component.form.get('cnpj')?.markAsTouched();
     component.onSubmit();
 
     expect(component.save.emit).not.toHaveBeenCalled();
-    expect(component.form.get('cnpj')?.hasError('cnpjDv')).toBe(true);
+    expect(component.form.get('cnpj')?.hasError('cnpjCaracteresInvalidos')).toBe(true);
   });
 
   it.each([
@@ -182,7 +182,7 @@ describe('BeneficioFormComponent', () => {
   });
 
   it('should emit save event on valid submit', () => {
-    jest.spyOn(component.save, 'emit');
+    vi.spyOn(component.save, 'emit');
 
     component.form.setValue({
       nome: 'Novo',
@@ -208,7 +208,7 @@ describe('BeneficioFormComponent', () => {
   });
 
   it('should emit cancel event on cancel', () => {
-    jest.spyOn(component.cancelOperation, 'emit');
+    vi.spyOn(component.cancelOperation, 'emit');
     component.onCancel();
     expect(component.cancelOperation.emit).toHaveBeenCalled();
   });

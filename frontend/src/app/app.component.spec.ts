@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 describe('AppComponent', () => {
   it('deve criar o app', () => {
     const serviceMock = {
-      list: jest.fn().mockReturnValue(of([]))
+      list: vi.fn().mockReturnValue(of([]))
     };
 
     TestBed.configureTestingModule({

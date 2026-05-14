@@ -10,20 +10,20 @@ import { errorInterceptor } from './error.interceptor';
 
 describe('errorInterceptor', () => {
   let environmentInjector: EnvironmentInjector;
-  let messageService: { add: jest.Mock };
-  let router: { url: string; navigate: jest.Mock };
-  let authService: { logout: jest.Mock };
+  let messageService: { add: ReturnType<typeof vi.fn> };
+  let router: { url: string; navigate: ReturnType<typeof vi.fn> };
+  let authService: { logout: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     messageService = {
-      add: jest.fn()
+      add: vi.fn()
     };
     router = {
       url: '/beneficios',
-      navigate: jest.fn()
+      navigate: vi.fn()
     };
     authService = {
-      logout: jest.fn()
+      logout: vi.fn()
     };
 
     TestBed.configureTestingModule({
@@ -48,7 +48,12 @@ describe('errorInterceptor', () => {
           expect(router.navigate).toHaveBeenCalledWith(['/login'], {
             queryParams: { returnUrl: '/beneficios' }
           });
-          expect(messageService.add).not.toHaveBeenCalled();
+          expect(messageService.add).toHaveBeenCalledWith(
+            expect.objectContaining({
+              severity: 'info',
+              summary: 'Sessão expirada'
+            })
+          );
           done();
         }
       });

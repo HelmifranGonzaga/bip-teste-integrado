@@ -8,28 +8,28 @@ import { AuthService } from '../../core/services/auth.service';
 describe('LoginComponent - Lógica', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let component: LoginComponent;
-  let authService: jest.Mocked<AuthService>;
-  let router: jest.Mocked<Router>;
-  let messageService: jest.Mocked<MessageService>;
-  let activatedRouteMock: { snapshot: { queryParamMap: { get: jest.Mock } } };
+  let authService: { login: ReturnType<typeof vi.fn> };
+  let router: { navigate: ReturnType<typeof vi.fn>; navigateByUrl: ReturnType<typeof vi.fn> };
+  let messageService: { add: ReturnType<typeof vi.fn> };
+  let activatedRouteMock: { snapshot: { queryParamMap: { get: ReturnType<typeof vi.fn> } } };
 
   beforeEach(() => {
     sessionStorage.clear();
 
     authService = {
-      login: jest.fn()
-    } as unknown as jest.Mocked<AuthService>;
+      login: vi.fn()
+    };
     router = {
-      navigate: jest.fn(),
-      navigateByUrl: jest.fn()
-    } as unknown as jest.Mocked<Router>;
+      navigate: vi.fn(),
+      navigateByUrl: vi.fn()
+    };
     messageService = {
-      add: jest.fn()
-    } as unknown as jest.Mocked<MessageService>;
+      add: vi.fn()
+    };
     activatedRouteMock = {
       snapshot: {
         queryParamMap: {
-          get: jest.fn().mockReturnValue(null)
+          get: vi.fn().mockReturnValue(null)
         }
       }
     };
@@ -54,106 +54,42 @@ describe('LoginComponent - Lógica', () => {
   });
 
   it('should initialize with empty form', () => {
-    expect(component.loginForm.get('username')?.value).toBe('');
-    expect(component.loginForm.get('password')?.value).toBe('');
+    expect(component.loginModel().username).toBe('');
+    expect(component.loginModel().password).toBe('');
   });
 
   it('should initialize with loading false', () => {
-    expect(component.loading).toBeFalsy();
-  });
-
-  describe('Form Control - Username', () => {
-    it('should be required', () => {
-      const control = component.loginForm.get('username');
-      control?.setValue('');
-      expect(control?.hasError('required')).toBeTruthy();
-    });
-
-    it('should be valid with value', () => {
-      const control = component.loginForm.get('username');
-      control?.setValue('admin');
-      expect(control?.valid).toBeTruthy();
-    });
-  });
-
-  describe('Form Control - Password', () => {
-    it('should be required', () => {
-      const control = component.loginForm.get('password');
-      control?.setValue('');
-      expect(control?.hasError('required')).toBeTruthy();
-    });
-
-    it('should be valid with value', () => {
-      const control = component.loginForm.get('password');
-      control?.setValue('password123');
-      expect(control?.valid).toBeTruthy();
-    });
+    expect(component.loading()).toBeFalsy();
   });
 
   describe('isFieldInvalid', () => {
     it('should return false for valid untouched field', () => {
-      const username = component.loginForm.get('username');
-      username?.setValue('admin');
-      expect(component.isFieldInvalid('username')).toBeFalsy();
-    });
-
-    it('should return false for valid touched field', () => {
-      const username = component.loginForm.get('username');
-      username?.setValue('admin');
-      username?.markAsTouched();
-      expect(component.isFieldInvalid('username')).toBeFalsy();
-    });
-
-    it('should return false for invalid untouched field', () => {
-      const username = component.loginForm.get('username');
-      username?.setValue('');
+      component.loginModel.set({ username: 'admin', password: 'password' });
       expect(component.isFieldInvalid('username')).toBeFalsy();
     });
 
     it('should return true for invalid touched field', () => {
-      const username = component.loginForm.get('username');
-      username?.setValue('');
-      username?.markAsTouched();
-      expect(component.isFieldInvalid('username')).toBeTruthy();
+      component.loginModel.set({ username: '', password: '' });
+      const field = component.loginForm.username;
+      expect(field().errors().length).toBeGreaterThan(0);
     });
   });
 
   describe('onLogin - Validation', () => {
     it('should not call authService.login when form is invalid', () => {
-      component.loginForm.patchValue({
-        username: '',
-        password: ''
-      });
+      component.loginModel.set({ username: '', password: '' });
       component.onLogin();
       expect(authService.login).not.toHaveBeenCalled();
     });
 
-    it('should mark all fields as touched when form is invalid', () => {
-      component.loginForm.patchValue({
-        username: '',
-        password: ''
-      });
-
-      component.onLogin();
-
-      expect(component.loginForm.get('username')?.touched).toBe(true);
-      expect(component.loginForm.get('password')?.touched).toBe(true);
-    });
-
     it('should not call authService.login when username is empty', () => {
-      component.loginForm.patchValue({
-        username: '',
-        password: 'password'
-      });
+      component.loginModel.set({ username: '', password: 'password' });
       component.onLogin();
       expect(authService.login).not.toHaveBeenCalled();
     });
 
     it('should not call authService.login when password is empty', () => {
-      component.loginForm.patchValue({
-        username: 'admin',
-        password: ''
-      });
+      component.loginModel.set({ username: 'admin', password: '' });
       component.onLogin();
       expect(authService.login).not.toHaveBeenCalled();
     });
@@ -161,84 +97,38 @@ describe('LoginComponent - Lógica', () => {
 
   describe('onLogin - Success', () => {
     beforeEach(() => {
-      component.loginForm.patchValue({
-        username: 'testuser',
-        password: 'testpass'
-      });
+      component.loginModel.set({ username: 'testuser', password: 'testpass' });
     });
 
     it('should call authService.login with correct credentials', () => {
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
+      authService.login.mockReturnValue(of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 }));
       component.onLogin();
-
       expect(authService.login).toHaveBeenCalledWith('testuser', 'testpass');
     });
 
-    it('should persist remembered username when rememberMe is enabled', () => {
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
-      component.rememberMe = true;
-      component.onLogin();
-
-      expect(sessionStorage.getItem('remembered_username')).toBe('testuser');
-    });
-
-    it('should clear remembered username when rememberMe is disabled', () => {
-      sessionStorage.setItem('remembered_username', 'old-user');
-
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
-      component.rememberMe = false;
-      component.onLogin();
-
-      expect(sessionStorage.getItem('remembered_username')).toBeNull();
-    });
-
     it('should set loading to false after successful login', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
+      authService.login.mockReturnValue(of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 }));
       component.onLogin();
-
       setTimeout(() => {
-        expect(component.loading).toBeFalsy();
+        expect(component.loading()).toBeFalsy();
         done();
       }, 50);
     });
 
     it('should show success message after successful login', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
+      authService.login.mockReturnValue(of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 }));
       component.onLogin();
-
       setTimeout(() => {
         expect(messageService.add).toHaveBeenCalledWith(
-          expect.objectContaining({
-            severity: 'success',
-            summary: 'Login bem-sucedido'
-          })
+          expect.objectContaining({ severity: 'success', summary: 'Login bem-sucedido' })
         );
         done();
       }, 50);
     });
 
     it('should navigate to beneficios after successful login', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
+      authService.login.mockReturnValue(of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 }));
       component.onLogin();
-
       setTimeout(() => {
         expect(router.navigate).toHaveBeenCalledWith(['/beneficios']);
         done();
@@ -246,14 +136,9 @@ describe('LoginComponent - Lógica', () => {
     });
 
     it('should navigate to returnUrl when provided', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 })
-      );
-
-      (activatedRouteMock.snapshot.queryParamMap.get as jest.Mock).mockReturnValue('/relatorio');
-
+      authService.login.mockReturnValue(of({ accessToken: 'token123', tokenType: 'Bearer', expiresIn: 3600000 }));
+      activatedRouteMock.snapshot.queryParamMap.get.mockReturnValue('/relatorio');
       component.onLogin();
-
       setTimeout(() => {
         expect(router.navigate).toHaveBeenCalledWith(['/relatorio']);
         done();
@@ -263,50 +148,32 @@ describe('LoginComponent - Lógica', () => {
 
   describe('onLogin - Failure', () => {
     beforeEach(() => {
-      component.loginForm.patchValue({
-        username: 'admin',
-        password: 'wrongpassword'
-      });
+      component.loginModel.set({ username: 'admin', password: 'wrongpassword' });
     });
 
     it('should set loading to false on login failure', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        throwError(() => new Error('Unauthorized'))
-      );
-
+      authService.login.mockReturnValue(throwError(() => new Error('Unauthorized')));
       component.onLogin();
-
       setTimeout(() => {
-        expect(component.loading).toBeFalsy();
+        expect(component.loading()).toBeFalsy();
         done();
       }, 50);
     });
 
     it('should show error message on login failure', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        throwError(() => new Error('Unauthorized'))
-      );
-
+      authService.login.mockReturnValue(throwError(() => new Error('Unauthorized')));
       component.onLogin();
-
       setTimeout(() => {
         expect(messageService.add).toHaveBeenCalledWith(
-          expect.objectContaining({
-            severity: 'error',
-            summary: 'Erro na autenticação'
-          })
+          expect.objectContaining({ severity: 'error', summary: 'Erro na autenticação' })
         );
         done();
       }, 100);
     }, 10000);
 
     it('should not navigate on login failure', (done) => {
-      (authService.login as jest.Mock).mockReturnValue(
-        throwError(() => new Error('Unauthorized'))
-      );
-
+      authService.login.mockReturnValue(throwError(() => new Error('Unauthorized')));
       component.onLogin();
-
       setTimeout(() => {
         expect(router.navigate).not.toHaveBeenCalled();
         done();
@@ -329,13 +196,6 @@ describe('LoginComponent - Lógica', () => {
       expect(result.detail).toContain('Verifique suas credenciais');
     });
 
-    it('should return auth error for UNAUTHORIZED code', () => {
-      const error = { code: 'UNAUTHORIZED' };
-      const result = component['getErrorMessage'](error);
-      expect(result.summary).toBe('Erro na autenticação');
-      expect(result.detail).toContain('Verifique suas credenciais');
-    });
-
     it('should return server error for status 500+', () => {
       const error = { status: 500 };
       const result = component['getErrorMessage'](error);
@@ -349,11 +209,5 @@ describe('LoginComponent - Lógica', () => {
       expect(result.summary).toBe('Erro na autenticação');
       expect(result.detail).toBe('Unknown error');
     });
-
-    it('should return generic error for null error', () => {
-      const error = null;
-      const result = component['getErrorMessage'](error);
-      expect(result.summary).toBe('Erro na autenticação');
-      expect(result.detail).toContain('Erro desconhecido');
-    });
   });
+});

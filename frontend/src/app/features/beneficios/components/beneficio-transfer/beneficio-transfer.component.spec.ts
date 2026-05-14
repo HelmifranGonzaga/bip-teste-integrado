@@ -68,7 +68,7 @@ describe('BeneficioTransferComponent', () => {
   });
 
   it('should emit transfer event on valid submit', () => {
-    jest.spyOn(component.transfer, 'emit');
+    vi.spyOn(component.transfer, 'emit');
 
     component.form.setValue({
       fromId: 1,
@@ -87,7 +87,7 @@ describe('BeneficioTransferComponent', () => {
   });
 
   it('should not emit transfer event while submitting', () => {
-    jest.spyOn(component.transfer, 'emit');
+    vi.spyOn(component.transfer, 'emit');
 
     component.submitting = true;
     component.form.setValue({
@@ -107,7 +107,7 @@ describe('BeneficioTransferComponent', () => {
   });
 
   it('should emit cancel event on cancel', () => {
-    jest.spyOn(component.cancelTransfer, 'emit');
+    vi.spyOn(component.cancelTransfer, 'emit');
 
     component.form.setValue({
       fromId: 1,

@@ -9,7 +9,7 @@ import { of } from 'rxjs';
 describe('BeneficioService', () => {
   let service: BeneficioService;
   let httpMock: HttpTestingController;
-  let configServiceMock: { getConfig: jest.Mock };
+  let configServiceMock: { getConfig: ReturnType<typeof vi.fn> };
   let currentApiUrl = 'http://localhost:8082/api/v1';
 
   const defaultConfig = {
@@ -22,7 +22,7 @@ describe('BeneficioService', () => {
     TestBed.resetTestingModule();
     currentApiUrl = apiUrl;
     configServiceMock = {
-      getConfig: jest.fn(() =>
+      getConfig: vi.fn(() =>
         of({
           ...defaultConfig,
           apiUrl: currentApiUrl

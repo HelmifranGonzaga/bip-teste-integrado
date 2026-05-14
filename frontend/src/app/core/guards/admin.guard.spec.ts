@@ -6,24 +6,24 @@ import { adminGuard } from './admin.guard';
 
 describe('adminGuard', () => {
   let authService: AuthService;
-  let messageService: jest.Mocked<MessageService>;
+  let messageService: vi.Mocked<MessageService>;
 
   beforeEach(() => {
     const messageServiceMock = {
-      add: jest.fn()
-    } as unknown as jest.Mocked<MessageService>;
+      add: vi.fn()
+    } as unknown as vi.Mocked<MessageService>;
 
     TestBed.configureTestingModule({
       providers: [AuthService, provideRouter([]), { provide: MessageService, useValue: messageServiceMock }]
     });
 
     authService = TestBed.inject(AuthService);
-    messageService = TestBed.inject(MessageService) as jest.Mocked<MessageService>;
+    messageService = TestBed.inject(MessageService) as vi.Mocked<MessageService>;
   });
 
   it('allows admin users', () => {
-    jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
-    jest.spyOn(authService, 'getAuthUser').mockReturnValue({
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    vi.spyOn(authService, 'getAuthUser').mockReturnValue({
       username: 'admin',
       role: 'ADMIN',
       expiresAt: Date.now() + 1000
@@ -35,8 +35,8 @@ describe('adminGuard', () => {
   });
 
   it('redirects authenticated non-admin users', () => {
-    jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
-    jest.spyOn(authService, 'getAuthUser').mockReturnValue({
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    vi.spyOn(authService, 'getAuthUser').mockReturnValue({
       username: 'user',
       role: 'USER',
       expiresAt: Date.now() + 1000
@@ -54,7 +54,7 @@ describe('adminGuard', () => {
   });
 
   it('redirects unauthenticated users to login', () => {
-    jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+    vi.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
 
     const result = TestBed.runInInjectionContext(() => adminGuard({} as any, { url: '/usuarios' } as any)) as UrlTree;
 

@@ -14,11 +14,11 @@ describe('HeaderComponent - Logic', () => {
 
   beforeEach(async () => {
     const authServiceMock = {
-      getAuthUser$: jest.fn().mockReturnValue(of(null)),
-      logout: jest.fn()
+      getAuthUser$: vi.fn().mockReturnValue(of(null)),
+      logout: vi.fn()
     };
     const messageServiceMock = {
-      add: jest.fn()
+      add: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -32,7 +32,7 @@ describe('HeaderComponent - Logic', () => {
 
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
-    jest.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
+    vi.spyOn(router, 'navigate').mockImplementation(() => Promise.resolve(true));
     messageService = TestBed.inject(MessageService);
 
     fixture = TestBed.createComponent(HeaderComponent);
@@ -74,13 +74,13 @@ describe('HeaderComponent - Logic', () => {
     it('should call all three actions in order', () => {
       const order: string[] = [];
 
-      (authService.logout as jest.Mock).mockImplementation(() => {
+      (authService.logout as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => {
         order.push('logout');
       });
-      (messageService.add as jest.Mock).mockImplementation(() => {
+      (messageService.add as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => {
         order.push('message');
       });
-      (router.navigate as jest.Mock).mockImplementation(() => {
+      (router.navigate as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => {
         order.push('navigate');
       });
 

@@ -35,7 +35,7 @@ describe('AuthService', () => {
     TestBed.resetTestingModule();
     defineSessionStorage(initialStore);
     if (typeof now === 'number') {
-      jest.spyOn(Date, 'now').mockReturnValue(now);
+      vi.spyOn(Date, 'now').mockReturnValue(now);
     }
 
     TestBed.configureTestingModule({
@@ -67,7 +67,7 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should instantiate', () => {
@@ -82,14 +82,16 @@ describe('AuthService', () => {
         expiresIn: 3600000
       };
       const now = 1_700_000_000_000;
-      jest.spyOn(Date, 'now').mockReturnValue(now);
+      vi.spyOn(Date, 'now').mockReturnValue(now);
 
       service.login('testuser', 'password').subscribe(() => {
         expect(service.getAuthUser()?.username).toBe('testuser');
         expect(service.getAuthUser()?.expiresAt).toBe(now + mockResponse.expiresIn * 1000);
+        expect(service.getAuthUser()?.role).toBe('USER');
         expect(service.isAuthenticated()).toBe(true);
         expect(JSON.parse(store.auth_user)).toEqual({
           username: 'testuser',
+          role: 'USER',
           expiresAt: now + mockResponse.expiresIn * 1000
         });
         done();
@@ -116,7 +118,7 @@ describe('AuthService', () => {
         tokenType: 'Bearer',
         expiresIn: 3600000
       };
-      jest.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
+      vi.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
 
       service.login('testuser', 'password').subscribe(() => {
         expect(service.isAuthenticated()).toBe(true);
@@ -135,7 +137,7 @@ describe('AuthService', () => {
         })
       });
 
-      jest.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
+      vi.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
 
       expect(service.getAuthUser()).toBeNull();
       expect(service.isAuthenticated()).toBe(false);
@@ -161,6 +163,7 @@ describe('AuthService', () => {
 
       expect(service.getAuthUser()).toEqual({
         username: 'remembered-user',
+        role: 'USER',
         expiresAt: 1_700_000_001_000
       });
       expect(service.isAuthenticated()).toBe(true);
@@ -174,7 +177,7 @@ describe('AuthService', () => {
         tokenType: 'Bearer',
         expiresIn: 3600000
       };
-      jest.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
+      vi.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
 
       service.login('testuser', 'password').subscribe(() => {
         service.logout();

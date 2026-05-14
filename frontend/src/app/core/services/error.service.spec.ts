@@ -5,19 +5,19 @@ import { AppError, DisplayError } from '../errors/app-error.model';
 
 describe('ErrorService', () => {
   let service: ErrorService;
-  let messageService: jest.Mocked<MessageService>;
+  let messageService: vi.Mocked<MessageService>;
 
   beforeEach(() => {
     const messageServiceMock = {
-      add: jest.fn()
-    } as unknown as jest.Mocked<MessageService>;
+      add: vi.fn()
+    } as unknown as vi.Mocked<MessageService>;
 
     TestBed.configureTestingModule({
       providers: [ErrorService, { provide: MessageService, useValue: messageServiceMock }]
     });
 
     service = TestBed.inject(ErrorService);
-    messageService = TestBed.inject(MessageService) as jest.Mocked<MessageService>;
+    messageService = TestBed.inject(MessageService) as vi.Mocked<MessageService>;
   });
 
   it('should be created', () => {

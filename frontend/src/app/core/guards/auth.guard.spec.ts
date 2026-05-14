@@ -22,7 +22,7 @@ describe('authGuard', () => {
 
   describe('when user is authenticated', () => {
     beforeEach(() => {
-      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+      vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
     });
 
     it('should allow access', () => {
@@ -35,7 +35,7 @@ describe('authGuard', () => {
     });
 
     it('should not redirect when authenticated', () => {
-      const createUrlTreeSpy = jest.spyOn(router, 'createUrlTree');
+      const createUrlTreeSpy = vi.spyOn(router, 'createUrlTree');
       const route = {} as any;
       const state = { url: '/beneficios' } as any;
 
@@ -47,7 +47,7 @@ describe('authGuard', () => {
 
   describe('when user is not authenticated', () => {
     beforeEach(() => {
-      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+      vi.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
     });
 
     it('should redirect to login', () => {
@@ -81,7 +81,7 @@ describe('authGuard', () => {
 
   describe('authentication state changes', () => {
     it('should allow access when authenticated', () => {
-      const isAuthSpy = jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+      const isAuthSpy = vi.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
       const route = {} as any;
       const state = { url: '/beneficios' } as any;
 
@@ -92,7 +92,7 @@ describe('authGuard', () => {
     });
 
     it('should redirect when not authenticated', () => {
-      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+      vi.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
       const route = {} as any;
       const state = { url: '/beneficios' } as any;
 

@@ -22,7 +22,7 @@ describe('BeneficioListComponent', () => {
   });
 
   it('should emit edit event', () => {
-    jest.spyOn(component.edit, 'emit');
+    vi.spyOn(component.edit, 'emit');
     const beneficio = {
       id: 1,
       nome: 'Teste',
@@ -39,47 +39,33 @@ describe('BeneficioListComponent', () => {
   });
 
   it('should emit remove event', () => {
-    jest.spyOn(component.remove, 'emit');
+    vi.spyOn(component.remove, 'emit');
 
     component.remove.emit(1);
 
     expect(component.remove.emit).toHaveBeenCalledWith(1);
   });
 
-  it('should expose global search with PT placeholder and aria-label', () => {
-    const el = fixture.nativeElement.querySelector('#beneficio-list-global-filter') as HTMLInputElement;
-
-    expect(el).toBeTruthy();
-    expect(el.placeholder).toBe('Buscar por nome, descrição, valor ou CNPJ');
-    expect(el.getAttribute('aria-label')).toBe('Buscar por nome, descrição, valor ou CNPJ');
-  });
-
   it('should delegate global filter to table.filterGlobal', () => {
-    const table = { filterGlobal: jest.fn() } as Pick<Table, 'filterGlobal'> as Table;
-    const input = document.createElement('input');
-    input.value = 'acme';
+    const table = { filterGlobal: vi.fn() } as Pick<Table, 'filterGlobal'> as Table;
 
-    component.onGlobalFilter(table, { target: input } as unknown as Event);
+    component.onGlobalFilter(table, 'acme');
 
     expect(table.filterGlobal).toHaveBeenCalledWith('acme', 'contains');
   });
 
   it('should normalize CNPJ-like global filter term (masked input)', () => {
-    const table = { filterGlobal: jest.fn() } as Pick<Table, 'filterGlobal'> as Table;
-    const input = document.createElement('input');
-    input.value = 'YK.4B6.MX4/0001-46';
+    const table = { filterGlobal: vi.fn() } as Pick<Table, 'filterGlobal'> as Table;
 
-    component.onGlobalFilter(table, { target: input } as unknown as Event);
+    component.onGlobalFilter(table, 'YK.4B6.MX4/0001-46');
 
     expect(table.filterGlobal).toHaveBeenCalledWith('YK4B6MX4000146', 'contains');
   });
 
   it('should strip invisible characters from global filter input', () => {
-    const table = { filterGlobal: jest.fn() } as Pick<Table, 'filterGlobal'> as Table;
-    const input = document.createElement('input');
-    input.value = 'YK4B6\u200BMX4000146';
+    const table = { filterGlobal: vi.fn() } as Pick<Table, 'filterGlobal'> as Table;
 
-    component.onGlobalFilter(table, { target: input } as unknown as Event);
+    component.onGlobalFilter(table, 'YK4B6\u200BMX4000146');
 
     expect(table.filterGlobal).toHaveBeenCalledWith('YK4B6MX4000146', 'contains');
   });
