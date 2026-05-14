@@ -17,7 +17,7 @@ import { AppToastComponent } from './core/layout/app-toast.component';
       @if (!isLoginPage()) {
         <app-header></app-header>
       }
-      <main class="app-main" [class.full-height]="isLoginPage()">
+      <main id="main-content" class="app-main" [class.full-height]="isLoginPage()">
         <router-outlet></router-outlet>
       </main>
     </div>
@@ -28,7 +28,7 @@ import { AppToastComponent } from './core/layout/app-toast.component';
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        background: #f8f9fa;
+        background: var(--p-surface-50);
       }
 
       .app-main {

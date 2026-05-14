@@ -9,10 +9,10 @@
   <div class="settings-content">
     <p-card styleClass="settings-card">
       <ng-template pTemplate="header">
-        <div class="card-header-title">
-          <i class="pi pi-bell"></i>
+        <h2 class="card-header-title">
+          <i class="pi pi-bell" aria-hidden="true"></i>
           Notificações
-        </div>
+        </h2>
       </ng-template>
       <div class="settings-item">
         <div class="settings-item-info">
@@ -24,6 +24,8 @@
           [binary]="true"
           [trueValue]="true"
           [falseValue]="false"
+          inputId="notifications"
+          aria-label="Ativar notificações do sistema"
         ></p-checkbox>
       </div>
       <p-divider></p-divider>
@@ -37,16 +39,18 @@
           [binary]="true"
           [trueValue]="true"
           [falseValue]="false"
+          inputId="emailNotifications"
+          aria-label="Ativar notificações por email"
         ></p-checkbox>
       </div>
     </p-card>
 
     <p-card styleClass="settings-card">
       <ng-template pTemplate="header">
-        <div class="card-header-title">
-          <i class="pi pi-palette"></i>
+        <h2 class="card-header-title">
+          <i class="pi pi-palette" aria-hidden="true"></i>
           Aparência
-        </div>
+        </h2>
       </ng-template>
       <div class="settings-item">
         <div class="settings-item-info">
@@ -58,6 +62,8 @@
           [binary]="true"
           [trueValue]="true"
           [falseValue]="false"
+          inputId="darkMode"
+          aria-label="Ativar modo escuro"
         ></p-checkbox>
       </div>
       <p-divider></p-divider>
@@ -72,16 +78,17 @@
           optionLabel="label"
           optionValue="value"
           styleClass="language-select"
+          aria-label="Selecionar idioma"
         ></p-select>
       </div>
     </p-card>
 
     <p-card styleClass="settings-card">
       <ng-template pTemplate="header">
-        <div class="card-header-title">
-          <i class="pi pi-lock"></i>
+        <h2 class="card-header-title">
+          <i class="pi pi-lock" aria-hidden="true"></i>
           Privacidade e Segurança
-        </div>
+        </h2>
       </ng-template>
       <div class="action-section settings-section">
         <span class="action-section__label">Ações de segurança</span>
@@ -119,10 +126,10 @@
 
     <p-card styleClass="settings-card danger-card">
       <ng-template pTemplate="header">
-        <div class="card-header-title danger">
-          <i class="pi pi-exclamation-triangle"></i>
+        <h2 class="card-header-title danger">
+          <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
           Zona de Perigo
-        </div>
+        </h2>
       </ng-template>
       <div class="danger-options">
         <div class="danger-item">
@@ -135,7 +142,7 @@
             type="button"
             label="Excluir Conta"
             icon="pi pi-trash"
-            severity="secondary"
+            severity="danger"
             [outlined]="true"
             (click)="deleteAccount()"
           ></button>
@@ -167,3 +174,5 @@
     </div>
   </div>
 </div>
+
+<p-confirmDialog></p-confirmDialog>

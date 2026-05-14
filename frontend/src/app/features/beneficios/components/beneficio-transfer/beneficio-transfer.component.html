@@ -12,6 +12,7 @@
         [filter]="true"
         filterPlaceholder="Buscar benefício..."
         aria-label="Selecione o benefício de origem"
+        aria-describedby="fromId-hint fromId-error"
         styleClass="w-full"
       >
         <ng-template let-beneficio pTemplate="item">
@@ -22,9 +23,9 @@
           </div>
         </ng-template>
       </p-select>
-      <small class="field-hint">Saldo disponível será transferido para o benefício de destino.</small>
+      <small class="field-hint" id="fromId-hint">Saldo disponível será transferido para o benefício de destino.</small>
       @if (form.get('fromId')!.invalid && form.get('fromId')!.touched) {
-        <small class="field-error">Benefício de origem é obrigatório.</small>
+        <small class="field-error" role="alert" aria-live="assertive" id="fromId-error">Benefício de origem é obrigatório.</small>
       }
     </div>
 
@@ -40,6 +41,7 @@
         [filter]="true"
         filterPlaceholder="Buscar benefício..."
         aria-label="Selecione o benefício de destino"
+        aria-describedby="toId-error"
         styleClass="w-full"
       >
         <ng-template let-beneficio pTemplate="item">
@@ -51,14 +53,14 @@
         </ng-template>
       </p-select>
       @if (form.get('toId')!.invalid && form.get('toId')!.touched) {
-        <small class="field-error">Benefício de destino é obrigatório.</small>
+        <small class="field-error" role="alert" aria-live="assertive" id="toId-error">Benefício de destino é obrigatório.</small>
       }
     </div>
 
     @if (
       form.hasError('sameBeneficio') && (form.get('fromId')!.touched || form.get('toId')!.touched)
     ) {
-      <small class="field-error mb-3 block"
+      <small class="field-error mb-3 block" role="alert" aria-live="assertive" id="same-beneficio-error"
         >Origem e destino devem ser benefícios diferentes.</small
       >
     }
@@ -75,10 +77,11 @@
         [minFractionDigits]="2"
         [maxFractionDigits]="2"
         aria-label="Valor a transferir"
+        aria-describedby="amount-hint amount-error"
       ></p-inputNumber>
-      <small class="field-hint">Informe o valor que deseja transferir entre benefícios.</small>
+      <small class="field-hint" id="amount-hint">Informe o valor que deseja transferir entre benefícios.</small>
       @if (form.get('amount')!.invalid && form.get('amount')!.touched) {
-        <small class="field-error">
+        <small class="field-error" role="alert" aria-live="assertive" id="amount-error">
           @if (form.get('amount')!.hasError('required')) {
             Valor é obrigatório.
           } @else if (form.get('amount')!.hasError('min')) {

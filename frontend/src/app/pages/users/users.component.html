@@ -1,10 +1,9 @@
 <div class="container">
-  <section class="page-header mb-4" aria-label="Ações principais">
-    <div class="page-title-group">
-      <h1 class="page-title m-0">Usuários</h1>
-      <p class="page-subtitle m-0">Gerencie os usuários do sistema e seus perfis de acesso.</p>
-    </div>
-    <div class="page-actions">
+  <app-page-header
+    title="Usuários"
+    subtitle="Gerencie os usuários do sistema e seus perfis de acesso."
+  >
+    <div pageHeaderActions class="page-actions">
       @if (isAdmin()) {
         <button
           pButton
@@ -17,17 +16,9 @@
         ></button>
       }
     </div>
-  </section>
+  </app-page-header>
 
-  @if (loading()) {
-    <div class="page-status-card">
-      <i class="pi pi-spin pi-spinner page-status-card__icon" aria-hidden="true"></i>
-      <div>
-        <strong>Carregando usuários</strong>
-        <p>Aguarde um instante enquanto buscamos a lista mais recente.</p>
-      </div>
-    </div>
-  }
+  <app-loading-spinner [loading]="loading()" title="Carregando usuários" description="Aguarde um instante enquanto buscamos a lista mais recente."></app-loading-spinner>
 
   <p-card styleClass="p-0">
     <div class="table-wrapper">
@@ -44,21 +35,11 @@
         styleClass="p-datatable-sm p-datatable-striped"
       >
         <ng-template pTemplate="caption">
-          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #141413; font-family: 'Poppins', sans-serif;">Lista de Usuários</h2>
-            <p-iconfield iconPosition="left" style="margin-left: auto;">
-              <p-inputicon>
-                <i class="pi pi-search"></i>
-              </p-inputicon>
-              <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Buscar usuários..."
-                style="width: min(100%, 350px);"
-              />
-            </p-iconfield>
-          </div>
+          <app-table-toolbar
+            title="Lista de Usuários"
+            searchPlaceholder="Buscar usuários..."
+            (searchChange)="onGlobalFilter(dt, $event)"
+          ></app-table-toolbar>
         </ng-template>
 
         <ng-template pTemplate="header">
@@ -103,6 +84,7 @@
                   [disabled]="loading()"
                   (click)="onEdit(user)"
                   pTooltip="Editar"
+                  [attr.aria-label]="'Editar ' + user.nome"
                 ></button>
                 @if (isAdmin()) {
                   <button
@@ -115,6 +97,7 @@
                     [disabled]="loading()"
                     (click)="onDelete(user)"
                     pTooltip="Excluir"
+                    [attr.aria-label]="'Excluir ' + user.nome"
                   ></button>
                 }
               </div>
@@ -125,13 +108,11 @@
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="6" class="empty-state-cell">
-              <div class="empty-state">
-                <i class="pi pi-users empty-state__icon" aria-hidden="true"></i>
-                <div class="empty-state__content">
-                  <strong>Nenhum usuário encontrado</strong>
-                  <span>Use outro filtro ou crie um novo usuário.</span>
-                </div>
-              </div>
+              <app-empty-state
+                icon="pi pi-users"
+                title="Nenhum usuário encontrado"
+                description="Use outro filtro ou crie um novo usuário."
+              ></app-empty-state>
             </td>
           </tr>
         </ng-template>

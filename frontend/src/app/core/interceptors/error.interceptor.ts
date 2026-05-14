@@ -26,6 +26,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (displayError.httpStatus === 401 && !isAuthRequest) {
         authService.logout();
+        messageService.add({
+          severity: 'info',
+          summary: 'Sessão expirada',
+          detail: 'Sua sessão expirou. Faça login novamente para continuar.',
+          life: 4000
+        });
         void router.navigate(['/login'], {
           queryParams: { returnUrl: router.url }
         });

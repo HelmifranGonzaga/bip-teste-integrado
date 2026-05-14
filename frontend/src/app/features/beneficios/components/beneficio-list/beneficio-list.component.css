@@ -2,6 +2,36 @@
   width: 100%;
 }
 
+.table-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+}
+
+.table-caption__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--p-surface-900);
+}
+
+.table-caption__search {
+  margin-left: auto;
+  width: min(100%, 22rem);
+  min-width: 14rem;
+}
+
+.table-caption__input {
+  width: 100%;
+}
+
+:host ::ng-deep .table-caption__search.p-iconfield,
+:host ::ng-deep .table-caption__search .p-inputtext {
+  width: 100%;
+}
+
 .empty-state-cell {
   padding: 2rem !important;
 }
@@ -16,7 +46,7 @@
 
 .empty-state__icon {
   font-size: 1.5rem;
-  color: var(--anthropic-orange);
+  color: var(--p-primary-500);
 }
 
 .empty-state__content {
@@ -27,12 +57,23 @@
 
 .empty-state__content strong {
   color: var(--p-surface-800);
-  font-family: 'Poppins', Arial, sans-serif;
+  font-weight: 600;
 }
 
 @media (max-width: 900px) {
   .table-wrapper {
     overflow-x: auto;
+  }
+
+  .table-caption {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-caption__search {
+    margin-left: 0;
+    width: 100%;
+    min-width: 0;
   }
 
   .empty-state {

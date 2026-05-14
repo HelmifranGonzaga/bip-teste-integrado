@@ -1,7 +1,8 @@
+<a class="skip-link" href="#main-content">Pular para conteúdo principal</a>
 <header class="app-header">
   <div class="header-container">
-    <a class="header-logo" routerLink="/beneficios">
-      <div class="logo-icon">
+    <a class="header-logo" routerLink="/beneficios" aria-label="BIP Benefícios - Página inicial">
+      <div class="logo-icon" aria-hidden="true">
         <i class="pi pi-wallet"></i>
       </div>
       <div class="logo-text">
@@ -10,14 +11,14 @@
       </div>
     </a>
 
-    <nav class="header-nav">
-      <a routerLink="/beneficios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" pRipple>
-        <i class="pi pi-home"></i>
+    <nav class="header-nav" aria-label="Navegação principal">
+      <a routerLink="/beneficios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" pRipple aria-label="Painel de controle">
+        <i class="pi pi-home" aria-hidden="true"></i>
         <span>Início</span>
       </a>
       @if (currentUser()?.role === 'ADMIN') {
-        <a routerLink="/usuarios" routerLinkActive="active" class="nav-link" pRipple>
-          <i class="pi pi-users"></i>
+        <a routerLink="/usuarios" routerLinkActive="active" class="nav-link" pRipple aria-label="Gerenciar usuários">
+          <i class="pi pi-users" aria-hidden="true"></i>
           <span>Usuários</span>
         </a>
       }
@@ -33,6 +34,9 @@
           pRipple
           class="user-menu-toggle"
           (click)="userMenuRef.toggle($event)"
+          aria-haspopup="true"
+          [attr.aria-expanded]="menuOpen"
+          [attr.aria-label]="'Menu do usuário: ' + user.username"
         >
           <p-avatar
             [label]="(user.username || 'U').charAt(0).toUpperCase()"
@@ -41,10 +45,10 @@
             styleClass="user-avatar"
           ></p-avatar>
           <span class="user-name">{{ user.username }}</span>
-          <i class="pi pi-chevron-down"></i>
+          <i class="pi pi-chevron-down" aria-hidden="true"></i>
         </button>
 
-         <p-menu #userMenuRef [popup]="true" [model]="userMenuItems()"></p-menu>
+         <p-menu #userMenuRef [popup]="true" [model]="userMenuItems()" (onShow)="menuOpen=true" (onHide)="menuOpen=false"></p-menu>
       </div>
     }
   </div>

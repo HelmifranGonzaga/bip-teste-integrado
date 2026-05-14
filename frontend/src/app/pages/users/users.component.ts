@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, computed, viewChild, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -8,13 +8,15 @@ import type { Table } from 'primeng/table';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { User, UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserFormComponent, SaveUserEvent } from './components/user-form/user-form.component';
+import { PageHeaderComponent } from '../../shared/ui/page-header/page-header.component';
+import { TableToolbarComponent } from '../../shared/ui/table-toolbar/table-toolbar.component';
+import { EmptyStateComponent } from '../../shared/ui/empty-state/empty-state.component';
+import { LoadingSpinnerComponent } from '../../shared/ui/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-users',
@@ -27,9 +29,11 @@ import { UserFormComponent, SaveUserEvent } from './components/user-form/user-fo
     CardModule,
     TagModule,
     TooltipModule,
-    IconFieldModule,
-    InputIconModule,
-    UserFormComponent
+    UserFormComponent,
+    PageHeaderComponent,
+    TableToolbarComponent,
+    EmptyStateComponent,
+    LoadingSpinnerComponent
   ],
   providers: [ConfirmationService, MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,11 +61,6 @@ export class UsersComponent {
   readonly isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
 
   constructor() {
-    effect(() => {
-      if (this.users().length > 0) {
-        this.table().sortSingle();
-      }
-    });
     this.loadUsers();
   }
 
@@ -77,7 +76,8 @@ export class UsersComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Não foi possível carregar a lista de usuários.'
+          detail: 'Não foi possível carregar a lista de usuários.',
+          life: 6000
         });
       }
     });
@@ -134,7 +134,8 @@ export class UsersComponent {
         this.messageService.add({
           severity: 'success',
           summary: updated.ativo ? 'Ativado' : 'Desativado',
-          detail: `Usuário ${updated.nome} ${updated.ativo ? 'ativado' : 'desativado'} com sucesso.`
+          detail: `Usuário ${updated.nome} ${updated.ativo ? 'ativado' : 'desativado'} com sucesso.`,
+          life: 4000
         });
       },
       error: () => {
@@ -142,7 +143,8 @@ export class UsersComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Não foi possível alterar o status do usuário.'
+          detail: 'Não foi possível alterar o status do usuário.',
+          life: 6000
         });
       }
     });
@@ -193,7 +195,8 @@ export class UsersComponent {
         this.messageService.add({
           severity: 'success',
           summary: 'Salvo',
-          detail: `Usuário ${event.id ? 'atualizado' : 'criado'} com sucesso.`
+          detail: `Usuário ${event.id ? 'atualizado' : 'criado'} com sucesso.`,
+          life: 4000
         });
         this.showDialog.set(false);
         this.saving.set(false);
@@ -204,7 +207,8 @@ export class UsersComponent {
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: err.error?.message || 'Não foi possível salvar o usuário.'
+          detail: err.error?.message || 'Não foi possível salvar o usuário.',
+          life: 6000
         });
       }
     });
@@ -214,12 +218,12 @@ export class UsersComponent {
     this.messageService.add({
       severity: 'error',
       summary: 'Erro',
-      detail: `Não foi possível ${action}.`
+      detail: `Não foi possível ${action}.`,
+      life: 6000
     });
   }
 
-  onGlobalFilter(table: Table, event: Event): void {
-    const raw = (event.target as HTMLInputElement | null)?.value ?? '';
-    table.filterGlobal(raw, 'contains');
+  onGlobalFilter(table: Table, value: string): void {
+    table.filterGlobal(value, 'contains');
   }
 }

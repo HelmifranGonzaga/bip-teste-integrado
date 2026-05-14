@@ -38,11 +38,12 @@
             type="text"
             pInputText
             formControlName="username"
-placeholder="ex: joao.silva@empresa"
+ placeholder="ex: joao.silva@empresa"
              autocomplete="off"
+            aria-describedby="username-error"
           />
           @if (form.get('username')!.invalid && form.get('username')!.touched) {
-            <small class="field-error">
+            <small class="field-error" role="alert" aria-live="assertive" id="username-error">
               @if (form.get('username')!.hasError('required')) {
                 Obrigatório.
               } @else {
@@ -69,9 +70,10 @@ placeholder="ex: joao.silva@empresa"
           pInputText
           formControlName="nome"
           placeholder="Ex: João Silva Santos"
+          aria-describedby="nome-error"
         />
         @if (form.get('nome')!.invalid && form.get('nome')!.touched) {
-          <small class="field-error">
+          <small class="field-error" role="alert" aria-live="assertive" id="nome-error">
             @if (form.get('nome')!.hasError('required')) {
               Obrigatório.
             } @else {
@@ -123,6 +125,7 @@ placeholder="ex: joao.silva@empresa"
             [toggleMask]="true"
 [placeholder]="editingUser ? 'Em branco mantém a atual' : 'Mínimo 6 caracteres'"
              styleClass="flex-1"
+            aria-describedby="password-error"
           />
           @if (form.get('password')?.value) {
             <button
@@ -138,7 +141,7 @@ placeholder="ex: joao.silva@empresa"
           }
         </div>
         @if (form.get('password')!.invalid && form.get('password')!.touched) {
-          <small class="field-error">
+          <small class="field-error" role="alert" aria-live="assertive" id="password-error">
             @if (form.get('password')!.hasError('required')) {
               Obrigatória.
             } @else {

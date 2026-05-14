@@ -10,29 +10,18 @@
       [totalRecords]="totalRecords"
       [loading]="loading"
       [lazy]="false"
-      (onLazyLoad)="onLazyLoad($event)"
-      [globalFilterFields]="lazy ? undefined : ['nome', 'descricao', 'valor', 'cnpjFiltro']"
+      [globalFilterFields]="['nome', 'descricao', 'valor', 'cnpjFiltro']"
       [sortField]="'id'"
-      [sortOrder]="-1"
+      [sortOrder]="1"
       styleClass="p-datatable-sm p-datatable-striped"
     >
       <ng-template pTemplate="caption">
-          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-            <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #141413; font-family: 'Poppins', sans-serif;">Lista de Benefícios</h2>
-            <p-iconfield iconPosition="left" style="margin-left: auto;">
-              <p-inputicon>
-                <i class="pi pi-search"></i>
-              </p-inputicon>
-              <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Buscar benefícios..."
-                style="width: min(100%, 350px);"
-              />
-            </p-iconfield>
-          </div>
-        </ng-template>
+        <app-table-toolbar
+          title="Lista de Benefícios"
+          searchPlaceholder="Buscar benefícios..."
+          (searchChange)="onGlobalFilter(dt, $event)"
+        ></app-table-toolbar>
+      </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="id" scope="col">ID <p-sortIcon field="id"></p-sortIcon></th>
@@ -91,13 +80,11 @@
       <ng-template pTemplate="emptymessage">
         <tr>
           <td colspan="7" class="empty-state-cell">
-            <div class="empty-state">
-              <i class="pi pi-box empty-state__icon" aria-hidden="true"></i>
-              <div class="empty-state__content">
-                <strong>Nenhum benefício encontrado</strong>
-                <span>Tente outro filtro ou crie o primeiro benefício.</span>
-              </div>
-            </div>
+            <app-empty-state
+              icon="pi pi-box"
+              title="Nenhum benefício encontrado"
+              description="Tente outro filtro ou crie o primeiro benefício."
+            ></app-empty-state>
           </td>
         </tr>
       </ng-template>

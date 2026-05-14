@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -17,9 +17,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './header.component.html',
   styles: [`
     .app-header {
-      background: linear-gradient(135deg, #141413 0%, #2a2926 100%);
-      box-shadow: 0 10px 30px rgba(20, 20, 19, 0.18);
-      border-bottom: 1px solid rgba(232, 230, 220, 0.12);
+      background: linear-gradient(135deg, var(--p-surface-900) 0%, var(--p-surface-800) 100%);
+      box-shadow: 0 10px 30px var(--p-surface-700);
+      border-bottom: 1px solid var(--p-surface-700);
       padding: 0;
       position: sticky;
       top: 0;
@@ -53,7 +53,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     .logo-icon {
       width: 45px;
       height: 45px;
-      background: rgba(250, 249, 245, 0.14);
+      background: var(--p-surface-700);
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -73,15 +73,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
     .logo-text h1 {
       margin: 0;
-      color: #faf9f5;
+      color: var(--p-surface-0);
       font-size: 1.3rem;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Montserrat', var(--font-family, Arial, sans-serif);
       font-weight: 700;
       letter-spacing: 1.5px;
     }
 
     .logo-text span {
-      color: rgba(250, 249, 245, 0.82);
+      color: var(--p-surface-200);
       font-size: 0.7rem;
       font-weight: 500;
       letter-spacing: 2px;
@@ -92,18 +92,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(232, 230, 220, 0.08);
+      background: var(--p-surface-700);
       padding: 0.25rem;
       border-radius: 12px;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--p-surface-600);
     }
 
     .nav-link {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      color: rgba(250, 249, 245, 0.82);
+      color: var(--p-surface-100);
       text-decoration: none;
       padding: 0.6rem 1.2rem;
       border-radius: 8px;
@@ -119,19 +119,19 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .nav-link:hover {
-      color: #faf9f5;
-      background: rgba(232, 230, 220, 0.14);
+      color: var(--p-surface-0);
+      background: var(--p-surface-600);
     }
 
     .nav-link.active {
-      color: #141413;
-      background: #faf9f5;
+      color: var(--p-surface-900);
+      background: var(--p-surface-0);
       font-weight: 600;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px var(--p-surface-600);
     }
 
     .nav-link.active i {
-      color: #d97757;
+      color: var(--p-primary-500);
     }
 
     .header-spacer {
@@ -150,7 +150,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
       gap: 0.75rem;
       background: transparent !important;
       border: 1px solid transparent !important;
-      color: white !important;
+      color: var(--p-surface-0) !important;
       padding: 0.4rem 0.5rem !important;
       border-radius: 8px;
       cursor: pointer;
@@ -158,8 +158,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .user-menu-toggle:hover {
-      background: rgba(232, 230, 220, 0.12) !important;
-      border-color: rgba(232, 230, 220, 0.16) !important;
+      background: var(--p-surface-700) !important;
+      border-color: var(--p-surface-600) !important;
     }
 
     .user-name {
@@ -179,16 +179,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
     :host ::ng-deep .user-avatar {
       width: 38px !important;
       height: 38px !important;
-      background: #faf9f5 !important;
-      color: #141413 !important;
+      background: var(--p-surface-0) !important;
+      color: var(--p-surface-900) !important;
       font-weight: 700 !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px var(--p-surface-600);
     }
 
     :host ::ng-deep .p-menu {
       border-radius: 12px;
       border: none;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 40px var(--p-surface-300);
       overflow: hidden;
       min-width: 200px;
       margin-top: 0.5rem;
@@ -205,29 +205,29 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     :host ::ng-deep .p-menuitem-content:hover {
-      background: #f8f9fa !important;
+      background: var(--p-surface-50) !important;
     }
 
     :host ::ng-deep .p-menuitem-link {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      color: #4b5563 !important;
+      color: var(--p-surface-700) !important;
     }
 
     :host ::ng-deep .p-menuitem-icon {
-      color: #d97757;
+      color: var(--p-primary-500);
       font-size: 1.1rem;
     }
 
     :host ::ng-deep .p-menuitem-text {
       font-weight: 500;
-      color: #374151 !important;
+      color: var(--p-surface-700) !important;
     }
 
     :host ::ng-deep .logout-item .p-menuitem-link .p-menuitem-text,
     :host ::ng-deep .logout-item .p-menuitem-link .p-menuitem-icon {
-      color: #ef4444 !important;
+      color: var(--p-red-500) !important;
     }
 
     @media (max-width: 992px) {
@@ -293,6 +293,8 @@ export class HeaderComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
+
+  readonly menuOpen = signal(false);
 
   readonly authUser$ = this.authService.getAuthUser$();
   readonly currentUser = toSignal(this.authUser$, { initialValue: null });

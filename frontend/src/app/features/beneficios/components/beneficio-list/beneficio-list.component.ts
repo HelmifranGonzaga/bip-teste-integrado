@@ -10,10 +10,9 @@ import { Table, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
-import { InputTextModule } from 'primeng/inputtext';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
+import { TableToolbarComponent } from '../../../../shared/ui/table-toolbar/table-toolbar.component';
+import { EmptyStateComponent } from '../../../../shared/ui/empty-state/empty-state.component';
 
 interface BeneficioRow extends Beneficio {
   cnpjNormalizado: string;
@@ -30,10 +29,9 @@ interface BeneficioRow extends Beneficio {
     ButtonModule,
     CardModule,
     TooltipModule,
-    InputTextModule,
-    IconFieldModule,
-    InputIconModule,
-    TagModule
+    TagModule,
+    TableToolbarComponent,
+    EmptyStateComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './beneficio-list.component.html',
@@ -50,7 +48,6 @@ export class BeneficioListComponent {
   @Input()
   set beneficios(value: ReadonlyArray<Beneficio> | null | undefined) {
     const newLength = value?.length ?? 0;
-    const dataChanged = newLength !== this._prevLength;
     this._prevLength = newLength;
 
     this._rows = (value ?? []).map((b) => {
@@ -65,10 +62,6 @@ export class BeneficioListComponent {
         cnpjFiltro
       };
     });
-
-    if (dataChanged && this.table()) {
-      setTimeout(() => this.table()?.sortSingle(), 0);
-    }
   }
   get beneficios(): ReadonlyArray<BeneficioRow> {
     return this._rows;
@@ -100,9 +93,8 @@ export class BeneficioListComponent {
     this.lazyLoad.emit({ page, size: this.rows });
   }
 
-onGlobalFilter(table: Table, event: Event): void {
-     if (this.lazy) return;
-     const raw = (event.target as HTMLInputElement | null)?.value ?? '';
+onGlobalFilter(table: Table, value: string): void {
+  const raw = value ?? '';
      const cleaned = raw.replace(BeneficioListComponent.INVISIBLE_CHARS, '');
      const trimmed = cleaned.trim();
      let term = cleaned;

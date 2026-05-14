@@ -6,21 +6,21 @@
     </div>
   </section>
 
-  @if (user()) {
+  @if (user(); as currentUser) {
     <div class="profile-content">
       <p-card styleClass="p-0">
         <ng-template pTemplate="header">
           <div class="card-header-content">
             <div class="avatar-section">
               <p-avatar
-                [label]="(user()!.username || 'U').charAt(0).toUpperCase()"
+                [label]="(currentUser.username || 'U').charAt(0).toUpperCase()"
                 shape="circle"
                 size="xlarge"
                 styleClass="profile-avatar"
               ></p-avatar>
               <div class="user-details">
-                <h2>{{ user()!.username }}</h2>
-                <p class="user-email">{{ user()!.email || 'email@example.com' }}</p>
+                <h2>{{ currentUser.username }}</h2>
+                <p class="user-email">{{ 'email@example.com' }}</p>
               </div>
             </div>
           </div>
@@ -29,24 +29,24 @@
         <div class="profile-info">
           <p-divider></p-divider>
 
-          <div class="info-grid">
+          <dl class="info-grid">
             <div class="info-item">
-              <label>Nome de Usuário</label>
-              <p>{{ user()!.username }}</p>
+              <dt>Nome de Usuário</dt>
+              <dd>{{ currentUser.username }}</dd>
             </div>
             <div class="info-item">
-              <label>Email</label>
-              <p>{{ user()!.email || 'Não informado' }}</p>
+              <dt>Email</dt>
+              <dd>{{ 'Não informado' }}</dd>
             </div>
             <div class="info-item">
-              <label>Tipo de Usuário</label>
-              <p>Administrador</p>
+              <dt>Tipo de Usuário</dt>
+              <dd>{{ currentUser.role === 'ADMIN' ? 'Administrador' : 'Usuário' }}</dd>
             </div>
             <div class="info-item">
-              <label>Membro desde</label>
-              <p>Maio 2026</p>
+              <dt>Membro desde</dt>
+              <dd>{{ 'Maio 2026' }}</dd>
             </div>
-          </div>
+          </dl>
 
           <p-divider></p-divider>
 
@@ -82,14 +82,14 @@
         </ng-template>
         <div class="status-content">
           <div class="status-item">
-            <div class="status-indicator active"></div>
+            <div class="status-indicator active" role="img" aria-label="Conta ativa - indicador verde"></div>
             <div class="status-info">
               <h4>Conta Ativa</h4>
               <p>Sua conta está ativa e funcionando normalmente</p>
             </div>
           </div>
           <div class="status-item">
-            <div class="status-indicator verified"></div>
+            <div class="status-indicator verified" role="img" aria-label="Email verificado - indicador azul"></div>
             <div class="status-info">
               <h4>Email Verificado</h4>
               <p>Seu email foi verificado com sucesso</p>

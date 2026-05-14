@@ -77,10 +77,6 @@ export class UserFormComponent {
   }
 
   @Input() set editingUser(val: User | null) {
-    const isSameUser = val && this._editingUser?.id === val.id;
-    if (isSameUser) {
-      return;
-    }
     this._editingUser = val;
     if (val) {
       this.form.patchValue({

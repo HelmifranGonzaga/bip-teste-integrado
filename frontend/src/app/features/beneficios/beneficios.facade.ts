@@ -47,7 +47,8 @@ export class BeneficiosFacade {
     this.messageService.add({
       severity: 'success',
       summary: 'Sucesso',
-      detail
+      detail,
+      life: 4000
     });
   }
 }

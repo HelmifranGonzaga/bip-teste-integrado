@@ -2,9 +2,9 @@
   <p-fluid>
     <div class="field mb-3">
       <label for="nome" class="block mb-2">Nome <span class="required">*</span></label>
-      <input pInputText id="nome" formControlName="nome" placeholder="Ex: Auxílio Transporte" />
+      <input pInputText id="nome" formControlName="nome" placeholder="Ex: Auxílio Transporte" aria-describedby="nome-error" />
       @if (form.get('nome')!.invalid && form.get('nome')!.touched) {
-        <small class="text-red-500">
+        <small class="text-red-500" role="alert" aria-live="assertive" id="nome-error">
           @if (form.get('nome')!.hasError('required')) {
             Nome é obrigatório.
           } @else if (form.get('nome')!.hasError('minlength')) {
@@ -26,9 +26,10 @@
         autocomplete="off"
         placeholder="XX.XXX.XXX/XXXX-XX (opcional)"
         (input)="onCnpjInput($event)"
+        aria-describedby="cnpj-error"
       />
       @if (form.get('cnpj')!.invalid && form.get('cnpj')!.touched) {
-        <small class="text-red-500">
+        <small class="text-red-500" role="alert" aria-live="assertive" id="cnpj-error">
           @if (form.get('cnpj')!.hasError('cnpjCaracteresInvalidos')) {
             CNPJ aceita apenas letras, dígitos e os separadores . / -.
           } @else if (form.get('cnpj')!.hasError('cnpjTamanho')) {
@@ -53,9 +54,10 @@
         placeholder="R$ 0,00"
         [minFractionDigits]="2"
         [maxFractionDigits]="2"
+        aria-describedby="valor-error"
       ></p-inputNumber>
       @if (form.get('valor')!.invalid && form.get('valor')!.touched) {
-        <small class="text-red-500">
+        <small class="text-red-500" role="alert" aria-live="assertive" id="valor-error">
           @if (form.get('valor')!.hasError('required')) {
             Valor é obrigatório.
           } @else if (form.get('valor')!.hasError('min')) {
@@ -103,6 +105,7 @@
         icon="pi pi-check"
         severity="primary"
         [disabled]="form.invalid || submitting"
+        [loading]="submitting"
       ></button>
     </div>
   </div>

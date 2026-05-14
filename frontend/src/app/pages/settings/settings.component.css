@@ -62,6 +62,8 @@
   font-weight: 700;
   color: var(--p-primary-900);
   padding: 1.25rem;
+  margin: 0;
+  font-size: inherit;
 }
 
 .card-header-title i {

@@ -162,12 +162,24 @@
   flex-shrink: 0;
 }
 
+/* Fallback text for colorblind users - hidden visually but accessible */
+.status-indicator__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 .status-indicator.active {
-  background: var(--anthropic-green);
+  background: var(--p-green-500);
 }
 
 .status-indicator.verified {
-  background: var(--anthropic-blue);
+  background: var(--p-primary-500);
 }
 
 .status-info h4 {
@@ -183,11 +195,11 @@
 }
 
 :host ::ng-deep .profile-avatar {
-  background: linear-gradient(135deg, var(--anthropic-orange) 0%, #c86948 100%) !important;
+  background: linear-gradient(135deg, var(--p-primary-500) 0%, var(--p-primary-600) 100%) !important;
   width: 100px !important;
   height: 100px !important;
   font-size: 2.5rem;
-  box-shadow: 0 8px 24px rgba(217, 119, 87, 0.25);
+  box-shadow: 0 8px 24px var(--p-primary-200);
   animation: scaleIn 0.4s ease-out 0.1s both;
 }
 
@@ -199,6 +211,20 @@
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none;
+  }
+
+  .status-item:hover {
+    transform: none;
+  }
+
+  :host ::ng-deep .profile-avatar {
+    animation: none;
   }
 }
 
