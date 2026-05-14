@@ -103,14 +103,14 @@ class BeneficioEjbServiceTest {
         when(em.find(Beneficio.class, 1L, LockModeType.PESSIMISTIC_WRITE)).thenReturn(from);
         when(em.find(Beneficio.class, 2L, LockModeType.PESSIMISTIC_WRITE)).thenReturn(to);
 
-        assertThrows(IllegalStateException.class, () -> service.transfer(1L, 2L, BigDecimal.TEN));
+        assertThrows(IllegalArgumentException.class, () -> service.transfer(1L, 2L, BigDecimal.TEN));
         
         from.setAtivo(true);
         to.setAtivo(false);
         when(em.find(Beneficio.class, 1L, LockModeType.PESSIMISTIC_WRITE)).thenReturn(from);
         when(em.find(Beneficio.class, 2L, LockModeType.PESSIMISTIC_WRITE)).thenReturn(to);
 
-        assertThrows(IllegalStateException.class, () -> service.transfer(1L, 2L, BigDecimal.TEN));
+        assertThrows(IllegalArgumentException.class, () -> service.transfer(1L, 2L, BigDecimal.TEN));
     }
 
     @Test
@@ -118,6 +118,6 @@ class BeneficioEjbServiceTest {
         when(em.find(Beneficio.class, 1L, LockModeType.PESSIMISTIC_WRITE)).thenReturn(from);
         when(em.find(Beneficio.class, 2L, LockModeType.PESSIMISTIC_WRITE)).thenReturn(to);
 
-        assertThrows(IllegalStateException.class, () -> service.transfer(1L, 2L, new BigDecimal("2000.00")));
+        assertThrows(IllegalArgumentException.class, () -> service.transfer(1L, 2L, new BigDecimal("2000.00")));
     }
 }

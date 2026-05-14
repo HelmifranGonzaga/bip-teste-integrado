@@ -4,7 +4,6 @@ import com.example.backend.adapter.inbound.web.dto.PasswordResetResponse;
 import com.example.backend.adapter.inbound.web.dto.UserRequest;
 import com.example.backend.adapter.inbound.web.dto.UserResponse;
 import com.example.backend.adapter.inbound.web.dto.UserUpdateRequest;
-import com.example.backend.adapter.inbound.web.exception.ResourceNotFoundException;
 import com.example.backend.application.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,11 +42,7 @@ public class UserController {
     @Operation(summary = "Buscar usuário por ID")
     @GetMapping("/{id}")
     public UserResponse getById(@PathVariable Long id) {
-        try {
-            return userService.getById(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        }
+        return userService.getById(id);
     }
 
     @Operation(summary = "Criar novo usuário")
@@ -60,22 +55,14 @@ public class UserController {
     @Operation(summary = "Atualizar usuário")
     @PutMapping("/{id}")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
-        try {
-            return userService.update(id, request);
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        }
+        return userService.update(id, request);
     }
 
     @Operation(summary = "Excluir usuário")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        try {
-            userService.delete(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        }
+        userService.delete(id);
     }
 
     @Operation(summary = "Obter usuário autenticado atual")
@@ -87,25 +74,13 @@ public class UserController {
     @Operation(summary = "Ativar/desativar usuário")
     @PatchMapping("/{id}/ativo")
     public UserResponse toggleActive(@PathVariable Long id) {
-        try {
-            return userService.toggleActive(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        }
+        return userService.toggleActive(id);
     }
 
     @Operation(summary = "Gerar nova senha aleatória para usuário")
     @PostMapping("/{id}/reset-password")
     public ResponseEntity<PasswordResetResponse> resetPassword(@PathVariable Long id) {
-        try {
-            String newPassword = userService.resetPassword(id);
-            return ResponseEntity.ok(new PasswordResetResponse(newPassword));
-        } catch (ResourceNotFoundException e) {
-            throw e;
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        } catch (Exception e) {
-            throw new IllegalStateException("Erro ao redefinir senha: " + e.getMessage(), e);
-        }
+        String newPassword = userService.resetPassword(id);
+        return ResponseEntity.ok(new PasswordResetResponse(newPassword));
     }
 }

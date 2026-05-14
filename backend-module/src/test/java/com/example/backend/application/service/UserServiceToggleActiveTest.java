@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.example.backend.domain.exception.UserNotFoundException;
 import com.example.ejb.Usuario;
 import com.example.backend.adapter.outbound.persistence.UsuarioJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,10 +76,10 @@ class UserServiceToggleActiveTest {
     }
 
     @Test
-    void toggleActive_userNotFound_throwsIllegalArgumentException() {
+    void toggleActive_userNotFound_throwsUserNotFoundException() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.toggleActive(99L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(UserNotFoundException.class);
     }
 }

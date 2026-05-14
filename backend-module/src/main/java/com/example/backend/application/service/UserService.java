@@ -4,6 +4,7 @@ import com.example.backend.adapter.inbound.web.dto.UserRequest;
 import com.example.backend.adapter.inbound.web.dto.UserResponse;
 import com.example.backend.adapter.inbound.web.dto.UserUpdateRequest;
 import com.example.backend.adapter.outbound.persistence.UsuarioJpaRepository;
+import com.example.backend.domain.exception.UserNotFoundException;
 import com.example.ejb.Usuario;
 import java.security.SecureRandom;
 import java.util.List;
@@ -38,7 +39,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse getById(Long id) {
         return repository.findById(id).map(this::toResponse)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Transactional
@@ -67,7 +68,7 @@ public class UserService {
             throw new IllegalArgumentException("Username não pode ser vazio");
         }
         Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
         repository.findByUsername(request.username()).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {
                 throw new IllegalArgumentException("Username já está em uso: " + request.username());
@@ -95,7 +96,7 @@ public class UserService {
     @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new IllegalArgumentException("Usuário não encontrado: " + id);
+            throw new UserNotFoundException(id);
         }
         repository.deleteById(id);
         log.info("Deleted user: {}", id);
@@ -106,13 +107,13 @@ public class UserService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return repository.findByUsername(username)
                 .map(this::toResponse)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário autenticado não encontrado: " + username));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @Transactional
     public UserResponse toggleActive(Long id) {
         Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
         Boolean current = usuario.getAtivo();
         usuario.setAtivo(current == null || !current);
         Usuario saved = repository.save(usuario);
@@ -126,7 +127,7 @@ public class UserService {
             throw new IllegalArgumentException("ID do usuário não pode ser nulo");
         }
         Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
         if (usuario.getPassword() == null) {
             throw new IllegalStateException("Usuário sem senha cadastrada: " + id);
         }

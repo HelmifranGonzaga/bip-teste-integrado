@@ -1,0 +1,4 @@
+com\example\ejb\Usuario.class
+com\example\ejb\BeneficioEjbService.class
+com\example\ejb\Beneficio.class
+com\example\ejb\IdempotencyEntity.class

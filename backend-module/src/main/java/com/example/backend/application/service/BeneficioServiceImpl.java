@@ -1,6 +1,6 @@
 package com.example.backend.application.service;
 
-import com.example.backend.adapter.inbound.web.exception.ResourceNotFoundException;
+import com.example.backend.domain.exception.BeneficioNotFoundException;
 import com.example.backend.domain.model.Beneficio;
 import com.example.backend.domain.port.inbound.BeneficioUseCase;
 import com.example.backend.domain.port.outbound.BeneficioRepositoryPort;
@@ -110,7 +110,7 @@ public class BeneficioServiceImpl implements BeneficioUseCase {
         return repositoryPort.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Beneficio not found: {}", id);
-                    return new ResourceNotFoundException("Benefício não encontrado: " + id);
+                    return new BeneficioNotFoundException(id);
                 });
     }
 }

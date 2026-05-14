@@ -3,7 +3,7 @@ package com.example.backend.application.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.example.backend.adapter.inbound.web.exception.ResourceNotFoundException;
+import com.example.backend.domain.exception.BeneficioNotFoundException;
 import com.example.backend.domain.model.Beneficio;
 import com.example.backend.domain.port.outbound.BeneficioRepositoryPort;
 import com.example.backend.domain.port.outbound.BeneficioTransferPort;
@@ -92,7 +92,7 @@ class BeneficioServiceImplTest {
         payload.setValor(BigDecimal.ONE);
         payload.setAtivo(true);
 
-        assertThrows(ResourceNotFoundException.class, () -> service.update(1L, payload));
+        assertThrows(BeneficioNotFoundException.class, () -> service.update(1L, payload));
     }
 
     @Test
@@ -129,7 +129,7 @@ class BeneficioServiceImplTest {
     void shouldThrowExceptionWhenDeletingNonExistentBeneficio() {
         when(repositoryPort.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> service.delete(1L));
+        assertThrows(BeneficioNotFoundException.class, () -> service.delete(1L));
     }
 
     @Test

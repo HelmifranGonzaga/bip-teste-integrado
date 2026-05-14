@@ -71,14 +71,14 @@ public class BeneficioEjbService {
     private void validateBeneficioAtivo(Beneficio from, Beneficio to) {
         if (!Boolean.TRUE.equals(from.getAtivo()) || !Boolean.TRUE.equals(to.getAtivo())) {
             log.error("Transfer validation failed: inactive beneficio");
-            throw new IllegalStateException("Transferência permitida apenas entre benefícios ativos");
+            throw new IllegalArgumentException("Transferência permitida apenas entre benefícios ativos");
         }
     }
 
     private void validateSaldo(Beneficio from, BigDecimal amount) {
         if (from.getValor().compareTo(amount) < 0) {
             log.error("Transfer validation failed: insufficient balance");
-            throw new IllegalStateException("Saldo insuficiente para transferência");
+            throw new IllegalArgumentException("Saldo insuficiente para transferência");
         }
     }
 }

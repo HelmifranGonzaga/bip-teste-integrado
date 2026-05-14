@@ -67,7 +67,7 @@ public class JwtProvider {
         try {
             Claims claims = parseToken(token);
             return claims.getSubject();
-        } catch (JwtException e) {
+        } catch (JwtException | IllegalArgumentException e) {
             return null;
         }
     }
@@ -76,7 +76,7 @@ public class JwtProvider {
         try {
             Claims claims = parseToken(token);
             return claims.get("role", String.class);
-        } catch (JwtException e) {
+        } catch (JwtException | IllegalArgumentException e) {
             return null;
         }
     }
