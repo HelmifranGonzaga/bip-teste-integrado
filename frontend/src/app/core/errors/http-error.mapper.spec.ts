@@ -44,7 +44,6 @@ describe('mapHttpError', () => {
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Falha interna',
-        timestamp: '2026-04-02T10:00:00Z',
         correlationId: 'corr-123'
       }
     });

@@ -3,6 +3,7 @@ package com.example.backend.adapter.inbound.web;
 import com.example.backend.adapter.inbound.web.dto.BeneficioRequest;
 import com.example.backend.adapter.inbound.web.dto.BeneficioResponse;
 import com.example.backend.adapter.inbound.web.dto.TransferRequest;
+import com.example.backend.adapter.inbound.web.dto.TransferResponse;
 import com.example.backend.adapter.inbound.web.mapper.BeneficioMapper;
 import com.example.backend.domain.idempotency.IdempotencyStore;
 import com.example.backend.domain.model.Beneficio;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/beneficios")
 @Tag(name = "Benefícios", description = "API para gerenciamento de benefícios corporativos e transferências de saldo")
 public class BeneficioController {
+
+    private static final int DEFAULT_PAGE_SIZE = 100;
+    private static final int MAX_PAGE_SIZE = 1000;
 
     private final BeneficioUseCase useCase;
     private final BeneficioMapper mapper;
@@ -46,18 +50,21 @@ public class BeneficioController {
         this.idempotencyStore = idempotencyStore;
     }
 
-    @Operation(summary = "Listar benefícios", description = "Retorna benefícios com paginação opcional. Padrão: todos os registros.")
+    @Operation(summary = "Listar benefícios", description = "Retorna benefícios com paginação opcional. Padrão: até 100 registros.")
     @ApiResponse(responseCode = "200", description = "Lista de benefícios retornada com sucesso")
     @GetMapping
     public ResponseEntity<?> list(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "2147483647") int size) {
-        if (size == 2147483647) {
-            List<BeneficioResponse> beneficios = useCase.listAll().stream().map(mapper::toResponse).toList();
-            return ResponseEntity.ok(beneficios);
+            @RequestParam(defaultValue = "100") int size) {
+        
+        if (size >= MAX_PAGE_SIZE) {
+            return ResponseEntity.ok(
+                    useCase.listAll().stream().map(mapper::toResponse).toList()
+            );
         }
+        
         Page<BeneficioResponse> beneficioPage = useCase
-                .listPaginated(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")))
+                .listPaginated(PageRequest.of(page, Math.min(size, DEFAULT_PAGE_SIZE), Sort.by(Sort.Direction.ASC, "id")))
                 .map(mapper::toResponse);
         return ResponseEntity.ok(beneficioPage);
     }
@@ -69,7 +76,8 @@ public class BeneficioController {
     })
     @GetMapping("/{id}")
     public BeneficioResponse getById(
-            @Parameter(description = "ID do benefício a ser buscado", example = "1") @PathVariable Long id) {
+            @Parameter(description = "ID do benefício a ser buscado", example = "1")
+            @PathVariable @Positive(message = "ID deve ser positivo") Long id) {
         Beneficio beneficio = useCase.getById(id);
         return mapper.toResponse(beneficio);
     }
@@ -95,7 +103,8 @@ public class BeneficioController {
     })
     @PutMapping("/{id}")
     public BeneficioResponse update(
-            @Parameter(description = "ID do benefício a ser atualizado", example = "1") @PathVariable Long id,
+            @Parameter(description = "ID do benefício a ser atualizado", example = "1")
+            @PathVariable @Positive(message = "ID deve ser positivo") Long id,
             @Valid @RequestBody BeneficioRequest request) {
         Beneficio beneficio = mapper.toDomain(request);
         Beneficio updated = useCase.update(id, beneficio);
@@ -110,7 +119,8 @@ public class BeneficioController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
-            @Parameter(description = "ID do benefício a ser excluído", example = "1") @PathVariable Long id) {
+            @Parameter(description = "ID do benefício a ser excluído", example = "1")
+            @PathVariable @Positive(message = "ID deve ser positivo") Long id) {
         useCase.delete(id);
     }
 
@@ -123,20 +133,20 @@ public class BeneficioController {
             @ApiResponse(responseCode = "404", description = "Benefício de origem ou destino não encontrado")
     })
     @PostMapping("/transfer")
-    public ResponseEntity<Void> transfer(
+    public ResponseEntity<TransferResponse> transfer(
             @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
             @Valid @RequestBody TransferRequest request) {
 
         if (idempotencyKey != null && !idempotencyKey.isBlank()) {
             if (idempotencyStore.exists(idempotencyKey)) {
-                return ResponseEntity.status(HttpStatus.OK).build();
+                return ResponseEntity.ok(new TransferResponse(false));
             }
-            useCase.transfer(request.fromId(), request.toId(), request.amount());
             idempotencyStore.store(idempotencyKey, null);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            useCase.transfer(request.fromId(), request.toId(), request.amount());
+            return ResponseEntity.status(HttpStatus.CREATED).body(new TransferResponse(true));
         }
 
         useCase.transfer(request.fromId(), request.toId(), request.amount());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new TransferResponse(true));
     }
 }

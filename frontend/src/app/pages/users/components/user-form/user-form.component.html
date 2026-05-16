@@ -7,6 +7,7 @@
           [value]="editingUser.ativo ? 'Ativo' : 'Inativo'"
           [severity]="editingUser.ativo ? 'success' : 'danger'"
           [rounded]="true"
+          [attr.aria-label]="editingUser.ativo ? 'Usuário ativo' : 'Usuário inativo'"
         ></p-tag>
       </div>
       @if (isAdmin()) {
@@ -84,7 +85,7 @@
       </div>
 
       <div class="field">
-        <label for="role">Perfil de Acesso</label>
+        <label for="role" id="role-label">Perfil de Acesso</label>
         <p-select
           id="role"
           formControlName="role"
@@ -92,6 +93,7 @@
           optionLabel="label"
           optionValue="value"
           placeholder="Selecione"
+          aria-labelledby="role-label"
         ></p-select>
       </div>
 
@@ -111,6 +113,7 @@
               severity="secondary"
               [outlined]="true"
               size="small"
+              aria-label="Gerar nova senha aleatória"
               [loading]="generatingPassword()"
               (click)="onGeneratePassword()"
               pTooltip="Gerar senha aleatória"
